@@ -1,0 +1,210 @@
+{
+  "@@locale": "ru",
+
+  "appName": "Archonex Cleaner",
+  "appTagline": "Верните место, о котором устройство забыло.",
+
+  "languageTitle": "Выберите язык",
+  "languageSubtitle": "Язык, на котором будет работать приложение.",
+  "continueLabel": "Продолжить",
+  "languageButtonTooltip": "Язык",
+
+  "cleanerTitle": "Освободить место",
+  "cleanerSubtitle": "Найдём временные файлы, которые остались на устройстве, и уберём их.",
+
+  "scanLabel": "Сканировать",
+  "rescanLabel": "Сканировать снова",
+  "scanningLabel": "Сканируем…",
+  "scanningLocation": "Сканируем {location}",
+  "@scanningLocation": {
+    "placeholders": {
+      "location": { "type": "String" }
+    }
+  },
+  "cancelLabel": "Отмена",
+  "dismissLabel": "Закрыть",
+  "doneLabel": "Готово",
+  "deleteLabel": "Удалить",
+
+  "cleanLabel": "Очистить {size}",
+  "@cleanLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "cleaningLabel": "Очищаем…",
+  "nothingSelectedLabel": "Ничего не выбрано",
+
+  "notScannedTitle": "Сканирование ещё не запускалось",
+  "notScannedBody": "Запустите сканирование, чтобы увидеть, что можно убрать.",
+  "emptyScanTitle": "Чистить нечего",
+  "emptyScanBody": "Здесь нет остатков, до которых приложение может дотянуться.",
+
+  "foundSummary": "Найдено {size}",
+  "@foundSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "selectedSummary": "Выбрано {size}",
+  "@selectedSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "fileCount": "{count, plural, =0{нет файлов} one{{count} файл} few{{count} файла} many{{count} файлов} other{{count} файла}}",
+  "@fileCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "truncatedNotice": "Показаны первые {count}. Их больше — следующий проход найдёт остальные.",
+  "@truncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "categoryAppCacheTitle": "Кэш этого приложения",
+  "categoryAppCacheSubtitle": "Временные файлы самого Archonex Cleaner. Удалять безопасно всегда.",
+  "categorySystemTempTitle": "Временные файлы",
+  "categorySystemTempSubtitle": "То, что установщики и программы оставили в системной папке temp.",
+  "categoryThumbnailsTitle": "Миниатюры",
+  "categoryThumbnailsSubtitle": "Готовые превью. Появятся заново при следующей прокрутке.",
+  "categoryLogsTitle": "Старые логи",
+  "categoryLogsSubtitle": "Диагностические файлы, которые никто не станет читать.",
+  "categoryCrashDumpsTitle": "Дампы сбоев",
+  "categoryCrashDumpsSubtitle": "Снимки памяти, записанные в момент, когда что-то упало.",
+  "categoryEmptyFoldersTitle": "Пустые папки",
+  "categoryEmptyFoldersSubtitle": "Каталоги, в которых ничего не осталось.",
+  "categoryBrowserCacheTitle": "Кэш браузера",
+  "categoryBrowserCacheSubtitle": "Освобождает много места. Сайты день будут грузиться медленнее.",
+  "categoryInstallerLeftoversTitle": "Установщики и архивы",
+  "categoryInstallerLeftoversSubtitle": "Скачанные файлы установки. Просмотрите список — какой-то из них может быть единственной копией.",
+  "categoryTrashTitle": "Корзина",
+  "categoryTrashSubtitle": "Всё это уже удалили один раз. Очистка корзины — последний шаг.",
+  "categorySecondLookBadge": "Проверьте",
+
+  "accessNarrowedTitle": "Только собственные файлы приложения",
+  "accessNarrowedBody": "Без доступа ко всем файлам сканирование ограничено кэшем самого Archonex Cleaner. Выдайте доступ, чтобы видеть всё устройство.",
+  "accessGrantLabel": "Выдать доступ",
+  "accessSettingsLabel": "Открыть настройки",
+  "accessDeniedPermanentBody": "В доступе отказано окончательно. Включить его всё ещё можно в системных настройках, в разделе особых разрешений.",
+  "accessAddFolderLabel": "Добавить папку",
+  "accessScopedTitle": "{count, plural, one{Добавлена {count} папка} few{Добавлено {count} папки} many{Добавлено {count} папок} other{Добавлено {count} папки}}",
+  "@accessScopedTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accessScopedBody": "Сканируются только выбранные папки. Добавьте ещё или выдайте доступ ко всем файлам.",
+  "accessSandboxTitle": "Только собственные файлы приложения",
+  "accessSandboxBody": "Система держит каждое приложение в собственном контейнере. Ни одно приложение не читает файлы другого и не может их чистить.",
+  "accessUnsupportedTitle": "Здесь недоступно",
+  "accessUnsupportedBody": "В браузере нет файловой системы, которую можно чистить. Установите приложение.",
+
+  "confirmCleanTitle": "Удалить {count}?",
+  "@confirmCleanTitle": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "confirmCleanBody": "Они переедут в карантин, откуда их можно вернуть в течение {days} дней.",
+  "@confirmCleanBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "confirmCleanPermanentNote": "{count, plural, one{{count} файл слишком велик, чтобы держать копию, — он удалится насовсем.} few{{count} файла слишком велики, чтобы держать копию, — они удалятся насовсем.} many{{count} файлов слишком велики, чтобы держать копию, — они удалятся насовсем.} other{{count} файла слишком велики, чтобы держать копию, — они удалятся насовсем.}}",
+  "@confirmCleanPermanentNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "resultTitle": "Освободили {size}",
+  "@resultTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "resultNothingFreed": "Освободить ничего не удалось",
+  "resultQuarantined": "{count, plural, one{{count} файл можно вернуть} few{{count} файла можно вернуть} many{{count} файлов можно вернуть} other{{count} файла можно вернуть}}",
+  "@resultQuarantined": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultPermanent": "{count, plural, one{{count} файл был слишком велик, чтобы держать копию} few{{count} файла были слишком велики, чтобы держать копию} many{{count} файлов были слишком велики, чтобы держать копию} other{{count} файла были слишком велики, чтобы держать копию}}",
+  "@resultPermanent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultSkipped": "{count, plural, one{{count} файл был занят и остался на месте} few{{count} файла были заняты и остались на месте} many{{count} файлов были заняты и остались на месте} other{{count} файла были заняты и остались на месте}}",
+  "@resultSkipped": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultCancelled": "Остановлено до конца. То, что уже удалено, удалено.",
+
+  "failureAccessDenied": "Система не пускает приложение за пределы его собственной папки.",
+  "failureScanCancelled": "Сканирование остановлено.",
+  "failureUnsupported": "На этой платформе нет файловой системы, которую можно чистить.",
+  "failureScan": "Сканирование не завершилось. Ничего не удалено.",
+  "failureRestoreTargetOccupied": "По пути {path} снова что-то лежит. Уберите это и повторите восстановление.",
+  "@failureRestoreTargetOccupied": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "failureRestore": "Восстановлено: {restored}. Не найдено на диске: {lost}.",
+  "@failureRestore": {
+    "placeholders": {
+      "restored": { "type": "int" },
+      "lost": { "type": "int" }
+    }
+  },
+
+  "quarantineTitle": "Карантин",
+  "quarantineSubtitle": "Всё, что убрала очистка. Хранится {days} дней, потом удаляется насовсем.",
+  "@quarantineSubtitle": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineEmptyTitle": "Здесь пусто",
+  "quarantineEmptyBody": "Удалённые файлы ждут здесь {days} дней — на случай, если что-то понадобится обратно.",
+  "@quarantineEmptyBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineBatchTitle": "{count} · {size}",
+  "@quarantineBatchTitle": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "quarantineExpiry": "{days, plural, =0{Удалится сегодня} one{Остался {days} день} few{Осталось {days} дня} many{Осталось {days} дней} other{Осталось {days} дня}}",
+  "@quarantineExpiry": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineRestoreLabel": "Восстановить",
+  "quarantinePurgeLabel": "Удалить сейчас",
+  "quarantinePurgeAllLabel": "Очистить карантин",
+  "quarantineRestoredNotice": "Возвращено туда, откуда взяли.",
+  "quarantineBannerTitle": "{count, plural, one{{count} файл ещё можно вернуть} few{{count} файла ещё можно вернуть} many{{count} файлов ещё можно вернуть} other{{count} файла ещё можно вернуть}}",
+  "@quarantineBannerTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "quarantineOpenLabel": "Открыть карантин",
+  "confirmPurgeAllTitle": "Очистить карантин?",
+  "confirmPurgeAllBody": "Всё, что в нём лежит, удалится насовсем, и вернуть файлы из тех очисток будет уже нельзя."
+}

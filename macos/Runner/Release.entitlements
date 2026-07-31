@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+		The sandbox is off, and that is the whole macOS story.
+
+		Inside it `NSHomeDirectory()` returns the app's container, so
+		`~/Library/Caches` means the app's own cache and nothing else: a
+		sandboxed cleaner scans an empty machine and reports it clean, which is
+		worse than refusing to run. Off, the same path means what the user means
+		by it.
+
+		The cost is that this build cannot go to the Mac App Store, which
+		requires the sandbox. It is distributed directly, like the Windows and
+		Linux builds, and `AppleJunkRules.macOS` is written for that. A store
+		build would use `SandboxStorageAccessRepo` and the app-only ruleset iOS
+		already has; both exist.
+	-->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+</dict>
+</plist>

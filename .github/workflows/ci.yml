@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push to the same branch makes the previous run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    name: Analyze and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      # Pinned rather than tracking `stable`, so a Flutter release cannot turn
+      # CI red on its own. Keep in step with the revision in .metadata; bump it
+      # deliberately, as its own commit, with the test run that proves it.
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.41.2
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      # Ubuntu is deliberately the only runner. Every platform's rule table and
+      # protected-path list is pure and tested from here by handing in a
+      # `CleanerRoots` literal and a `p.Context` — that is what those two classes
+      # taking their platform as an argument buys, and it is why the Windows
+      # rules are covered by a Linux job.
+      - name: Test
+        run: flutter test

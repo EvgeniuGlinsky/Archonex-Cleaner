@@ -1,0 +1,210 @@
+{
+  "@@locale": "en",
+
+  "appName": "Archonex Cleaner",
+  "appTagline": "Take back the space your device forgot about.",
+
+  "languageTitle": "Choose your language",
+  "languageSubtitle": "Select the language you want to use in the app.",
+  "continueLabel": "Continue",
+  "languageButtonTooltip": "Language",
+
+  "cleanerTitle": "Free up space",
+  "cleanerSubtitle": "Find the temporary files your device left behind, and get rid of them.",
+
+  "scanLabel": "Scan",
+  "rescanLabel": "Scan again",
+  "scanningLabel": "Scanning…",
+  "scanningLocation": "Scanning {location}",
+  "@scanningLocation": {
+    "placeholders": {
+      "location": { "type": "String" }
+    }
+  },
+  "cancelLabel": "Cancel",
+  "dismissLabel": "Dismiss",
+  "doneLabel": "Done",
+  "deleteLabel": "Delete",
+
+  "cleanLabel": "Clean up {size}",
+  "@cleanLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "cleaningLabel": "Cleaning…",
+  "nothingSelectedLabel": "Nothing selected",
+
+  "notScannedTitle": "Nothing scanned yet",
+  "notScannedBody": "Run a scan to see what can go.",
+  "emptyScanTitle": "Nothing to clean",
+  "emptyScanBody": "There are no leftovers here that this app can reach.",
+
+  "foundSummary": "{size} found",
+  "@foundSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "selectedSummary": "{size} selected",
+  "@selectedSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "fileCount": "{count, plural, =0{no files} =1{1 file} other{{count} files}}",
+  "@fileCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "truncatedNotice": "Showing the first {count}. There are more, and a second run will find them.",
+  "@truncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "categoryAppCacheTitle": "This app's cache",
+  "categoryAppCacheSubtitle": "Archonex Cleaner's own temporary files. Always safe.",
+  "categorySystemTempTitle": "Temporary files",
+  "categorySystemTempSubtitle": "What installers and applications left in the system temp folder.",
+  "categoryThumbnailsTitle": "Thumbnails",
+  "categoryThumbnailsSubtitle": "Generated previews. They come back the next time you scroll.",
+  "categoryLogsTitle": "Old logs",
+  "categoryLogsSubtitle": "Diagnostic files nobody is going to read.",
+  "categoryCrashDumpsTitle": "Crash dumps",
+  "categoryCrashDumpsSubtitle": "Memory snapshots written when something stopped working.",
+  "categoryEmptyFoldersTitle": "Empty folders",
+  "categoryEmptyFoldersSubtitle": "Directories left behind with nothing in them.",
+  "categoryBrowserCacheTitle": "Browser cache",
+  "categoryBrowserCacheSubtitle": "Frees real space. The web will load slower for a day.",
+  "categoryInstallerLeftoversTitle": "Installers and archives",
+  "categoryInstallerLeftoversSubtitle": "Downloaded setup files. Check the list — one of them may be the only copy.",
+  "categoryTrashTitle": "Recycle bin",
+  "categoryTrashSubtitle": "Already deleted once. Emptying it is the last step.",
+  "categorySecondLookBadge": "Check first",
+
+  "accessNarrowedTitle": "Only this app's own files",
+  "accessNarrowedBody": "Without all-files access the scan is limited to Archonex Cleaner's own cache. Grant it to see the whole device.",
+  "accessGrantLabel": "Grant access",
+  "accessSettingsLabel": "Open settings",
+  "accessDeniedPermanentBody": "Access was refused for good. It can still be turned on in the system settings, under Special app access.",
+  "accessAddFolderLabel": "Add a folder",
+  "accessScopedTitle": "{count, plural, =1{1 folder added} other{{count} folders added}}",
+  "@accessScopedTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accessScopedBody": "Only the folders you picked are scanned. Add more, or grant all-files access to cover the device.",
+  "accessSandboxTitle": "Only this app's own files",
+  "accessSandboxBody": "The system keeps every app inside its own container. No app can read another one's files, and none can clean them.",
+  "accessUnsupportedTitle": "Not available here",
+  "accessUnsupportedBody": "A browser has no file system to clean. Install the app to use it.",
+
+  "confirmCleanTitle": "Delete {count}?",
+  "@confirmCleanTitle": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "confirmCleanBody": "They move to the quarantine and can be restored for {days} days.",
+  "@confirmCleanBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "confirmCleanPermanentNote": "{count, plural, =1{1 file is too large to keep a copy of and goes for good.} other{{count} files are too large to keep a copy of and go for good.}}",
+  "@confirmCleanPermanentNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "resultTitle": "Freed {size}",
+  "@resultTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "resultNothingFreed": "Nothing was freed",
+  "resultQuarantined": "{count, plural, =1{1 file can be restored} other{{count} files can be restored}}",
+  "@resultQuarantined": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultPermanent": "{count, plural, =1{1 file was too large to keep a copy of} other{{count} files were too large to keep a copy of}}",
+  "@resultPermanent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultSkipped": "{count, plural, =1{1 file was in use and stayed} other{{count} files were in use and stayed}}",
+  "@resultSkipped": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultCancelled": "Stopped before the end. What had already gone is gone.",
+
+  "failureAccessDenied": "The system will not let the app look outside its own folder.",
+  "failureScanCancelled": "Scan stopped.",
+  "failureUnsupported": "There is no file system to clean on this platform.",
+  "failureScan": "The scan could not finish. Nothing was deleted.",
+  "failureRestoreTargetOccupied": "Something is at {path} again. Move it out of the way and restore once more.",
+  "@failureRestoreTargetOccupied": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "failureRestore": "{restored} restored, {lost} could not be found on disk any more.",
+  "@failureRestore": {
+    "placeholders": {
+      "restored": { "type": "int" },
+      "lost": { "type": "int" }
+    }
+  },
+
+  "quarantineTitle": "Quarantine",
+  "quarantineSubtitle": "Everything a cleanup moved aside. Kept for {days} days, then deleted for good.",
+  "@quarantineSubtitle": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineEmptyTitle": "Nothing here",
+  "quarantineEmptyBody": "Files a cleanup removes wait here for {days} days, in case you want one of them back.",
+  "@quarantineEmptyBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineBatchTitle": "{count} · {size}",
+  "@quarantineBatchTitle": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "quarantineExpiry": "{days, plural, =0{Goes today} =1{1 day left} other{{days} days left}}",
+  "@quarantineExpiry": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineRestoreLabel": "Restore",
+  "quarantinePurgeLabel": "Delete now",
+  "quarantinePurgeAllLabel": "Empty quarantine",
+  "quarantineRestoredNotice": "Put back where they came from.",
+  "quarantineBannerTitle": "{count, plural, =1{1 file can still be restored} other{{count} files can still be restored}}",
+  "@quarantineBannerTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "quarantineOpenLabel": "Open quarantine",
+  "confirmPurgeAllTitle": "Empty the quarantine?",
+  "confirmPurgeAllBody": "Everything in it is deleted for good, and nothing from those cleanups can be restored afterwards."
+}

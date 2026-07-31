@@ -1,0 +1,210 @@
+{
+  "@@locale": "zh",
+
+  "appName": "Archonex Cleaner",
+  "appTagline": "找回设备已经忘掉的存储空间。",
+
+  "languageTitle": "选择语言",
+  "languageSubtitle": "选择应用界面使用的语言。",
+  "continueLabel": "继续",
+  "languageButtonTooltip": "语言",
+
+  "cleanerTitle": "释放空间",
+  "cleanerSubtitle": "找出设备遗留的临时文件并清理掉。",
+
+  "scanLabel": "扫描",
+  "rescanLabel": "重新扫描",
+  "scanningLabel": "扫描中…",
+  "scanningLocation": "正在扫描 {location}",
+  "@scanningLocation": {
+    "placeholders": {
+      "location": { "type": "String" }
+    }
+  },
+  "cancelLabel": "取消",
+  "dismissLabel": "关闭",
+  "doneLabel": "完成",
+  "deleteLabel": "删除",
+
+  "cleanLabel": "清理 {size}",
+  "@cleanLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "cleaningLabel": "清理中…",
+  "nothingSelectedLabel": "未选择任何内容",
+
+  "notScannedTitle": "还没有扫描",
+  "notScannedBody": "运行一次扫描，看看有哪些可以清理。",
+  "emptyScanTitle": "没有需要清理的内容",
+  "emptyScanBody": "这里没有本应用能够访问到的残留文件。",
+
+  "foundSummary": "找到 {size}",
+  "@foundSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "selectedSummary": "已选 {size}",
+  "@selectedSummary": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "fileCount": "{count, plural, =0{没有文件} other{{count} 个文件}}",
+  "@fileCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "truncatedNotice": "仅显示前 {count} 项，还有更多，再扫描一次即可找到。",
+  "@truncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "categoryAppCacheTitle": "本应用的缓存",
+  "categoryAppCacheSubtitle": "Archonex Cleaner 自己的临时文件，删除始终安全。",
+  "categorySystemTempTitle": "临时文件",
+  "categorySystemTempSubtitle": "安装程序和其他应用留在系统临时目录里的东西。",
+  "categoryThumbnailsTitle": "缩略图",
+  "categoryThumbnailsSubtitle": "自动生成的预览图，下次浏览时会重新生成。",
+  "categoryLogsTitle": "旧日志",
+  "categoryLogsSubtitle": "不会有人再去读的诊断文件。",
+  "categoryCrashDumpsTitle": "崩溃转储",
+  "categoryCrashDumpsSubtitle": "程序崩溃时写下的内存快照。",
+  "categoryEmptyFoldersTitle": "空文件夹",
+  "categoryEmptyFoldersSubtitle": "卸载后留下的、里面什么都没有的目录。",
+  "categoryBrowserCacheTitle": "浏览器缓存",
+  "categoryBrowserCacheSubtitle": "能释放不少空间，但网页会有一天加载得慢一些。",
+  "categoryInstallerLeftoversTitle": "安装包与压缩包",
+  "categoryInstallerLeftoversSubtitle": "下载的安装文件。请先看看列表——其中可能有唯一的一份。",
+  "categoryTrashTitle": "回收站",
+  "categoryTrashSubtitle": "这些已经被删过一次了，清空回收站是最后一步。",
+  "categorySecondLookBadge": "请先确认",
+
+  "accessNarrowedTitle": "仅限本应用自己的文件",
+  "accessNarrowedBody": "没有「所有文件」权限，扫描只能覆盖 Archonex Cleaner 自己的缓存。授予权限才能看到整台设备。",
+  "accessGrantLabel": "授予权限",
+  "accessSettingsLabel": "打开设置",
+  "accessDeniedPermanentBody": "权限已被永久拒绝。仍可在系统设置的特殊权限中重新打开。",
+  "accessAddFolderLabel": "添加文件夹",
+  "accessScopedTitle": "已添加 {count} 个文件夹",
+  "@accessScopedTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "accessScopedBody": "只扫描你选择的文件夹。可以再添加，或者授予「所有文件」权限覆盖整台设备。",
+  "accessSandboxTitle": "仅限本应用自己的文件",
+  "accessSandboxBody": "系统把每个应用都关在自己的容器里。任何应用都读不到别的应用的文件，也就无法清理它们。",
+  "accessUnsupportedTitle": "此处不可用",
+  "accessUnsupportedBody": "浏览器没有可清理的文件系统。请安装应用后使用。",
+
+  "confirmCleanTitle": "确定删除 {count} 吗？",
+  "@confirmCleanTitle": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "confirmCleanBody": "它们会移入隔离区，{days} 天内都可以恢复。",
+  "@confirmCleanBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "confirmCleanPermanentNote": "其中 {count} 个文件太大，无法保留副本，将被彻底删除。",
+  "@confirmCleanPermanentNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "resultTitle": "已释放 {size}",
+  "@resultTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "resultNothingFreed": "没有释放出空间",
+  "resultQuarantined": "{count} 个文件可以恢复",
+  "@resultQuarantined": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultPermanent": "{count} 个文件太大，未保留副本",
+  "@resultPermanent": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultSkipped": "{count} 个文件正在使用中，予以保留",
+  "@resultSkipped": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "resultCancelled": "已提前停止。已经删掉的不会回来。",
+
+  "failureAccessDenied": "系统不允许本应用访问自己目录以外的位置。",
+  "failureScanCancelled": "扫描已停止。",
+  "failureUnsupported": "此平台没有可清理的文件系统。",
+  "failureScan": "扫描未能完成，没有删除任何内容。",
+  "failureRestoreTargetOccupied": "{path} 处又有东西了。请先移开，再重新恢复。",
+  "@failureRestoreTargetOccupied": {
+    "placeholders": {
+      "path": { "type": "String" }
+    }
+  },
+  "failureRestore": "已恢复 {restored} 个，{lost} 个在磁盘上已找不到。",
+  "@failureRestore": {
+    "placeholders": {
+      "restored": { "type": "int" },
+      "lost": { "type": "int" }
+    }
+  },
+
+  "quarantineTitle": "隔离区",
+  "quarantineSubtitle": "清理时移走的全部内容。保留 {days} 天，之后彻底删除。",
+  "@quarantineSubtitle": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineEmptyTitle": "这里是空的",
+  "quarantineEmptyBody": "清理删掉的文件会在这里等 {days} 天，以防你还需要其中某一个。",
+  "@quarantineEmptyBody": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineBatchTitle": "{count} · {size}",
+  "@quarantineBatchTitle": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "quarantineExpiry": "{days, plural, =0{今天到期} other{还剩 {days} 天}}",
+  "@quarantineExpiry": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "quarantineRestoreLabel": "恢复",
+  "quarantinePurgeLabel": "立即删除",
+  "quarantinePurgeAllLabel": "清空隔离区",
+  "quarantineRestoredNotice": "已放回原来的位置。",
+  "quarantineBannerTitle": "{count} 个文件仍可恢复",
+  "@quarantineBannerTitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "quarantineOpenLabel": "打开隔离区",
+  "confirmPurgeAllTitle": "清空隔离区？",
+  "confirmPurgeAllBody": "里面的内容会被彻底删除，那几次清理的文件之后都无法再恢复。"
+}
