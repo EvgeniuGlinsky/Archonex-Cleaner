@@ -38,7 +38,7 @@ junk by every technical measure and occasionally the only copy of something.
 
 | Category | Ticked by default | Why |
 | --- | --- | --- |
-| This app's cache | yes | Ours to empty, on every platform |
+| This app's cache | yes | Android and iOS only, where the cache directory really is this app's. On desktop `getTemporaryDirectory()` *is* `%TEMP%`, so a row for it would be the system temp folder wearing the wrong name — the next category covers those bytes and describes them honestly |
 | Temporary files | yes | What installers and applications left in the system temp folder |
 | Thumbnails | yes | Regenerated on demand; the cost is one slower scroll |
 | Old logs | yes | Nobody is going to read them |
@@ -315,6 +315,27 @@ flutter test
 Fakes are hand written, one file per feature
 (`test/features/<feature>/fakes.dart`) — there is no mocking package here and
 none is to be added.
+
+`integration_test/` is separate and **not** part of CI — it needs a real device:
+
+```bash
+flutter test integration_test/scan_probe_test.dart -d windows
+flutter test integration_test/scan_probe_test.dart -d <android-device-id>
+```
+
+The **scan probe** runs the real walker against the real machine and deletes
+nothing. The unit tests answer whether the rules are right about every platform;
+only a device answers whether the paths those rules name exist on one, and
+whether a walk of a real `%TEMP%` finishes in a sensible time. It prints what it
+found per category, and asserts the invariants that must hold whatever that was:
+nothing protected was offered, no category came back that was not asked for, and
+no path twice.
+
+It has already earned its place. On this machine it reported 4.8 GB across eight
+categories in 9 seconds — and on the first run, 696 MB of it under *This app's
+cache*, which is how the desktop `getTemporaryDirectory()` mislabelling above was
+found. A unit test could not have: the rule was correct about the path it named,
+and wrong about what that path is.
 
 ## CI
 

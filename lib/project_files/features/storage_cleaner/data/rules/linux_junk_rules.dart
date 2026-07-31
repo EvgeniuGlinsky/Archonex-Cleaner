@@ -26,12 +26,9 @@ class LinuxJunkRules {
     final String? temp = roots.systemTemp;
 
     return <JunkRule>[
-      JunkRule(
-        root: roots.appCache,
-        category: JunkCategory.appCache,
-        label: 'Archonex Cleaner',
-      ),
-
+      // No `appCache` rule — see `WindowsJunkRules.of`. `getTemporaryDirectory()`
+      // is `/tmp` here, shared with every other process, so the `systemTemp`
+      // rules below are the honest description of the same bytes.
       if (temp != null) ...<JunkRule>[
         JunkRule(
           root: temp,

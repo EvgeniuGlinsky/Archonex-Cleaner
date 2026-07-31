@@ -26,12 +26,14 @@ class WindowsJunkRules {
     final String? windows = roots.windowsDirectory;
 
     return <JunkRule>[
-      JunkRule(
-        root: roots.appCache,
-        category: JunkCategory.appCache,
-        label: 'Archonex Cleaner',
-      ),
-
+      // No `appCache` rule, and that is deliberate. `getTemporaryDirectory()` on
+      // Windows answers `GetTempPath()`, which is `%TEMP%` itself — not a
+      // subdirectory of it — so a rule for "this app's cache" here would be the
+      // system temp folder wearing the wrong label. The probe caught exactly
+      // that: 696 MB of other applications' leftovers filed under Archonex
+      // Cleaner's own name. The `systemTemp` rules below cover the same bytes
+      // and describe them honestly. Only Android and iOS have a cache directory
+      // that is genuinely this app's.
       if (temp != null) ...<JunkRule>[
         JunkRule(
           root: temp,

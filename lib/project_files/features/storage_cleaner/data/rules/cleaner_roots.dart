@@ -24,8 +24,15 @@ final class CleanerRoots extends Equatable {
     this.grantedFolders = const <String>[],
   });
 
-  /// This app's own cache — `getTemporaryDirectory()`. Present everywhere,
-  /// including web, where it is the only thing that is.
+  /// `getTemporaryDirectory()`, and **only app-specific on Android and iOS**.
+  ///
+  /// On the three desktops it answers the shared system temp directory itself —
+  /// `%TEMP%`, `/tmp`, `$TMPDIR` — rather than a subdirectory of it, which is
+  /// why no desktop table has an `appCache` row: it would be the system temp
+  /// wearing this app's name. See `WindowsJunkRules.of`.
+  ///
+  /// Present on every platform regardless, including web, where it is the only
+  /// root that resolves at all.
   final String appCache;
 
   /// This app's own support directory, which is where the quarantine lives.

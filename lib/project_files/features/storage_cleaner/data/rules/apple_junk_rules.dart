@@ -46,12 +46,11 @@ class AppleJunkRules {
     final String? temp = roots.systemTemp;
 
     return <JunkRule>[
-      JunkRule(
-        root: roots.appCache,
-        category: JunkCategory.appCache,
-        label: 'Archonex Cleaner',
-      ),
-
+      // No `appCache` rule — see `WindowsJunkRules.of`. Unsandboxed,
+      // `NSTemporaryDirectory()` is a per-session directory under
+      // `/var/folders` shared by every process in the session, so it is
+      // `$TMPDIR` and belongs under `systemTemp`. A sandboxed build would be the
+      // opposite, and would use `AppleJunkRules.iOS`.
       if (temp != null)
         // `$TMPDIR`, which on macOS is a per-session directory under
         // `/var/folders`. Inside the protected `/var`, and named explicitly

@@ -51,10 +51,22 @@ void main() {
     };
 
     cases.forEach((platform, roots) {
-      test("$platform always offers the app's own cache", () {
+      test('$platform offers something to clean', () {
+        expect(rulesFor(platform, roots), isNotEmpty);
+      });
+
+      test('$platform claims an app cache only where one really exists', () {
+        // `getTemporaryDirectory()` is app-specific on Android and iOS, and the
+        // shared system temp on all three desktops. A desktop `appCache` row
+        // would be `%TEMP%` filed under this app's name — which the Windows
+        // probe caught, at 696 MB of other applications' leftovers.
+        final bool claimsAppCache = rulesFor(platform, roots)
+            .any((rule) => rule.category == JunkCategory.appCache);
+
         expect(
-          rulesFor(platform, roots).map((rule) => rule.category),
-          contains(JunkCategory.appCache),
+          claimsAppCache,
+          platform == TargetPlatform.android || platform == TargetPlatform.iOS,
+          reason: '$platform got the app-cache question wrong',
         );
       });
 
