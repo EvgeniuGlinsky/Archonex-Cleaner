@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import 'package:archonex_cleaner/core/app/archonex_app.dart';
+import 'package:archonex_cleaner/core/constants/app_durations.dart';
 import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/cleaner_roots_resolver.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
@@ -33,6 +35,29 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 /// it found. Read the printed report; that is the point of running it.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('the real app starts and reaches the cleaner', (tester) async {
+    // The one thing no widget test can check: the wiring in `archonex_app.dart`
+    // with the *real* repositories behind it. `IoQuarantineRepo` reaches
+    // `path_provider`, which has no platform to answer it under `flutter test`,
+    // so a broken app root would pass every test in `test/` and crash on launch.
+    await tester.pumpWidget(const ArchonexApp());
+
+    // The splash beat, plus the expiry sweep it runs alongside.
+    await tester.pump(AppDurations.splash + const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Choose your language'), findsOneWidget);
+
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Free up space'), findsOneWidget);
+    expect(find.text('Scan'), findsOneWidget);
+
+    // On a desktop the app can already see everything, so no access notice.
+    expect(find.text('Grant access'), findsNothing);
+  });
 
   testWidgets('the real rules point at directories that exist', (tester) async {
     final CleanerRoots roots =
