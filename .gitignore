@@ -51,3 +51,7 @@ app.*.map.json
 
 # Personal Claude Code settings — permissions granted on this machine only.
 .claude/settings.local.json
+
+# Hand-built APKs for testing on a device. Release artifacts belong on a GitHub
+# release, built by the pipeline from a tag, not committed from a laptop.
+/apk-out/
