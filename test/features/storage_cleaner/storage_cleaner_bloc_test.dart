@@ -472,6 +472,38 @@ void main() {
       await bloc.close();
     });
 
+    // The distinction the copy turns on: a walk that falls over has deleted
+    // nothing and may say so, a deletion that falls over has not and may not.
+    // This used to raise `ScanFailure`, whose sentence ends "Nothing was
+    // deleted" — told to someone whose files had already gone.
+    test('a run that breaks partway is not reported as a failed scan',
+        () async {
+      cleanRepo.failure = const CleanRunFailure();
+
+      final StorageCleanerBloc bloc = await scanned();
+      bloc.add(const CleanRequested());
+      await settle();
+
+      expect(bloc.state.failure, isA<CleanRunFailure>());
+      expect(bloc.state.failure, isNot(isA<ScanFailure>()));
+      await bloc.close();
+    });
+
+    test('an unrecognised error from a run is a run failure, not a scan one',
+        () async {
+      cleanRepo.failure = Exception('the disk went away mid-delete');
+
+      final StorageCleanerBloc bloc = await scanned();
+      bloc.add(const CleanRequested());
+      await settle();
+
+      expect(bloc.state.failure, isA<CleanRunFailure>());
+      // The findings stay: they are the last thing known to be true, and the
+      // copy asks for a rescan rather than clearing them out from under it.
+      expect(bloc.state.groups.any((group) => group.items.isNotEmpty), isTrue);
+      await bloc.close();
+    });
+
     test('dismissing the result keeps the remaining findings', () async {
       cleanRepo.report = const CleanReport(skippedCount: 2);
 

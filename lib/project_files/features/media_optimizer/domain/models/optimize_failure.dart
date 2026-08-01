@@ -64,3 +64,18 @@ final class NoEncoderFailure extends OptimizeFailure {
 final class MediaScanFailure extends OptimizeFailure {
   const MediaScanFailure();
 }
+
+/// The run itself broke partway, after files had already been replaced.
+///
+/// The counterpart to `CleanRunFailure`, and the more expensive of the two to
+/// get wrong. The run was reporting the scan's failure, whose copy ends
+/// "Nothing was changed" — and on this screen the originals are gone for good
+/// by then, with no quarantine to look in. A user told nothing happened has no
+/// reason to rescan and no way to find out otherwise.
+///
+/// Carries no report, for the same reason `CleanRunFailure` carries none: a job
+/// that stopped mid-batch knows what it announced, not what it finished, and a
+/// count that might be short is worse here than no count at all.
+final class OptimizeRunFailure extends OptimizeFailure {
+  const OptimizeRunFailure();
+}

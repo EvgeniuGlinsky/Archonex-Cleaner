@@ -29,6 +29,7 @@ extension OptimizeFailureUi on OptimizeFailure {
           MediaKind.photo => l10n.failureNoPhotoEncoder,
         },
       MediaScanFailure() => l10n.failureMediaScan,
+      OptimizeRunFailure() => l10n.failureOptimizeRun,
     };
   }
 }

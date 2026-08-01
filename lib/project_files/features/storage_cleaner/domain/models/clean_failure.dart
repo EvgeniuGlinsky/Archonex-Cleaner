@@ -38,8 +38,29 @@ final class CleanUnsupportedFailure extends CleanFailure {
 }
 
 /// The walk itself broke in a way no single path explains.
+///
+/// A *scan* failure, and only that. Nothing has been deleted when this is
+/// raised, which is what its copy is allowed to promise — see [CleanRunFailure]
+/// for the half of the screen where that promise would be a lie.
 final class ScanFailure extends CleanFailure {
   const ScanFailure();
+}
+
+/// The deletion itself broke partway, after some files had already gone.
+///
+/// Separate from [ScanFailure] because the two are told to the user in opposite
+/// terms and the run was reporting the scan's. "The scan could not finish.
+/// Nothing was deleted." is true of a walk that fell over and false of a
+/// cleanup that did — by the time a deletion can fail, files are gone, and the
+/// sentence that says otherwise sends the user looking for them.
+///
+/// Carries no report. A run that ends this way has no trustworthy count: the
+/// job stopped mid-batch and the tally it had is the tally of what it had got
+/// around to telling the screen about, not of what left the disk. Saying so and
+/// asking for a rescan is the honest answer, and the rescan is what produces a
+/// list that means anything.
+final class CleanRunFailure extends CleanFailure {
+  const CleanRunFailure();
 }
 
 /// Two neighbouring hierarchies are deliberately not members of this one, for

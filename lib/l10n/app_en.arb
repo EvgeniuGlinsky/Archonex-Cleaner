@@ -167,6 +167,7 @@
   "failureScanCancelled": "Scan stopped.",
   "failureUnsupported": "There is no file system to clean on this platform.",
   "failureScan": "The scan could not finish. Nothing was deleted.",
+  "failureCleanRun": "The cleanup stopped partway. Some files were already deleted — scan again to see what is left.",
   "failureRestoreTargetOccupied": "Something is at {path} again. Move it out of the way and restore once more.",
   "@failureRestoreTargetOccupied": {
     "placeholders": {
@@ -342,5 +343,6 @@
   "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
   "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",
   "failureNoPhotoEncoder": "There is no photo encoder on this machine.",
-  "failureMediaScan": "The search could not finish. Nothing was changed."
+  "failureMediaScan": "The search could not finish. Nothing was changed.",
+  "failureOptimizeRun": "The run stopped partway. The files it had already rewritten cannot be put back — scan again to see what is left."
 }

@@ -167,6 +167,7 @@
   "failureScanCancelled": "扫描已停止。",
   "failureUnsupported": "此平台没有可清理的文件系统。",
   "failureScan": "扫描未能完成，没有删除任何内容。",
+  "failureCleanRun": "清理中途停止。部分文件已被删除，请重新扫描以查看剩余内容。",
   "failureRestoreTargetOccupied": "{path} 处又有东西了。请先移开，再重新恢复。",
   "@failureRestoreTargetOccupied": {
     "placeholders": {
@@ -342,5 +343,6 @@
   "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
   "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",
   "failureNoPhotoEncoder": "本机没有图片编码器。",
-  "failureMediaScan": "查找未能完成。没有任何改动。"
+  "failureMediaScan": "查找未能完成。没有任何改动。",
+  "failureOptimizeRun": "压缩中途停止。已经重写的文件无法恢复，请重新扫描以查看剩余内容。"
 }

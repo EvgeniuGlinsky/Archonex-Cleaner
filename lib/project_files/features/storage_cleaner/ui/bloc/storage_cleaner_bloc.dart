@@ -379,9 +379,14 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
             clearCleanProgress: true,
           ),
       },
+      // `CleanRunFailure`, never `ScanFailure`: by the time a deletion can fail
+      // files are already gone, and the scan's copy — "Nothing was deleted" —
+      // would send the user looking for them. The list is left standing rather
+      // than cleared, because what is on it is the last thing known to be true
+      // and the copy asks for a rescan to replace it.
       onError: (error, _) => state.copyWith(
         status: StorageCleanerStatus.scanned,
-        failure: error is CleanFailure ? error : const ScanFailure(),
+        failure: error is CleanFailure ? error : const CleanRunFailure(),
         clearCleanProgress: true,
       ),
     );

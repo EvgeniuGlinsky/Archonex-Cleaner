@@ -21,6 +21,7 @@ extension CleanFailureUi on CleanFailure {
       ScanCancelledFailure() => l10n.failureScanCancelled,
       CleanUnsupportedFailure() => l10n.failureUnsupported,
       ScanFailure() => l10n.failureScan,
+      CleanRunFailure() => l10n.failureCleanRun,
     };
   }
 }

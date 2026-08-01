@@ -393,6 +393,34 @@ void main() {
       await bloc.close();
     });
 
+    // Worse here than on the cleaner: there is no quarantine on this path, so
+    // everything already rewritten is gone for good. It used to raise
+    // `MediaScanFailure`, whose sentence ends "Nothing was changed".
+    test('a run that breaks partway is not reported as a failed search',
+        () async {
+      optimizeRepo.failure = const OptimizeRunFailure();
+
+      final MediaOptimizerBloc bloc = await withOne();
+      bloc.add(const OptimizeRequested());
+      await settle();
+
+      expect(bloc.state.failure, isA<OptimizeRunFailure>());
+      expect(bloc.state.failure, isNot(isA<MediaScanFailure>()));
+      await bloc.close();
+    });
+
+    test('an unrecognised error from a run is a run failure, not a scan one',
+        () async {
+      optimizeRepo.failure = Exception('the encoder died mid-file');
+
+      final MediaOptimizerBloc bloc = await withOne();
+      bloc.add(const OptimizeRequested());
+      await settle();
+
+      expect(bloc.state.failure, isA<OptimizeRunFailure>());
+      await bloc.close();
+    });
+
     test('only the ticked files are handed over', () async {
       scanRepo.updates = <MediaScanUpdate>[
         MediaFound(<MediaCandidate>[

@@ -357,9 +357,13 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
             clearProgress: true,
           ),
       },
+      // `OptimizeRunFailure`, never `MediaScanFailure`: the scan's copy ends
+      // "Nothing was changed", and on this screen the originals of everything
+      // already rewritten are gone, with no quarantine holding them. There is
+      // no sentence worse to show here than that one.
       onError: (error, _) => state.copyWith(
         status: MediaOptimizerStatus.scanned,
-        failure: error is OptimizeFailure ? error : const MediaScanFailure(),
+        failure: error is OptimizeFailure ? error : const OptimizeRunFailure(),
         clearProgress: true,
       ),
     );
