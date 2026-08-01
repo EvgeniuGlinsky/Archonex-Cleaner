@@ -6,6 +6,7 @@ import 'package:archonex_cleaner/core/router/app_router.dart';
 import 'package:archonex_cleaner/core/theme/app_theme.dart';
 import 'package:archonex_cleaner/l10n/app_localizations.dart';
 import 'package:archonex_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
+import 'package:archonex_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
 import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/platform/quarantine_platform.dart';
@@ -29,7 +30,7 @@ class _ArchonexAppState extends State<ArchonexApp> {
   // screen reads them, so a per-screen instance would be two indexes of the
   // same files, and no test would catch it: every test injects a fake.
   final GoRouter _router = AppRouter.create();
-  final LanguageRepo _languageRepo = LanguageRepoImpl();
+  final LanguageRepo _languageRepo = LanguageRepoImpl(PrefsLanguageStorage());
   final QuarantineRepo _quarantineRepo = createQuarantineRepo();
 
   @override

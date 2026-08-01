@@ -4,10 +4,23 @@
   "appName": "Archonex Cleaner",
   "appTagline": "Верните место, о котором устройство забыло.",
 
-  "languageTitle": "Выберите язык",
-  "languageSubtitle": "Язык, на котором будет работать приложение.",
-  "continueLabel": "Продолжить",
+  "languageDialogTitle": "Язык",
   "languageButtonTooltip": "Язык",
+
+  "homeSubtitle": "Выберите, что сделать с памятью устройства.",
+  "toolCleanerTitle": "Очистить память",
+  "toolCleanerSubtitle": "Найти временные файлы, кэш и остатки, которые оставило устройство, и удалить их.",
+  "toolOptimizerTitle": "Оптимизировать файлы",
+  "toolOptimizerSubtitle": "Сжать фото и видео на месте, ничего не перемещая и не удаляя.",
+  "toolComingSoonBadge": "Скоро",
+
+  "storageUsedOf": "занято из {size}",
+  "@storageUsedOf": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "readyToClean": "можно очистить",
 
   "cleanerTitle": "Освободить место",
   "cleanerSubtitle": "Найдём временные файлы, которые остались на устройстве, и уберём их.",

@@ -26,9 +26,15 @@ restored for seven days — see [The quarantine](#the-quarantine).
 ## Status
 
 The cleaner is implemented end to end: nine categories, five platform rule
-tables, the quarantine with restore, and 134 tests. What is not built is the
-second tool — see [Roadmap](#roadmap). There is no release yet; the download
-table arrives with the first tag.
+tables, the quarantine with restore, and 178 tests. A home screen lists the
+tools and draws how full the disk actually is. What is not built is the second
+tool — see [Roadmap](#roadmap). There is no release yet; the download table
+arrives with the first tag.
+
+The app opens in the device's own language and never asks. The picker is a
+dialog behind the globe in the corner, for the case the device is wrong about
+it, and the choice is remembered — a language screen between the user and the
+app on first launch is a question almost nobody needed asked.
 
 ## What it finds
 
@@ -199,7 +205,8 @@ of adding them, and a test checks they were declared *and* dropped.
 - [`path_provider`](https://pub.dev/packages/path_provider) — the app's own cache and support directories
 - [`permission_handler`](https://pub.dev/packages/permission_handler) — Android's all-files access, and nothing else
 - [`file_picker`](https://pub.dev/packages/file_picker) — the folder-picker fallback. Nothing is ever picked *for* cleaning; the app only asks where it may look
-- [`shared_preferences`](https://pub.dev/packages/shared_preferences) — reserved for the remembered category selection
+- [`shared_preferences`](https://pub.dev/packages/shared_preferences) — the language chosen by hand, and nothing else. The quarantine index is deliberately not here but a file beside its data
+- [`disk_space_2`](https://pub.dev/packages/disk_space_2) — how full the disk is, which `dart:io` cannot answer on any platform. Chosen over `disk_space_plus` and `storage_space`, which are Android and iOS only; this fork also covers Windows and Linux, and on macOS and web the ring is simply not drawn
 
 No network dependency of any kind. The app issues no requests, rather than
 issuing one nobody counted.
@@ -227,10 +234,16 @@ lib/
 │   ├── theme/                       # app_colors, app_typography, app_theme
 │   ├── utils/
 │   └── widgets/                     # shared building blocks
-└── project_files/features/<feature>/
-    ├── data/                        # repo implementations, use cases, platform adapters
-    ├── domain/                      # repo interfaces + models — no Flutter imports
-    └── ui/                          # page, view, bloc/, widgets/, mappers/
+└── project_files/features/
+    ├── splash/                      # ui/ only — and it sweeps expired batches
+    ├── home/                        # the front door: the tool list and the ring
+    ├── device_storage/              # how full the disk is. No screen, one widget
+    ├── language_selection/          # the globe dialog and what it remembers
+    ├── storage_cleaner/             # the first tool
+    └── quarantine/                  # where a cleanup puts things for seven days
+        ├── data/                    # repo implementations, use cases, platform adapters
+        ├── domain/                  # repo interfaces + models — no Flutter imports
+        └── ui/                      # page, view, bloc/, widgets/, mappers/
 ```
 
 Every feature follows the same three-layer split. `domain` declares interfaces
@@ -280,8 +293,24 @@ pointing both ways. The repository is an app-wide singleton in
 screen reads, and a second instance would be a second index of one directory.
 
 `splash/` owns no data, so it has `ui/` alone — and it earns its beat by sweeping
-expired quarantine batches while it runs. `language_selection/` is ported from
-the Converter unchanged.
+expired quarantine batches while it runs.
+
+`home/` is the front door and owns almost nothing: an `AppTool` enum, a bloc
+that reads the disk, and two cards. The second card is on the screen from the
+first release with a badge saying it is not finished, because the product is two
+tools and a screen showing one of them teaches the user that it is one.
+
+`device_storage/` has no screen at all — no page, no view, no bloc. Its `ui/` is
+one widget, the ring, which both the home screen and the cleaner draw. It is the
+example of the rule that a layer is added when something belongs in it rather
+than to fill the shape.
+
+`language_selection/` came from the Converter as a full screen and is no longer
+one. It is a dialog now, opened from the globe, and it is not shown on first
+launch: `LanguageRepoImpl` reads the device's own locales and answers with the
+first one the app has an ARB for. A hand-made choice outranks the device and is
+written to `shared_preferences`; a store that will not read costs the user their
+choice rather than their launch.
 
 ## Tests
 
@@ -290,7 +319,7 @@ flutter analyze
 flutter test
 ```
 
-134 tests, concentrated where being wrong is expensive:
+178 tests, concentrated where being wrong is expensive:
 
 - **`protected_paths_test.dart`** is the most important file in the repository. It
   checks all five platforms' lists — case sensitivity, `..` normalisation, the
@@ -308,9 +337,16 @@ flutter test
   a real temporary directory and an injected clock: move-not-copy, name
   collisions, a file too large to keep, retention either side of the boundary, a
   taken destination, a partial restore, and a manifest that will not parse.
-- Bloc tests for both screens, and a view test for the cleaner covering the
-  confirmation dialog, the narrowed and sandboxed access notices, and the web
-  refusal.
+- `language_repo_impl_test.dart` — which language the app opens in, which is a
+  question with four answers: the device's first preference, its second where
+  the first has no ARB, English where neither does, and the hand-made choice
+  that outranks all three. Plus a store that will not read, which must cost the
+  choice and not the launch.
+- Bloc tests for all three screens, and view tests covering the confirmation
+  dialog, the narrowed and sandboxed access notices, the web refusal, the tool
+  that is not built refusing to open, and a 360 dp phone in all three locales —
+  the layout bug that only a device reports is now the one thing several tests
+  exist to catch.
 
 Fakes are hand written, one file per feature
 (`test/features/<feature>/fakes.dart`) — there is no mocking package here and
@@ -323,13 +359,27 @@ flutter test integration_test/scan_probe_test.dart -d windows
 flutter test integration_test/scan_probe_test.dart -d <android-device-id>
 ```
 
-The **scan probe** runs the real walker against the real machine and deletes
-nothing. The unit tests answer whether the rules are right about every platform;
-only a device answers whether the paths those rules name exist on one, and
-whether a walk of a real `%TEMP%` finishes in a sensible time. It prints what it
-found per category, and asserts the invariants that must hold whatever that was:
-nothing protected was offered, no category came back that was not asked for, and
-no path twice.
+The **scan probe** pumps the real `ArchonexApp` against the real machine and
+deletes nothing. The unit tests answer whether the rules are right about every
+platform; only a device answers the other half, and every one of those questions
+fails *quietly* under `flutter test`:
+
+- whether the paths the rules name exist here, and whether a walk of a real
+  `%TEMP%` finishes in a sensible time;
+- whether `disk_space_2` has a side for this platform, which a `null` snapshot
+  is indistinguishable from by design;
+- whether the system hands over a locale list at all — it is empty under
+  `flutter test`, so an app that read it wrongly would still open in English on
+  a Russian phone and pass everything;
+- whether `shared_preferences` is registered, which a storage that swallows its
+  own failures makes look exactly like a first run, for ever;
+- whether the wiring in `archonex_app.dart` holds, which no widget test can
+  reach: it builds `IoQuarantineRepo`, which needs `path_provider`, which has no
+  platform to answer it in a unit test.
+
+It prints what it found per category, and asserts the invariants that must hold
+whatever that was: nothing protected was offered, no category came back that was
+not asked for, and no path twice.
 
 It has already earned its place. On this machine it reported 4.8 GB across eight
 categories in 9 seconds — and on the first run, 696 MB of it under *This app's

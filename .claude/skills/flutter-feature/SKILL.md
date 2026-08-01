@@ -364,7 +364,7 @@ This file owns the shapes — where a file goes, what it is called, what it decl
 ## Key–value storage
 
 - **Add one**: `abstract interface class <X>Storage` in the feature's `domain/` root and `prefs_<x>_storage.dart` implementing it — one typed key per field named `'namespace.field'`, a `DateTime` stored as a `_millis` int, and `read()` returning `null` on a first run. `SharedPreferencesAsync` is built lazily behind an optional positional override, because the object is constructed while the app root is still building and a test needs a way in.
-- **Use it**: clocks, periods and expiry are the repository's rules, which is what lets them be tested without a platform plugin; storage only reads and writes. A failed read or write is caught and answered from memory, so a broken store costs the user their next launch rather than this one. Nothing uses this yet — the quarantine index is deliberately a file beside its data, see `CLAUDE.md`.
+- **Use it**: clocks, periods and expiry are the repository's rules, which is what lets them be tested without a platform plugin; storage only reads and writes. A failed read or write is caught and answered from memory, so a broken store costs the user their next launch rather than this one. `PrefsLanguageStorage` is the one implementation, holding the language chosen by hand; the quarantine index is deliberately *not* here but a file beside its data, see `CLAUDE.md`. A store that swallows its own failures looks exactly like a first run for ever if the plugin is not registered at all, so `integration_test/scan_probe_test.dart` writes and reads one back on the real device.
 
 ## Screen callbacks
 

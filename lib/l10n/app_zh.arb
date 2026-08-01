@@ -4,10 +4,23 @@
   "appName": "Archonex Cleaner",
   "appTagline": "找回设备已经忘掉的存储空间。",
 
-  "languageTitle": "选择语言",
-  "languageSubtitle": "选择应用界面使用的语言。",
-  "continueLabel": "继续",
+  "languageDialogTitle": "语言",
   "languageButtonTooltip": "语言",
+
+  "homeSubtitle": "选择要如何处理设备的存储空间。",
+  "toolCleanerTitle": "清理存储空间",
+  "toolCleanerSubtitle": "找出设备留下的临时文件、缓存和残留文件并删除。",
+  "toolOptimizerTitle": "优化文件",
+  "toolOptimizerSubtitle": "就地压缩照片和视频，不移动也不删除任何文件。",
+  "toolComingSoonBadge": "即将推出",
+
+  "storageUsedOf": "已用，共 {size}",
+  "@storageUsedOf": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "readyToClean": "可清理",
 
   "cleanerTitle": "释放空间",
   "cleanerSubtitle": "找出设备遗留的临时文件并清理掉。",

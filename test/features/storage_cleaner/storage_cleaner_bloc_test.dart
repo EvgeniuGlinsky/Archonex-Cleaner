@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
@@ -18,6 +19,7 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
 
+import '../device_storage/fakes.dart';
 import 'fakes.dart';
 
 /// There is no `bloc_test` here, so nothing else drains the event queue before
@@ -29,12 +31,14 @@ void main() {
   late FakeJunkCleanRepo cleanRepo;
   late FakeStorageAccessRepo accessRepo;
   late FakeQuarantineRepo quarantineRepo;
+  late FakeDeviceStorageRepo storageRepo;
 
   setUp(() {
     scanRepo = FakeJunkScanRepo();
     cleanRepo = FakeJunkCleanRepo();
     accessRepo = FakeStorageAccessRepo();
     quarantineRepo = FakeQuarantineRepo();
+    storageRepo = FakeDeviceStorageRepo();
   });
 
   StorageCleanerBloc build() {
@@ -50,6 +54,7 @@ void main() {
       scanForJunk: ScanForJunkUseCase(scanRepo),
       cleanJunk: CleanJunkUseCase(cleanRepo),
       watchQuarantine: WatchQuarantineUseCase(quarantineRepo),
+      getDeviceStorage: GetDeviceStorageUseCase(storageRepo),
     );
   }
 
@@ -223,6 +228,70 @@ void main() {
 
       return bloc;
     }
+
+    group('when the boxes may be touched', () {
+      test('before a scan, which is what the rows are drawn for', () async {
+        // It read `hasScanned && !isBusy` and shipped with every box on the
+        // first screen greyed out, on a screen that lists all nine categories
+        // precisely so one can be turned off in advance.
+        final StorageCleanerBloc bloc = await started();
+
+        expect(bloc.state.hasScanned, isFalse);
+        expect(bloc.state.canEditSelection, isTrue);
+        await bloc.close();
+      });
+
+      test('while a scan is still finding things', () async {
+        // `JunkGroup` stores the user's decision as exclusions for exactly this
+        // — a list that keeps growing under an unticked row.
+        scanRepo.holdOpen = true;
+
+        final StorageCleanerBloc bloc = await started();
+        bloc.add(const ScanRequested());
+        await settle();
+
+        expect(bloc.state.isScanning, isTrue);
+        expect(bloc.state.canEditSelection, isTrue);
+        await bloc.close();
+      });
+
+      test('never during a cleanup', () async {
+        // The file list was taken when the run started, so an unticked row
+        // would be promising to spare a file already being deleted.
+        const StorageCleanerState cleaning = StorageCleanerState(
+          status: StorageCleanerStatus.cleaning,
+        );
+
+        expect(cleaning.canEditSelection, isFalse);
+      });
+
+      test('never on a platform with no file system', () {
+        const StorageCleanerState unsupported =
+            StorageCleanerState(isSupported: false);
+
+        expect(unsupported.canEditSelection, isFalse);
+      });
+    });
+
+    test('a category turned off before the scan is still off after it',
+        () async {
+      final StorageCleanerBloc bloc = await started();
+
+      bloc.add(const CategoryToggled(JunkCategory.systemTemp));
+      await settle();
+
+      scanRepo.updates = <ScanUpdate>[
+        JunkFound(<JunkItem>[fakeItem(path: '/tmp/a.tmp', sizeInBytes: 100)]),
+      ];
+      bloc.add(const ScanRequested());
+      await settle();
+
+      // `_onScanRequested` empties `items` without touching `isSelected`, which
+      // is what makes the choice worth offering before the walk.
+      expect(bloc.state.foundBytes, 100);
+      expect(bloc.state.selectedCount, 0);
+      await bloc.close();
+    });
 
     test('unticking one row leaves the rest selected', () async {
       final StorageCleanerBloc bloc = await scanned();

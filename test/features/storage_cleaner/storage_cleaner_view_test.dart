@@ -5,7 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:archonex_cleaner/core/router/app_route.dart';
 import 'package:archonex_cleaner/core/theme/app_theme.dart';
+import 'package:archonex_cleaner/core/widgets/app_primary_button.dart';
 import 'package:archonex_cleaner/l10n/app_localizations.dart';
+import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
+import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
@@ -24,6 +28,8 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
 
+import '../device_storage/fakes.dart';
+import '../language_selection/fakes.dart';
 import 'fakes.dart';
 
 void main() {
@@ -31,18 +37,48 @@ void main() {
   late FakeJunkCleanRepo cleanRepo;
   late FakeStorageAccessRepo accessRepo;
   late FakeQuarantineRepo quarantineRepo;
+  late FakeDeviceStorageRepo storageRepo;
 
   setUp(() {
     scanRepo = FakeJunkScanRepo();
     cleanRepo = FakeJunkCleanRepo();
     accessRepo = FakeStorageAccessRepo();
     quarantineRepo = FakeQuarantineRepo();
+    storageRepo = FakeDeviceStorageRepo();
   });
+
+  /// A phone, not the 800×600 the test binding defaults to.
+  ///
+  /// The storage ring is 208 logical pixels of the screen before a single
+  /// category row is drawn, and on the default surface the second row falls
+  /// below the fold — a `ListView` does not build what it cannot show, so a
+  /// finder for it comes back empty and the failure reads as missing content
+  /// rather than as a viewport too short to hold it.
+  void useDeviceSurface(WidgetTester tester, Size size) {
+    tester.view
+      ..physicalSize = size
+      ..devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+  }
+
+  /// The comfortable phone every test that is not about width runs on.
+  const Size roomy = Size(440, 1000);
+
+  /// The narrowest phone still worth supporting. Everything the title row of a
+  /// category has to hold comes out of about 184 logical pixels here, which is
+  /// where a child that cannot shrink starves the one that can.
+  const Size narrow = Size(360, 800);
 
   /// The bloc is built inside `BlocProvider.create`, never in `setUp`: one from
   /// `setUp` lives in another async zone and silently never receives its
   /// events, and the test then just does nothing with no error pointing at it.
-  Future<void> pump(WidgetTester tester) async {
+  Future<void> pump(
+    WidgetTester tester, {
+    Size surface = roomy,
+    Locale locale = const Locale('en'),
+  }) async {
+    useDeviceSurface(tester, surface);
+
     final GoRouter router = GoRouter(
       initialLocation: AppRoute.storageCleaner.path,
       routes: <RouteBase>[
@@ -62,6 +98,7 @@ void main() {
               scanForJunk: ScanForJunkUseCase(scanRepo),
               cleanJunk: CleanJunkUseCase(cleanRepo),
               watchQuarantine: WatchQuarantineUseCase(quarantineRepo),
+              getDeviceStorage: GetDeviceStorageUseCase(storageRepo),
             )..add(const StorageCleanerStarted()),
             child: const StorageCleanerView(),
           ),
@@ -74,21 +111,24 @@ void main() {
             ),
           ],
         ),
-        GoRoute(
-          path: AppRoute.languageSelection.path,
-          name: AppRoute.languageSelection.routeName,
-          builder: (context, state) =>
-              const Scaffold(body: Text('language screen')),
-        ),
       ],
     );
 
+    // The language button opens a dialog now rather than a route, and the dialog
+    // builds its own bloc out of whatever `LanguageRepo` is above it.
     await tester.pumpWidget(
-      MaterialApp.router(
-        theme: AppTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: router,
+      RepositoryProvider<LanguageRepo>(
+        create: (_) => LanguageRepoImpl(
+          FakeLanguageStorage(),
+          deviceLocales: () => const <Locale>[Locale('en')],
+        ),
+        child: MaterialApp.router(
+          theme: AppTheme.light(),
+          locale: locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -110,6 +150,90 @@ void main() {
     await pump(tester);
 
     expect(find.text('Check first'), findsOneWidget);
+  });
+
+  group('a narrow phone with long words on it', () {
+    /// A title has no business being taller than this.
+    ///
+    /// Four lines of `titleMedium`, which lays out at 24 here. Generous on
+    /// purpose: `flutter test` draws every glyph as a square of the font size,
+    /// so text is far wider under the test font than on a device and wraps
+    /// sooner. The number that matters is the one it excludes — the same title
+    /// drawn one letter per row is eighteen lines and 432 tall.
+    const double maxTitleHeight = 4 * 24.0 + 2;
+
+    /// The longest category name in each language, and the one that carries the
+    /// badge — which is what used to be taking the width away from it.
+    const Map<String, String> longestTitle = <String, String>{
+      'en': 'Installers and archives',
+      'ru': 'Установщики и архивы',
+      'zh': '安装包与压缩包',
+    };
+
+    for (final MapEntry<String, String> entry in longestTitle.entries) {
+      testWidgets('the ${entry.key} title stays on a few lines, not a staircase',
+          (tester) async {
+        scanRepo.categories = <JunkCategory>{JunkCategory.installerLeftovers};
+        scanRepo.updates = <ScanUpdate>[
+          JunkFound(<JunkItem>[
+            fakeItem(
+              sizeInBytes: 500 * 1024 * 1024 * 1024,
+              category: JunkCategory.installerLeftovers,
+            ),
+          ]),
+        ];
+
+        await pump(tester, surface: narrow, locale: Locale(entry.key));
+
+        // Before the scan, and again after it — the amount column only appears
+        // once there is something to count, so the row is at its tightest then.
+        expect(
+          tester.getSize(find.text(entry.value)).height,
+          lessThan(maxTitleHeight),
+          reason: 'the title collapsed before a scan',
+        );
+
+        await tester.tap(find.byType(AppPrimaryButton));
+        await tester.pumpAndSettle();
+
+        expect(
+          tester.getSize(find.text(entry.value)).height,
+          lessThan(maxTitleHeight),
+          reason: 'the title collapsed once the size column appeared',
+        );
+        expect(tester.takeException(), isNull);
+      });
+    }
+  });
+
+  testWidgets('a category can be turned off before the scan, and stays off',
+      (tester) async {
+    // The screen lists every category before it looks at anything precisely so
+    // this is possible. It was not: `canEditSelection` waited for a scan, so
+    // every box on the first screen was dead.
+    scanRepo.updates = <ScanUpdate>[
+      JunkFound(<JunkItem>[
+        fakeItem(sizeInBytes: 1024),
+        fakeItem(
+          path: '/cache/b.tmp',
+          sizeInBytes: 4096,
+          category: JunkCategory.browserCache,
+        ),
+      ]),
+    ];
+
+    await pump(tester);
+
+    // Temporary files is first and arrives ticked; browser cache does not.
+    await tester.tap(find.byType(Checkbox).first);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Scan'));
+    await tester.pumpAndSettle();
+
+    // The 1 KB from the unticked category is not in the total, and neither is
+    // the 4 KB from the one that was never ticked.
+    expect(find.text('Nothing selected'), findsOneWidget);
   });
 
   testWidgets('a scan that finds nothing says so', (tester) async {

@@ -4,10 +4,23 @@
   "appName": "Archonex Cleaner",
   "appTagline": "Take back the space your device forgot about.",
 
-  "languageTitle": "Choose your language",
-  "languageSubtitle": "Select the language you want to use in the app.",
-  "continueLabel": "Continue",
+  "languageDialogTitle": "Language",
   "languageButtonTooltip": "Language",
+
+  "homeSubtitle": "Choose what to do with your device's storage.",
+  "toolCleanerTitle": "Clean up storage",
+  "toolCleanerSubtitle": "Find the temporary files, caches and leftovers your device kept, and delete them.",
+  "toolOptimizerTitle": "Optimise files",
+  "toolOptimizerSubtitle": "Shrink photos and videos in place, without moving or deleting anything.",
+  "toolComingSoonBadge": "Soon",
+
+  "storageUsedOf": "used of {size}",
+  "@storageUsedOf": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "readyToClean": "ready to clean",
 
   "cleanerTitle": "Free up space",
   "cleanerSubtitle": "Find the temporary files your device left behind, and get rid of them.",

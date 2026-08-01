@@ -19,6 +19,7 @@ final class StorageCleanerState extends Equatable {
     this.report,
     this.failure,
     this.quarantinedFileCount = 0,
+    this.storage,
   });
 
   final StorageCleanerStatus status;
@@ -47,6 +48,9 @@ final class StorageCleanerState extends Equatable {
 
   /// Files still restorable, across every batch. Drives the banner only.
   final int quarantinedFileCount;
+
+  /// How full the disk is, or `null` where this platform cannot say.
+  final DeviceStorageSnapshot? storage;
 
   bool get isScanning => status == StorageCleanerStatus.scanning;
 
@@ -95,12 +99,41 @@ final class StorageCleanerState extends Equatable {
   bool get canClean => isSupported && !isBusy && selectedCount > 0;
 
   /// Whether unticking anything is currently allowed.
-  bool get canEditSelection => hasScanned && !isBusy;
+  ///
+  /// Everywhere except during a cleanup, and each of the three moments for its
+  /// own reason. **Before a scan** it is the whole point of drawing the rows at
+  /// all — see [visibleGroups] — and the choice survives the run, because
+  /// `_onScanRequested` empties `items` without touching `isSelected`. **During
+  /// a scan** it is what the exclusion model in `JunkGroup` was built for: a
+  /// list that is still filling up must be editable, or the machinery exists and
+  /// cannot be reached. **During a cleanup** it must not be: the file list was
+  /// taken at the start, so an unticked row would be claiming to spare a file
+  /// that is being deleted as it is unticked.
+  ///
+  /// It read `hasScanned && !isBusy` until a device showed the first case dead:
+  /// every checkbox on the screen greyed out before the first scan, on a screen
+  /// whose own doc comment promised the opposite.
+  bool get canEditSelection => isSupported && !isCleaning;
 
   /// How far the cleanup has got, `null` when none is running.
   double? get progress => cleanProgress?.fraction;
 
   bool get hasQuarantine => quarantinedFileCount > 0;
+
+  /// Whether the ring at the top of the screen is worth drawing.
+  ///
+  /// A platform that cannot measure the disk still gets one the moment a scan
+  /// has something to report, because the figure in the middle of it is the
+  /// answer the user pressed the button for — the arc around it is context, not
+  /// the point.
+  bool get hasRing => storage != null || isScanning || hasFindings;
+
+  /// How much of the whole disk is in use. `0` with no snapshot, which draws an
+  /// empty track — honest, where a full one would be a guess.
+  double get usedFraction => storage?.usedFraction ?? 0;
+
+  /// The share of the disk the selected files take, painted inside the used arc.
+  double get selectedFraction => storage?.fractionOf(selectedBytes) ?? 0;
 
   StorageCleanerState copyWith({
     StorageCleanerStatus? status,
@@ -112,10 +145,12 @@ final class StorageCleanerState extends Equatable {
     CleanReport? report,
     CleanFailure? failure,
     int? quarantinedFileCount,
+    DeviceStorageSnapshot? storage,
     bool clearScanningLocation = false,
     bool clearCleanProgress = false,
     bool clearReport = false,
     bool clearFailure = false,
+    bool clearStorage = false,
   }) {
     return StorageCleanerState(
       status: status ?? this.status,
@@ -130,6 +165,7 @@ final class StorageCleanerState extends Equatable {
       report: clearReport ? null : report ?? this.report,
       failure: clearFailure ? null : failure ?? this.failure,
       quarantinedFileCount: quarantinedFileCount ?? this.quarantinedFileCount,
+      storage: clearStorage ? null : storage ?? this.storage,
     );
   }
 
@@ -144,5 +180,6 @@ final class StorageCleanerState extends Equatable {
         report,
         failure,
         quarantinedFileCount,
+        storage,
       ];
 }

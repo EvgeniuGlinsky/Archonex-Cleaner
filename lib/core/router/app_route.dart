@@ -4,7 +4,10 @@
 /// one source of truth per destination.
 enum AppRoute {
   splash(path: '/'),
-  languageSelection(path: '/language'),
+
+  /// Where the app lands and comes back to. The tools are pushed from here.
+  home(path: '/home'),
+
   storageCleaner(path: '/cleaner'),
 
   /// Child of [storageCleaner] — a relative path, nested under it, because it
@@ -16,6 +19,6 @@ enum AppRoute {
 
   final String path;
 
-  /// GoRouter route name, e.g. `languageSelection`.
+  /// GoRouter route name, e.g. `storageCleaner`.
   String get routeName => name;
 }

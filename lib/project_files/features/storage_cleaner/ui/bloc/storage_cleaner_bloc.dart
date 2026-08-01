@@ -5,6 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
@@ -38,6 +40,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     required ScanForJunkUseCase scanForJunk,
     required CleanJunkUseCase cleanJunk,
     required WatchQuarantineUseCase watchQuarantine,
+    required GetDeviceStorageUseCase getDeviceStorage,
   })  : _getAvailability = getAvailability,
         _getAccess = getAccess,
         _requestAccess = requestAccess,
@@ -46,6 +49,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
         _scanForJunk = scanForJunk,
         _cleanJunk = cleanJunk,
         _watchQuarantine = watchQuarantine,
+        _getDeviceStorage = getDeviceStorage,
         super(const StorageCleanerState()) {
     on<StorageCleanerStarted>(_onStarted, transformer: restartable());
     on<_QuarantineChanged>(_onQuarantineChanged, transformer: sequential());
@@ -73,6 +77,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
   final ScanForJunkUseCase _scanForJunk;
   final CleanJunkUseCase _cleanJunk;
   final WatchQuarantineUseCase _watchQuarantine;
+  final GetDeviceStorageUseCase _getDeviceStorage;
 
   ScanJob? _activeScan;
   CleanJob? _activeClean;
@@ -113,6 +118,21 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     }
 
     await _refreshAccess(emit, await _getAccess());
+    await _refreshStorage(emit);
+  }
+
+  /// Re-reads how full the disk is.
+  ///
+  /// Called on arrival and again once a cleanup has finished, which are the two
+  /// moments the figure can have moved — a scan reads the disk and changes
+  /// nothing. Answering `null` is not a failure and is not reported as one: the
+  /// ring is simply not drawn, and the rest of the screen is unaffected.
+  Future<void> _refreshStorage(Emitter<StorageCleanerState> emit) async {
+    final DeviceStorageSnapshot? snapshot = await _getDeviceStorage();
+
+    emit(
+      state.copyWith(storage: snapshot, clearStorage: snapshot == null),
+    );
   }
 
   void _onQuarantineChanged(
@@ -344,6 +364,8 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     );
 
     _activeClean = null;
+
+    await _refreshStorage(emit);
   }
 
   /// Drops everything the run took, keeping what it skipped.

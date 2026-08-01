@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:archonex_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
+import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/platform/storage_cleaner_platform.dart';
@@ -48,6 +50,7 @@ class StorageCleanerPage extends StatelessWidget {
         scanForJunk: ScanForJunkUseCase(scanRepo),
         cleanJunk: CleanJunkUseCase(cleanRepo),
         watchQuarantine: WatchQuarantineUseCase(quarantine),
+        getDeviceStorage: GetDeviceStorageUseCase(createDeviceStorageRepo()),
       )..add(const StorageCleanerStarted()),
       child: const StorageCleanerView(),
     );

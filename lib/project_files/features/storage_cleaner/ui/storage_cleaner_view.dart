@@ -8,6 +8,7 @@ import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
 import 'package:archonex_cleaner/core/widgets/app_screen_header.dart';
 import 'package:archonex_cleaner/core/widgets/app_screen_layout.dart';
 import 'package:archonex_cleaner/l10n/app_localizations.dart';
+import 'package:archonex_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/mappers/clean_failure_ui.dart';
@@ -24,6 +25,11 @@ class StorageCleanerView extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      // An empty bar, purely for the back arrow: this screen is pushed from the
+      // home screen now, and the other tool is behind it. The title stays in
+      // `AppScreenHeader` below, where it can carry a subtitle — the quarantine
+      // screen is built the same way.
+      appBar: AppBar(),
       body: BlocListener<StorageCleanerBloc, StorageCleanerState>(
         listenWhen: (previous, current) =>
             previous.failure != current.failure && current.failure != null,
@@ -41,8 +47,7 @@ class StorageCleanerView extends StatelessWidget {
                 trailing: IconButton(
                   tooltip: l10n.languageButtonTooltip,
                   icon: const Icon(Icons.language),
-                  onPressed: () =>
-                      context.pushNamed(AppRoute.languageSelection.routeName),
+                  onPressed: () => showLanguageDialog(context),
                 ),
               ),
               body: StorageCleanerBody(state: state, callbacks: callbacks),

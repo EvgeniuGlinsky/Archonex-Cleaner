@@ -10,10 +10,14 @@ import 'package:archonex_cleaner/project_files/features/language_selection/domai
 part 'language_selection_event.dart';
 part 'language_selection_state.dart';
 
-/// Owns the language choice until the user confirms it.
+/// Applies the language the moment it is tapped.
 ///
-/// The pick is only handed to the repository on [LanguageSelectionSubmitted],
-/// so backing out of the screen leaves the stored language untouched.
+/// It used to hold the pick until a continue button confirmed it, which is the
+/// right shape for a screen the user is passing through and the wrong one for
+/// the dialog this now lives in: the whole app behind the dialog is already
+/// redrawn in the new language, so a button asking whether they meant it is a
+/// button for a decision they can already see the result of. Backing out is
+/// tapping the language back.
 class LanguageSelectionBloc
     extends Bloc<LanguageSelectionEvent, LanguageSelectionState> {
   LanguageSelectionBloc({
@@ -26,7 +30,6 @@ class LanguageSelectionBloc
         super(const LanguageSelectionState()) {
     on<LanguageSelectionStarted>(_onStarted, transformer: restartable());
     on<LanguageChanged>(_onLanguageChanged, transformer: sequential());
-    on<LanguageSelectionSubmitted>(_onSubmitted, transformer: droppable());
   }
 
   final GetAvailableLanguagesUseCase _getAvailableLanguages;
@@ -39,7 +42,6 @@ class LanguageSelectionBloc
   ) {
     emit(
       state.copyWith(
-        status: LanguageSelectionStatus.ready,
         languages: _getAvailableLanguages(),
         selectedLanguage: _getSelectedLanguage(),
       ),
@@ -50,14 +52,7 @@ class LanguageSelectionBloc
     LanguageChanged event,
     Emitter<LanguageSelectionState> emit,
   ) {
+    _selectLanguage(event.language);
     emit(state.copyWith(selectedLanguage: event.language));
-  }
-
-  void _onSubmitted(
-    LanguageSelectionSubmitted event,
-    Emitter<LanguageSelectionState> emit,
-  ) {
-    _selectLanguage(state.selectedLanguage);
-    emit(state.copyWith(status: LanguageSelectionStatus.submitted));
   }
 }

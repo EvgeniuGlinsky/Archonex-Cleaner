@@ -62,6 +62,14 @@ dependencies:
   # so a wiped preference store cannot orphan them. See `IoQuarantineRepo`.
   shared_preferences: ^2.5.5
 
+  # How full the disk actually is — the number the storage ring draws, and the
+  # only thing on the home screen before a scan has run. `dart:io` cannot answer
+  # it on any platform. Chosen over `disk_space_plus` and `storage_space`, which
+  # are Android and iOS only: this fork is the one that also covers Windows and
+  # Linux. macOS and web it does not cover, and there
+  # `UnsupportedDeviceStorageRepo` answers `null` — see `device_storage/`.
+  disk_space_2: ^1.0.13
+
   # Path arithmetic that knows which separator it is on. Named explicitly rather
   # than leaned on transitively, because `ProtectedPaths` is tested against
   # every platform's rules from whichever one CI runs on, and that needs

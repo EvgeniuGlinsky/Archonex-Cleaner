@@ -23,7 +23,7 @@ class SplashView extends StatelessWidget {
 
   void _onStatusChanged(BuildContext context, SplashState state) {
     if (state.status == SplashStatus.completed) {
-      context.goNamed(AppRoute.languageSelection.routeName);
+      context.goNamed(AppRoute.home.routeName);
     }
   }
 }

@@ -12,7 +12,7 @@ final class LanguageSelectionStarted extends LanguageSelectionEvent {
   const LanguageSelectionStarted();
 }
 
-/// The user tapped a language tile.
+/// The user tapped a language tile. Takes effect immediately.
 final class LanguageChanged extends LanguageSelectionEvent {
   const LanguageChanged(this.language);
 
@@ -20,9 +20,4 @@ final class LanguageChanged extends LanguageSelectionEvent {
 
   @override
   List<Object?> get props => <Object?>[language];
-}
-
-/// The user confirmed the choice with the continue button.
-final class LanguageSelectionSubmitted extends LanguageSelectionEvent {
-  const LanguageSelectionSubmitted();
 }
