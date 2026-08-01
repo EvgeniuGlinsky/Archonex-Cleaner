@@ -61,9 +61,8 @@ class HomeView extends StatelessWidget {
     await switch (tool) {
       AppTool.cleaner =>
         context.pushNamed<void>(AppRoute.storageCleaner.routeName),
-      // Unreachable while the card is disabled, and written out rather than
-      // defaulted so adding a third tool fails to compile here.
-      AppTool.optimizer => Future<void>.value(),
+      AppTool.optimizer =>
+        context.pushNamed<void>(AppRoute.mediaOptimizer.routeName),
     };
 
     bloc.add(const HomeStarted());

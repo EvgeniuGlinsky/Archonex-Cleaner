@@ -1,16 +1,19 @@
 /// The things this app does to a device's storage.
 ///
-/// The list is on the home screen from the first release, with the second entry
-/// visibly not finished yet, because the product is two tools and a screen
-/// showing one of them teaches the user that it is one. Shipping the card as a
-/// promise costs a badge; shipping it later costs re-teaching them what the app
-/// is.
+/// Two, and they are the two halves of the same problem: the cleaner deletes
+/// what should not be there, and the optimiser shrinks what should. A third
+/// entry is a `GoRoute`, a card and an ARB key, and nothing else — see
+/// `AppRouter`.
+///
+/// [isAvailable] stays on the enum now that both are built. It carried the
+/// "Soon" badge while the optimiser was a promise, and it is what the next
+/// unfinished tool will use for the same beat.
 enum AppTool {
   cleaner(isAvailable: true),
 
-  /// Walks the device for photos and videos and rewrites them smaller. Not
-  /// built: the card explains itself and does not open.
-  optimizer(isAvailable: false);
+  /// Walks the device for photographs and videos and rewrites them smaller,
+  /// keeping the resolution and replacing the originals.
+  optimizer(isAvailable: true);
 
   const AppTool({required this.isAvailable});
 

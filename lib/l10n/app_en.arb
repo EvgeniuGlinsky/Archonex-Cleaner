@@ -11,7 +11,7 @@
   "toolCleanerTitle": "Clean up storage",
   "toolCleanerSubtitle": "Find the temporary files, caches and leftovers your device kept, and delete them.",
   "toolOptimizerTitle": "Optimise files",
-  "toolOptimizerSubtitle": "Shrink photos and videos in place, without moving or deleting anything.",
+  "toolOptimizerSubtitle": "Re-encode large photos and videos so they take less room. Same picture, same size on screen, smaller on disk.",
   "toolComingSoonBadge": "Soon",
 
   "storageUsedOf": "used of {size}",
@@ -219,5 +219,127 @@
   },
   "quarantineOpenLabel": "Open quarantine",
   "confirmPurgeAllTitle": "Empty the quarantine?",
-  "confirmPurgeAllBody": "Everything in it is deleted for good, and nothing from those cleanups can be restored afterwards."
+  "confirmPurgeAllBody": "Everything in it is deleted for good, and nothing from those cleanups can be restored afterwards.",
+
+  "optimizerTitle": "Make files smaller",
+  "optimizerSubtitle": "Find the photos and videos that are bigger than they need to be, and re-encode them at the same quality.",
+
+  "mediaScanLabel": "Look for large files",
+  "optimizeLabel": "Save {size}",
+  "@optimizeLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeConfirmLabel": "Re-encode",
+  "optimizingLabel": "Re-encoding…",
+  "optimizingFile": "Re-encoding {name}",
+  "@optimizingFile": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "couldBeSaved": "could be saved",
+
+  "mediaVideosTitle": "Videos",
+  "mediaVideosSubtitle": "Clips shot on this device, and anything downloaded.",
+  "mediaPhotosTitle": "Photos",
+  "mediaPhotosSubtitle": "Pictures larger than a megabyte.",
+  "mediaGroupSummary": "{worthwhile} worth re-encoding, of {total}",
+  "@mediaGroupSummary": {
+    "placeholders": {
+      "worthwhile": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "candidateSaving": "{before} → about {after}",
+  "@candidateSaving": {
+    "placeholders": {
+      "before": { "type": "String" },
+      "after": { "type": "String" }
+    }
+  },
+  "candidateLeftAlone": "{size} · {reason}",
+  "@candidateLeftAlone": {
+    "placeholders": {
+      "size": { "type": "String" },
+      "reason": { "type": "String" }
+    }
+  },
+  "candidateRenamedTooltip": "This file will be saved under a new extension.",
+
+  "verdictAlreadyEfficient": "already about as small as it goes",
+  "verdictUnreadable": "the file would not say enough about itself",
+  "verdictUnsupportedFormat": "already in an efficient format",
+
+  "encoderMissingTitle": "Some of these cannot be re-encoded here",
+  "encoderMissingBody": "Videos need FFmpeg, and this machine has none on its path. Install it and open this screen again; the photos can go ahead either way.",
+
+  "optimizerIdleTitle": "Nothing looked at yet",
+  "optimizerIdleBody": "This reads the headers of your photos and videos to work out which are bigger than they need to be. Nothing is changed until you say so.",
+  "optimizerFoundNothingTitle": "No large photos or videos",
+  "optimizerFoundNothingBody": "Nothing here is big enough to be worth re-encoding.",
+  "optimizerNothingToDoTitle": "Everything is already efficient",
+  "optimizerNothingToDoBody": "Your photos and videos were found and measured, and re-encoding them would free too little to be worth the time.",
+  "optimizerUnsupportedTitle": "Not on this platform",
+  "optimizerUnsupportedBody": "There is no folder of your own photos and videos this app can reach here.",
+
+  "confirmOptimizeTitle": "Free about {size}?",
+  "@confirmOptimizeTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "confirmOptimizeBody": "{count, plural, =1{1 file is replaced by a smaller version. The original is deleted once the new one has been checked, and there is no way back.} other{{count} files are replaced by smaller versions. The originals are deleted once the new ones have been checked, and there is no way back.}}",
+  "@confirmOptimizeBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "confirmOptimizeRenameNote": "{count, plural, =1{1 of them will end up with a different file extension.} other{{count} of them will end up with a different file extension.}}",
+  "@confirmOptimizeRenameNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "optimizeFreed": "{size} freed",
+  "@optimizeFreed": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeFreedNothing": "Nothing freed",
+  "optimizeRewroteCount": "{count, plural, =0{No files were re-encoded} =1{1 file re-encoded} other{{count} files re-encoded}}",
+  "@optimizeRewroteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeRenamedNote": "{count, plural, =1{1 file has a new extension} other{{count} files have a new extension}}",
+  "@optimizeRenamedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeSkippedNote": "{count, plural, =1{1 left as it was — the new version was no smaller} other{{count} left as they were — the new versions were no smaller}}",
+  "@optimizeSkippedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeFailedNote": "{count, plural, =1{1 could not be re-encoded, and is untouched} other{{count} could not be re-encoded, and are untouched}}",
+  "@optimizeFailedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeCancelledNote": "Stopped early. The files not reached are untouched.",
+
+  "failureMediaScanCancelled": "Stopped looking.",
+  "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
+  "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",
+  "failureNoPhotoEncoder": "There is no photo encoder on this machine.",
+  "failureMediaScan": "The search could not finish. Nothing was changed."
 }

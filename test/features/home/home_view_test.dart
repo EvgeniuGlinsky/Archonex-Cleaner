@@ -71,6 +71,12 @@ void main() {
           builder: (context, state) =>
               const Scaffold(body: Text('cleaner screen')),
         ),
+        GoRoute(
+          path: AppRoute.mediaOptimizer.path,
+          name: AppRoute.mediaOptimizer.routeName,
+          builder: (context, state) =>
+              const Scaffold(body: Text('optimizer screen')),
+        ),
       ],
     );
 
@@ -106,17 +112,35 @@ void main() {
     expect(find.text('Optimise files'), findsOneWidget);
   });
 
-  testWidgets('the tool that is not built says so and does not open',
+  testWidgets('both tools open, and neither carries a badge any more',
       (tester) async {
+    // The badge was the promise made while the optimiser was a card and
+    // nothing else. `AppTool.isAvailable` stays on the enum for the next
+    // unfinished tool, and nothing shows it today.
     await pump(tester);
 
-    expect(find.text('Soon'), findsOneWidget);
+    expect(find.text('Soon'), findsNothing);
 
     await tester.tap(find.text('Optimise files'));
     await tester.pumpAndSettle();
 
-    expect(find.text('cleaner screen'), findsNothing);
-    expect(find.text('Optimise files'), findsOneWidget);
+    expect(find.text('optimizer screen'), findsOneWidget);
+  });
+
+  testWidgets('coming back from the second tool re-reads the disk too',
+      (tester) async {
+    await pump(tester);
+
+    await tester.tap(find.text('Optimise files'));
+    await tester.pumpAndSettle();
+
+    final int readsBeforeBack = storageRepo.readCount;
+
+    tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+    await tester.pumpAndSettle();
+
+    // It rewrites files, so it moves the very figure this screen shows.
+    expect(storageRepo.readCount, greaterThan(readsBeforeBack));
   });
 
   testWidgets('the cleaner opens and comes back to a re-read disk',
@@ -159,11 +183,13 @@ void main() {
     expect(find.text('Clean up storage'), findsOneWidget);
   });
 
-  testWidgets('the "soon" badge does not squeeze the title on a narrow phone',
+  testWidgets('a long tool name still lays out on a narrow phone',
       (tester) async {
-    // "Оптимизировать" is one word and wider than what a badge on the same line
-    // leaves a `titleLarge` heading at 360 dp. `JunkCategoryTile` carries the
-    // full story of the bug this guards against.
+    // "Оптимизировать" is one word, and the widest thing either card has to
+    // fit. The badge that used to share this line is gone, and the guard is
+    // not: the icon beside the title cannot shrink either, and
+    // `JunkCategoryTile` carries the full story of the bug both are written
+    // around.
     await pump(tester, surface: narrow, device: const Locale('ru'));
 
     // Three lines of `titleLarge`, which lays out at 28 under the test font —
@@ -173,7 +199,6 @@ void main() {
       tester.getSize(find.text('Оптимизировать файлы')).height,
       lessThan(3 * 28.0 + 2),
     );
-    expect(find.text('Скоро'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

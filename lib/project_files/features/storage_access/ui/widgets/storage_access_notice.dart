@@ -9,8 +9,10 @@ import 'package:archonex_cleaner/project_files/features/storage_access/ui/mapper
 
 /// Says what the scan will and will not cover, and offers the way to widen it.
 ///
-/// Drawn only when there is something to say — `StorageAccessUi.needsNotice` —
-/// so a desktop, where the app can already see everything, never shows it.
+/// Drawn only when there is something to say — `StorageAccess.isNarrowed` — so
+/// a desktop, where the app can already see everything, never shows it. Both
+/// tools draw it, which is why it moved out of the cleaner along with the rest
+/// of the access question.
 class StorageAccessNotice extends StatelessWidget {
   const StorageAccessNotice({
     required this.access,

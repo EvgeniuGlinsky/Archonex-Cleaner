@@ -11,7 +11,7 @@
   "toolCleanerTitle": "Очистить память",
   "toolCleanerSubtitle": "Найти временные файлы, кэш и остатки, которые оставило устройство, и удалить их.",
   "toolOptimizerTitle": "Оптимизировать файлы",
-  "toolOptimizerSubtitle": "Сжать фото и видео на месте, ничего не перемещая и не удаляя.",
+  "toolOptimizerSubtitle": "Пережать большие фото и видео, чтобы они занимали меньше места. Та же картинка, тот же размер на экране, меньше на диске.",
   "toolComingSoonBadge": "Скоро",
 
   "storageUsedOf": "занято из {size}",
@@ -219,5 +219,127 @@
   },
   "quarantineOpenLabel": "Открыть карантин",
   "confirmPurgeAllTitle": "Очистить карантин?",
-  "confirmPurgeAllBody": "Всё, что в нём лежит, удалится насовсем, и вернуть файлы из тех очисток будет уже нельзя."
+  "confirmPurgeAllBody": "Всё, что в нём лежит, удалится насовсем, и вернуть файлы из тех очисток будет уже нельзя.",
+
+  "optimizerTitle": "Уменьшить файлы",
+  "optimizerSubtitle": "Найдём фото и видео, которые весят больше, чем нужно, и пережмём их без потери качества.",
+
+  "mediaScanLabel": "Найти большие файлы",
+  "optimizeLabel": "Освободить {size}",
+  "@optimizeLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeConfirmLabel": "Пережать",
+  "optimizingLabel": "Пережимаем…",
+  "optimizingFile": "Пережимаем {name}",
+  "@optimizingFile": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "couldBeSaved": "можно освободить",
+
+  "mediaVideosTitle": "Видео",
+  "mediaVideosSubtitle": "Ролики, снятые на устройстве, и всё загруженное.",
+  "mediaPhotosTitle": "Фото",
+  "mediaPhotosSubtitle": "Снимки больше мегабайта.",
+  "mediaGroupSummary": "{worthwhile} стоит пережать, всего {total}",
+  "@mediaGroupSummary": {
+    "placeholders": {
+      "worthwhile": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "candidateSaving": "{before} → примерно {after}",
+  "@candidateSaving": {
+    "placeholders": {
+      "before": { "type": "String" },
+      "after": { "type": "String" }
+    }
+  },
+  "candidateLeftAlone": "{size} · {reason}",
+  "@candidateLeftAlone": {
+    "placeholders": {
+      "size": { "type": "String" },
+      "reason": { "type": "String" }
+    }
+  },
+  "candidateRenamedTooltip": "Файл будет сохранён с другим расширением.",
+
+  "verdictAlreadyEfficient": "уже почти на пределе сжатия",
+  "verdictUnreadable": "файл не рассказал о себе достаточно",
+  "verdictUnsupportedFormat": "уже в экономном формате",
+
+  "encoderMissingTitle": "Часть файлов здесь пережать нельзя",
+  "encoderMissingBody": "Для видео нужен FFmpeg, а в PATH этой машины его нет. Установите его и откройте экран заново; фото пережмутся в любом случае.",
+
+  "optimizerIdleTitle": "Пока ничего не искали",
+  "optimizerIdleBody": "Прочитаем заголовки фото и видео и поймём, какие весят больше, чем нужно. Ничего не изменится, пока вы не скажете.",
+  "optimizerFoundNothingTitle": "Больших фото и видео нет",
+  "optimizerFoundNothingBody": "Здесь нет файлов, достаточно крупных, чтобы их стоило пережимать.",
+  "optimizerNothingToDoTitle": "Всё и так экономно",
+  "optimizerNothingToDoBody": "Фото и видео найдены и измерены: пережатие освободит слишком мало, чтобы тратить на это время.",
+  "optimizerUnsupportedTitle": "Не на этой платформе",
+  "optimizerUnsupportedBody": "Здесь нет папки с вашими фото и видео, до которой приложение может дотянуться.",
+
+  "confirmOptimizeTitle": "Освободить примерно {size}?",
+  "@confirmOptimizeTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "confirmOptimizeBody": "{count, plural, =1{1 файл будет заменён уменьшенной версией. Оригинал удаляется после проверки новой копии, и вернуть его будет нельзя.} other{{count} файлов будут заменены уменьшенными версиями. Оригиналы удаляются после проверки новых копий, и вернуть их будет нельзя.}}",
+  "@confirmOptimizeBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "confirmOptimizeRenameNote": "{count, plural, =1{У 1 из них изменится расширение файла.} other{У {count} из них изменится расширение файла.}}",
+  "@confirmOptimizeRenameNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "optimizeFreed": "Освободили {size}",
+  "@optimizeFreed": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeFreedNothing": "Ничего не освободили",
+  "optimizeRewroteCount": "{count, plural, =0{Ни одного файла не пережали} =1{Пережали 1 файл} other{Пережали {count} файлов}}",
+  "@optimizeRewroteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeRenamedNote": "{count, plural, =1{У 1 файла новое расширение} other{У {count} файлов новое расширение}}",
+  "@optimizeRenamedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeSkippedNote": "{count, plural, =1{1 оставили как был — новая версия не стала меньше} other{{count} оставили как были — новые версии не стали меньше}}",
+  "@optimizeSkippedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeFailedNote": "{count, plural, =1{1 не удалось пережать, он не тронут} other{{count} не удалось пережать, они не тронуты}}",
+  "@optimizeFailedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeCancelledNote": "Остановлено раньше времени. Файлы, до которых не дошли, не тронуты.",
+
+  "failureMediaScanCancelled": "Поиск остановлен.",
+  "failureOptimizeUnsupported": "На этой платформе нет фото и видео, до которых приложение может дотянуться.",
+  "failureNoVideoEncoder": "На этой машине нет кодировщика видео. Установите FFmpeg и попробуйте снова.",
+  "failureNoPhotoEncoder": "На этой машине нет кодировщика изображений.",
+  "failureMediaScan": "Поиск не удалось завершить. Ничего не изменено."
 }

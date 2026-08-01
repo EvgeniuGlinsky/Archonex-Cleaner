@@ -103,8 +103,16 @@ class FakeMediaScanRepo implements MediaScanRepo {
   Set<MediaKind>? lastRequestedKinds;
   bool wasCancelled = false;
 
+  /// Empty where the access reaches no folder the user filled, which is the
+  /// rule `MediaRuleset` really applies: an app-only Android answers
+  /// `StorageAccess.canScan` true and still has nothing here to look at.
   @override
-  Future<Set<MediaKind>> kindsFor(StorageAccess access) async => kinds;
+  Future<Set<MediaKind>> kindsFor(StorageAccess access) async {
+    return switch (access.level) {
+      StorageAccessLevel.full || StorageAccessLevel.scopedFolders => kinds,
+      StorageAccessLevel.appOnly || StorageAccessLevel.none => const <MediaKind>{},
+    };
+  }
 
   @override
   Future<MediaScanJob> scan({

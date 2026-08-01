@@ -10,6 +10,10 @@ enum AppRoute {
 
   storageCleaner(path: '/cleaner'),
 
+  /// The second tool. A sibling of [storageCleaner] rather than a child: they
+  /// are two ways into storage from the home screen, not one inside the other.
+  mediaOptimizer(path: '/optimizer'),
+
   /// Child of [storageCleaner] — a relative path, nested under it, because it
   /// only ever holds what a cleanup put there and going back means going back
   /// to the cleaner.

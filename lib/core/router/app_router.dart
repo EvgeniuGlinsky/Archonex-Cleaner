@@ -4,15 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:archonex_cleaner/core/constants/app_durations.dart';
 import 'package:archonex_cleaner/core/router/app_route.dart';
 import 'package:archonex_cleaner/project_files/features/home/ui/home_page.dart';
+import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/media_optimizer_page.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/ui/quarantine_page.dart';
 import 'package:archonex_cleaner/project_files/features/splash/ui/splash_page.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_page.dart';
 
 /// Builds the application router.
 ///
-/// A second tool — the space saver behind `AppTool.optimizer` — is added by
-/// appending one [GoRoute] beside [AppRoute.storageCleaner] and one entry to the
-/// enum. The home screen already lists it.
+/// Five routes and no shell. Both tools are pushed from the home screen and
+/// sit beside each other rather than nesting, because they are two ways into
+/// the same storage and neither is inside the other; the quarantine is the one
+/// child, under the cleaner that fills it.
 class AppRouter {
   const AppRouter._();
 
@@ -41,6 +43,11 @@ class AppRouter {
               pageBuilder: _fade(const QuarantinePage()),
             ),
           ],
+        ),
+        GoRoute(
+          path: AppRoute.mediaOptimizer.path,
+          name: AppRoute.mediaOptimizer.routeName,
+          pageBuilder: _fade(const MediaOptimizerPage()),
         ),
       ],
     );

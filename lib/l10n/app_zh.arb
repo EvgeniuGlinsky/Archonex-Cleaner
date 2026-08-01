@@ -11,7 +11,7 @@
   "toolCleanerTitle": "清理存储空间",
   "toolCleanerSubtitle": "找出设备留下的临时文件、缓存和残留文件并删除。",
   "toolOptimizerTitle": "优化文件",
-  "toolOptimizerSubtitle": "就地压缩照片和视频，不移动也不删除任何文件。",
+  "toolOptimizerSubtitle": "重新编码大的照片和视频，让它们占用更少空间。画面不变，屏幕上一样大，磁盘上更小。",
   "toolComingSoonBadge": "即将推出",
 
   "storageUsedOf": "已用，共 {size}",
@@ -219,5 +219,127 @@
   },
   "quarantineOpenLabel": "打开隔离区",
   "confirmPurgeAllTitle": "清空隔离区？",
-  "confirmPurgeAllBody": "里面的内容会被彻底删除，那几次清理的文件之后都无法再恢复。"
+  "confirmPurgeAllBody": "里面的内容会被彻底删除，那几次清理的文件之后都无法再恢复。",
+
+  "optimizerTitle": "缩小文件",
+  "optimizerSubtitle": "找出体积超出所需的照片和视频，在画质不变的前提下重新编码。",
+
+  "mediaScanLabel": "查找大文件",
+  "optimizeLabel": "释放 {size}",
+  "@optimizeLabel": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeConfirmLabel": "重新编码",
+  "optimizingLabel": "正在重新编码…",
+  "optimizingFile": "正在重新编码 {name}",
+  "@optimizingFile": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "couldBeSaved": "可释放",
+
+  "mediaVideosTitle": "视频",
+  "mediaVideosSubtitle": "本机拍摄的片段，以及所有下载的视频。",
+  "mediaPhotosTitle": "照片",
+  "mediaPhotosSubtitle": "大于 1 MB 的图片。",
+  "mediaGroupSummary": "{worthwhile} 值得重新编码，共 {total}",
+  "@mediaGroupSummary": {
+    "placeholders": {
+      "worthwhile": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+
+  "candidateSaving": "{before} → 约 {after}",
+  "@candidateSaving": {
+    "placeholders": {
+      "before": { "type": "String" },
+      "after": { "type": "String" }
+    }
+  },
+  "candidateLeftAlone": "{size} · {reason}",
+  "@candidateLeftAlone": {
+    "placeholders": {
+      "size": { "type": "String" },
+      "reason": { "type": "String" }
+    }
+  },
+  "candidateRenamedTooltip": "该文件将以新的扩展名保存。",
+
+  "verdictAlreadyEfficient": "已经接近压缩极限",
+  "verdictUnreadable": "文件没有提供足够的信息",
+  "verdictUnsupportedFormat": "已经是高效格式",
+
+  "encoderMissingTitle": "其中一部分无法在此重新编码",
+  "encoderMissingBody": "视频需要 FFmpeg，而本机的 PATH 中没有。安装后重新打开此页面即可；照片无论如何都能处理。",
+
+  "optimizerIdleTitle": "还没有查找过",
+  "optimizerIdleBody": "读取照片和视频的文件头，判断哪些体积超出所需。在你确认之前不会改动任何文件。",
+  "optimizerFoundNothingTitle": "没有大的照片或视频",
+  "optimizerFoundNothingBody": "这里没有大到值得重新编码的文件。",
+  "optimizerNothingToDoTitle": "一切都已经很紧凑",
+  "optimizerNothingToDoBody": "照片和视频都已找到并测量：重新编码释放的空间太少，不值得花这个时间。",
+  "optimizerUnsupportedTitle": "此平台不支持",
+  "optimizerUnsupportedBody": "在这里，应用无法访问到存放你自己照片和视频的文件夹。",
+
+  "confirmOptimizeTitle": "释放约 {size}？",
+  "@confirmOptimizeTitle": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "confirmOptimizeBody": "{count, plural, =1{1 个文件将被更小的版本替换。新文件通过校验后原文件会被删除，无法撤销。} other{{count} 个文件将被更小的版本替换。新文件通过校验后原文件会被删除，无法撤销。}}",
+  "@confirmOptimizeBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "confirmOptimizeRenameNote": "{count, plural, =1{其中 1 个文件的扩展名会改变。} other{其中 {count} 个文件的扩展名会改变。}}",
+  "@confirmOptimizeRenameNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "optimizeFreed": "已释放 {size}",
+  "@optimizeFreed": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "optimizeFreedNothing": "未释放任何空间",
+  "optimizeRewroteCount": "{count, plural, =0{没有文件被重新编码} =1{已重新编码 1 个文件} other{已重新编码 {count} 个文件}}",
+  "@optimizeRewroteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeRenamedNote": "{count, plural, =1{1 个文件换了扩展名} other{{count} 个文件换了扩展名}}",
+  "@optimizeRenamedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeSkippedNote": "{count, plural, =1{1 个保持原样 —— 新版本并没有变小} other{{count} 个保持原样 —— 新版本并没有变小}}",
+  "@optimizeSkippedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeFailedNote": "{count, plural, =1{1 个无法重新编码，未做改动} other{{count} 个无法重新编码，未做改动}}",
+  "@optimizeFailedNote": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "optimizeCancelledNote": "提前停止。未处理到的文件没有改动。",
+
+  "failureMediaScanCancelled": "已停止查找。",
+  "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
+  "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",
+  "failureNoPhotoEncoder": "本机没有图片编码器。",
+  "failureMediaScan": "查找未能完成。没有任何改动。"
 }
