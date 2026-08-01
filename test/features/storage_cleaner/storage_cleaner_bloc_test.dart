@@ -3,12 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/clean_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_cleaner_availability_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_scannable_categories_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_storage_access_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/request_storage_access_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/scan_for_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
@@ -16,10 +18,10 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_group.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
 
 import '../device_storage/fakes.dart';
+import '../storage_access/fakes.dart';
 import 'fakes.dart';
 
 /// There is no `bloc_test` here, so nothing else drains the event queue before
@@ -49,7 +51,7 @@ void main() {
       ),
       getAccess: GetStorageAccessUseCase(accessRepo),
       requestAccess: RequestStorageAccessUseCase(accessRepo),
-      addScanFolder: AddScanFolderUseCase(accessRepo),
+      addScanFolder: AddAccessFolderUseCase(accessRepo),
       getCategories: GetScannableCategoriesUseCase(scanRepo),
       scanForJunk: ScanForJunkUseCase(scanRepo),
       cleanJunk: CleanJunkUseCase(cleanRepo),
@@ -524,7 +526,17 @@ void main() {
       bloc.add(const AccessRequested());
       await settle();
 
-      expect(bloc.state.failure, isA<StorageAccessDeniedFailure>());
+      // The access hierarchy is the storage_access feature's, and it reaches
+      // the cleaner's state wrapped — one nullable slot, one mapper, one
+      // dismissal.
+      expect(
+        bloc.state.failure,
+        isA<AccessRefusedFailure>().having(
+          (f) => f.cause,
+          'cause',
+          isA<StorageAccessDeniedFailure>(),
+        ),
+      );
       await bloc.close();
     });
 

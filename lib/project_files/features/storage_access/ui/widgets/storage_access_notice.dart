@@ -4,8 +4,8 @@ import 'package:archonex_cleaner/core/constants/app_radius.dart';
 import 'package:archonex_cleaner/core/constants/app_spacing.dart';
 import 'package:archonex_cleaner/core/theme/app_colors.dart';
 import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/mappers/storage_access_ui.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/ui/mappers/storage_access_ui.dart';
 
 /// Says what the scan will and will not cover, and offers the way to widen it.
 ///

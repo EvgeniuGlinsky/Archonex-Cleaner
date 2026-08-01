@@ -6,6 +6,7 @@ import 'package:archonex_cleaner/project_files/features/quarantine/domain/models
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
@@ -15,8 +16,6 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/storage_access_repo.dart';
 
 /// Hand-written fakes for the cleaner. There is no mocking package in this
 /// project and none is to be added — see `CLAUDE.md`.
@@ -247,44 +246,6 @@ class FakeCleanJob implements CleanJob {
 
     _controller.add(CleanFinished(_report));
     await _controller.close();
-  }
-}
-
-class FakeStorageAccessRepo implements StorageAccessRepo {
-  FakeStorageAccessRepo({
-    this.access = const StorageAccess.open(),
-    this.granted,
-    this.picked,
-  });
-
-  StorageAccess access;
-
-  /// What `request()` answers. Falls back to [access] — a refusal.
-  StorageAccess? granted;
-
-  /// What `addFolder()` answers. Falls back to [access] — a closed picker.
-  StorageAccess? picked;
-
-  int requestCount = 0;
-  int addFolderCount = 0;
-
-  @override
-  Future<StorageAccess> current() async => access;
-
-  @override
-  Future<StorageAccess> request() async {
-    requestCount++;
-    access = granted ?? access;
-
-    return access;
-  }
-
-  @override
-  Future<StorageAccess> addFolder() async {
-    addFolderCount++;
-    access = picked ?? access;
-
-    return access;
   }
 }
 

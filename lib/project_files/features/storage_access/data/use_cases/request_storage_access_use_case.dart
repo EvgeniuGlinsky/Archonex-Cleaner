@@ -1,6 +1,6 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/storage_access_repo.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Asks for wider access and reports what came back.
 ///

@@ -9,12 +9,14 @@ import 'package:archonex_cleaner/project_files/features/device_storage/data/use_
 import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/clean_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_cleaner_availability_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_scannable_categories_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_storage_access_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/request_storage_access_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/scan_for_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
@@ -25,7 +27,6 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 
 part 'storage_cleaner_event.dart';
 part 'storage_cleaner_state.dart';
@@ -35,7 +36,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     required GetCleanerAvailabilityUseCase getAvailability,
     required GetStorageAccessUseCase getAccess,
     required RequestStorageAccessUseCase requestAccess,
-    required AddScanFolderUseCase addScanFolder,
+    required AddAccessFolderUseCase addScanFolder,
     required GetScannableCategoriesUseCase getCategories,
     required ScanForJunkUseCase scanForJunk,
     required CleanJunkUseCase cleanJunk,
@@ -72,7 +73,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
   final GetCleanerAvailabilityUseCase _getAvailability;
   final GetStorageAccessUseCase _getAccess;
   final RequestStorageAccessUseCase _requestAccess;
-  final AddScanFolderUseCase _addScanFolder;
+  final AddAccessFolderUseCase _addScanFolder;
   final GetScannableCategoriesUseCase _getCategories;
   final ScanForJunkUseCase _scanForJunk;
   final CleanJunkUseCase _cleanJunk;
@@ -155,8 +156,10 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
   ) async {
     try {
       await _refreshAccess(emit, await _requestAccess());
-    } on CleanFailure catch (failure) {
-      emit(state.copyWith(failure: failure));
+    } on AccessFailure catch (failure) {
+      // Wrapped rather than stored beside `failure`: one nullable slot on the
+      // state means one listener and one dismissal, and the mapper unwraps it.
+      emit(state.copyWith(failure: AccessRefusedFailure(failure)));
     }
   }
 

@@ -14,9 +14,11 @@ import 'package:archonex_cleaner/project_files/features/device_storage/data/plat
 import 'package:archonex_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
 import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:archonex_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
 import 'package:archonex_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
 import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/cleaner_roots_resolver.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
@@ -27,9 +29,7 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/storage_access_notice.dart';
 
 /// Runs the app against the real machine, and **deletes nothing**.
 ///

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/android_junk_rules.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/apple_junk_rules.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
@@ -7,7 +8,6 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rul
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/linux_junk_rules.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/windows_junk_rules.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 
 /// Picks the table for the platform and filters it down to what will actually
 /// be scanned.

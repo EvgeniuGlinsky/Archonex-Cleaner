@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Answers where the app is allowed to look, and asks for more.
 ///

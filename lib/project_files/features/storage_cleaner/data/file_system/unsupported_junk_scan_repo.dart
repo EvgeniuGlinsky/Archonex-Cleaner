@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 
 /// The web answer: there is no file system, so there is nothing to walk.
 ///

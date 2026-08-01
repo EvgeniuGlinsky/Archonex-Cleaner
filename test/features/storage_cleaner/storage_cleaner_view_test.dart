@@ -12,24 +12,25 @@ import 'package:archonex_cleaner/project_files/features/language_selection/data/
 import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/add_scan_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/clean_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_cleaner_availability_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_scannable_categories_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/get_storage_access_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/request_storage_access_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/use_cases/scan_for_junk_use_case.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
 
 import '../device_storage/fakes.dart';
 import '../language_selection/fakes.dart';
+import '../storage_access/fakes.dart';
 import 'fakes.dart';
 
 void main() {
@@ -93,7 +94,7 @@ void main() {
               ),
               getAccess: GetStorageAccessUseCase(accessRepo),
               requestAccess: RequestStorageAccessUseCase(accessRepo),
-              addScanFolder: AddScanFolderUseCase(accessRepo),
+              addScanFolder: AddAccessFolderUseCase(accessRepo),
               getCategories: GetScannableCategoriesUseCase(scanRepo),
               scanForJunk: ScanForJunkUseCase(scanRepo),
               cleanJunk: CleanJunkUseCase(cleanRepo),

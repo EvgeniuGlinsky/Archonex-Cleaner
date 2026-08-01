@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/storage_access_repo.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Windows, Linux and the unsandboxed macOS build: the process can already read
 /// everything the rules name, and there is no dialog that would change that.

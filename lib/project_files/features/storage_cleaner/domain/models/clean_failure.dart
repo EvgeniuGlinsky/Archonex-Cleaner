@@ -1,3 +1,5 @@
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
+
 /// Everything that can go wrong between asking for a scan and getting the
 /// space back.
 ///
@@ -10,17 +12,19 @@ sealed class CleanFailure implements Exception {
   const CleanFailure();
 }
 
-/// The platform will not let the app look where the rules point.
+/// The platform refused to widen what the app may reach, and refused in a way
+/// the user cannot undo from inside the app.
 ///
-/// Android without all-files access, in practice. Carries what the app *can*
-/// still reach, so the screen can offer the narrower scan instead of only
-/// reporting the refusal.
-final class StorageAccessDeniedFailure extends CleanFailure {
-  const StorageAccessDeniedFailure({required this.canAskAgain});
+/// A member that *wraps* the other hierarchy rather than one that repeats it.
+/// `AccessFailure` belongs to `storage_access/`, which the optimiser asks the
+/// same question of; restating its members here would be two sealed lists to
+/// keep in step, and `CleanFailureUi` delegates to `AccessFailureUi` instead.
+/// This is the one place the cleaner's hierarchy reaches outside itself, and it
+/// reaches downward.
+final class AccessRefusedFailure extends CleanFailure {
+  const AccessRefusedFailure(this.cause);
 
-  /// Whether asking is still worth an offer. False once the user has refused
-  /// permanently — the OS stops showing the dialog and only Settings will do.
-  final bool canAskAgain;
+  final AccessFailure cause;
 }
 
 /// The user stopped a running scan.
@@ -38,6 +42,14 @@ final class ScanFailure extends CleanFailure {
   const ScanFailure();
 }
 
-/// Putting a cleanup back has its own hierarchy, in
-/// `quarantine/domain/models/restore_failure.dart`. The cleaner depends on the
-/// quarantine and not the other way round, so its failures cannot live here.
+/// Two neighbouring hierarchies are deliberately not members of this one, for
+/// the same reason in both cases: a sealed class can only be extended in its
+/// own library, so one shared hierarchy would make the dependency arrow point
+/// both ways.
+///
+/// Putting a cleanup back is `RestoreFailure` in
+/// `quarantine/domain/models/restore_failure.dart` — the cleaner depends on the
+/// quarantine and not the other way round. Being refused reach is
+/// `AccessFailure` in `storage_access/domain/models/access_failure.dart`, which
+/// the optimiser needs as much as the cleaner does and neither of them owns;
+/// [AccessRefusedFailure] above is how it arrives here.

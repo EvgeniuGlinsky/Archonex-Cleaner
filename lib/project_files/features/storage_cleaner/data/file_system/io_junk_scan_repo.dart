@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:archonex_cleaner/core/constants/app_clean_policy.dart';
+import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/cleaner_roots_resolver.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/deletion_guard.dart';
@@ -17,7 +18,6 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/m
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/storage_access.dart';
 
 /// The real scanner, on `dart:io`.
 ///

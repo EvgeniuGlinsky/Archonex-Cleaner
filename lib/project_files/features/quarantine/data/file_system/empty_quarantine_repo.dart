@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// The web sibling of `IoQuarantineRepo`.
 ///

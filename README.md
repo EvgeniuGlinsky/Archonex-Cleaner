@@ -239,6 +239,7 @@ lib/
     ├── home/                        # the front door: the tool list and the ring
     ├── device_storage/              # how full the disk is. No screen, one widget
     ├── language_selection/          # the globe dialog and what it remembers
+    ├── storage_access/              # what this platform lets the app touch
     ├── storage_cleaner/             # the first tool
     └── quarantine/                  # where a cleanup puts things for seven days
         ├── data/                    # repo implementations, use cases, platform adapters
@@ -268,20 +269,21 @@ violation nothing catches at build time.
 the pattern, and it is split so that the dangerous part is the part with no I/O
 in it:
 
-- `domain/` — `JunkScanRepo`, `JunkCleanRepo`, `StorageAccessRepo` and the models
-  (`JunkItem`, `JunkGroup`, `JunkCategory`, `CleanReport`, `StorageAccess`,
-  `CleanFailure`)
+- `domain/` — `JunkScanRepo`, `JunkCleanRepo` and the models (`JunkItem`,
+  `JunkGroup`, `JunkCategory`, `CleanReport`, `CleanFailure`)
 - `data/rules/` — **the interesting directory.** Five pure tables saying where
   junk lives per platform, plus `ProtectedPaths` and `DeletionGuard`, which
   decide what may be offered. None of it touches a file system, all of it is
   unit-tested against every platform from whichever one CI runs on
 - `data/file_system/` — the walker and the deleter. Loops with nothing to decide,
   because the rules and the guard already decided
-- `data/access/` — one implementation per platform answer: Android's real one,
-  the desktop constant, the sandbox constant, the web refusal
 - `data/platform/` — the io/web split, one conditional export
 - `data/use_cases/` — one file per action
 - `ui/` — `StorageCleanerBloc` and the widget tree
+
+`storage_access/` beside it is the same shape at a smaller size, and its
+`data/access/` holds one implementation per platform answer: Android's real one,
+the desktop constant, the sandbox constant, the web refusal.
 
 `lib/project_files/features/quarantine/` is its own feature rather than a
 directory inside the cleaner, because the dependency has to point one way: the
@@ -291,6 +293,14 @@ its own failure hierarchy (`RestoreFailure`) for the same reason — the cleaner
 pointing both ways. The repository is an app-wide singleton in
 `archonex_app.dart`: the batch the cleaner writes is the batch the quarantine
 screen reads, and a second instance would be a second index of one directory.
+
+`lib/project_files/features/storage_access/` is its own feature for the same
+rule, arrived at from the other direction: it started inside the cleaner and
+moved out the moment a second tool needed it. "May I touch this device" has five
+genuinely different answers and neither tool owns them. It carries its own
+`AccessFailure`, which reaches the cleaner's hierarchy wrapped in one member,
+`AccessRefusedFailure` — a member that delegates rather than one that restates,
+so there is a single list of access sentences and a single mapper.
 
 `splash/` owns no data, so it has `ui/` alone — and it earns its beat by sweeping
 expired quarantine batches while it runs.
