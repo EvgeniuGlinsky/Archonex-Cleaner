@@ -184,6 +184,28 @@ void main() {
       expect(result?.durationMs, 120000);
     });
 
+    test('a variable-rate table is averaged over its own span', () async {
+      // The regression the probe found on a real machine. Reading part of a
+      // long `stts` and dividing by the *track's* duration counts a fraction of
+      // the frames against all of the seconds: a two-hour film came out at 0.96
+      // frames a second, looked twenty-five times more wasteful than it was,
+      // and the app offered to free twelve gigabytes it could not.
+      final MediaProbe? result = await probe(
+        mp4Bytes(
+          width: 1920,
+          height: 816,
+          codec: 'avc1',
+          durationSeconds: 7200,
+          frameRate: 24,
+          // Far more rows than the parser will read, which is the whole point.
+          sttsEntries: 20000,
+        ),
+      );
+
+      expect(result?.frameRate, closeTo(24, 0.5));
+      expect(result?.durationMs, 7200000);
+    });
+
     test('a QuickTime brand is still parsed, and named as one', () async {
       final MediaProbe? result = await probe(
         mp4Bytes(

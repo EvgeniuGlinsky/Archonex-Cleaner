@@ -228,14 +228,24 @@ class IsoBmffProbe {
   /// Frames per second, derived rather than stored.
   ///
   /// The format has no field for it. What it has is `stts`, a run-length table
-  /// of how long each sample lasts, and `mdhd`, the track's own timescale and
-  /// length — so the rate is the sample count over the duration. Summing the
-  /// run lengths is the whole cost, and the table is short even for a long
-  /// film because variable frame rate is rare.
+  /// pairing a sample count with the ticks each of those samples lasts, and
+  /// `mdhd`, which says how long a tick is.
   ///
-  /// `null` where either is missing, and the estimator refuses the file rather
-  /// than assuming thirty: a wrong frame rate moves the judgement by exactly
-  /// its own factor.
+  /// The rate is worked out **from the table's own span**, not from the track
+  /// duration, and that is the whole point of the arithmetic below. A film with
+  /// a variable frame rate has tens of thousands of entries; reading all of
+  /// them is a megabyte per file, and reading some of them and dividing by the
+  /// *track's* duration counts a fraction of the frames against all of the
+  /// seconds. That was a real bug and it was silent: a two-hour film read as
+  /// 0.96 frames a second, which made it look twenty-five times more wasteful
+  /// than it is, and the app offered to free twelve gigabytes it could not.
+  ///
+  /// Dividing the samples read by the time those same samples cover is exact
+  /// for a constant-rate file and a correct local average for the rest.
+  ///
+  /// `null` where the table or the header is missing, and the estimator refuses
+  /// the file rather than assuming thirty: a wrong frame rate moves the
+  /// judgement by exactly its own factor.
   static Future<double?> _frameRate(
     ByteSource source,
     _Box mdia,
@@ -251,9 +261,8 @@ class IsoBmffProbe {
     final Uint8List header = await source.read(mdhd.contentStart, 32);
     final int version = header.u8(0);
     final int timescale = version == 1 ? header.u32(20) : header.u32(12);
-    final int duration = version == 1 ? header.u64(24) : header.u32(16);
 
-    if (timescale <= 0 || duration <= 0) {
+    if (timescale <= 0) {
       return null;
     }
 
@@ -264,25 +273,30 @@ class IsoBmffProbe {
       return null;
     }
 
-    // Bounded: a corrupt count would otherwise ask for gigabytes. Anything past
-    // this is a variable-rate table long enough that the leading entries
-    // already describe the file.
-    const int maxEntries = 4096;
+    // Bounded, because the count comes out of the file and a corrupt one would
+    // ask for gigabytes. Truncating is safe here in a way it was not before:
+    // the answer is an average over whatever was read.
+    const int maxEntries = 8192;
     final int readCount = entryCount > maxEntries ? maxEntries : entryCount;
     final Uint8List entries =
         await source.read(stts.contentStart + 8, readCount * 8);
 
     int samples = 0;
+    int ticks = 0;
 
     for (int index = 0; index < readCount; index++) {
-      samples += entries.u32(index * 8);
+      final int count = entries.u32(index * 8);
+      final int delta = entries.u32(index * 8 + 4);
+
+      samples += count;
+      ticks += count * delta;
     }
 
-    if (samples <= 0) {
+    if (samples <= 0 || ticks <= 0) {
       return null;
     }
 
-    return samples / (duration / timescale);
+    return samples / (ticks / timescale);
   }
 
   // --------------------------------------------------------------- stills ---

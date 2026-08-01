@@ -71,7 +71,15 @@ class AppOptimizerPolicy {
   /// Deliberately on the pessimistic side. An estimate that is too low makes
   /// the app promise savings it will not deliver, and the number on the screen
   /// before the run is the one the user decides on.
-  static const double photoTargetBytesPerPixel = 0.18;
+  ///
+  /// Camera content at this quality is usually quoted at 1.0–1.5 bits per
+  /// pixel, which is 0.125–0.19 bytes. This sits above the top of that range
+  /// because grain defeats the transform and a real sensor produces grain:
+  /// `integration_test/optimize_probe_test.dart` re-encodes a picture with some
+  /// on it and prints the estimate as a percentage of what actually came out.
+  /// It was set from that figure and is worth re-reading whenever
+  /// [photoQuality] moves.
+  static const double photoTargetBytesPerPixel = 0.22;
 
   /// Above this, a lossily-compressed photo has room in it.
   ///

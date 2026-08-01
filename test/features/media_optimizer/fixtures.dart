@@ -228,12 +228,28 @@ List<int> _stsd(String codec, int width, int height) {
   return _fullBox('stsd', <int>[..._u32(1), ...entry]);
 }
 
-/// `stts` — a run-length table of sample durations, which is the only place the
-/// frame count can be got from.
-List<int> _stts(int sampleCount, int delta) => _fullBox(
-      'stts',
-      <int>[..._u32(1), ..._u32(sampleCount), ..._u32(delta)],
-    );
+/// `stts` — a run-length table pairing a sample count with the ticks those
+/// samples last, and the only place the frame rate can be got from.
+///
+/// [entries] splits the same samples across that many rows, which is what a
+/// variable-rate file looks like. The parser must average over the span of the
+/// rows it read rather than divide by the whole track's duration: doing the
+/// latter counted a fraction of the frames against all of the seconds, and a
+/// two-hour film came out at 0.96 frames a second.
+List<int> _stts(int sampleCount, int delta, {int entries = 1}) {
+  final int perEntry = (sampleCount / entries).ceil();
+  final List<int> rows = <int>[];
+  int remaining = sampleCount;
+
+  for (int index = 0; index < entries && remaining > 0; index++) {
+    final int count = remaining < perEntry ? remaining : perEntry;
+
+    rows.addAll(<int>[..._u32(count), ..._u32(delta)]);
+    remaining -= count;
+  }
+
+  return _fullBox('stts', <int>[..._u32(rows.length ~/ 8), ...rows]);
+}
 
 List<int> _videoTrak({
   required String codec,
@@ -242,10 +258,11 @@ List<int> _videoTrak({
   required int timescale,
   required int duration,
   required int sampleCount,
+  int sttsEntries = 1,
 }) {
   final List<int> stbl = _box('stbl', <int>[
     ..._stsd(codec, width, height),
-    ..._stts(sampleCount, duration ~/ sampleCount),
+    ..._stts(sampleCount, duration ~/ sampleCount, entries: sttsEntries),
   ]);
 
   return _box('trak', <int>[
@@ -281,9 +298,15 @@ Uint8List mp4Bytes({
   bool audioTrackFirst = false,
   bool largeBoxSize = false,
   String brand = 'isom',
+  int sttsEntries = 1,
 }) {
-  const int timescale = 1000;
+  // A timescale the frame rate divides exactly, which is what a real muxer
+  // picks — 24000 for 24 fps, 30000 for 29.97. A round 1000 would make the
+  // per-sample delta a truncated integer and the fixture's own frame rate a
+  // per cent out, which is the fixture lying rather than the parser.
+  final int timescale = (frameRate * 1000).round();
   final int duration = durationSeconds * timescale;
+  // Which makes the per-sample delta exactly 1000 ticks.
   final int sampleCount = (durationSeconds * frameRate).round();
 
   final List<int> moov = _box(
@@ -298,6 +321,7 @@ Uint8List mp4Bytes({
         timescale: timescale,
         duration: duration,
         sampleCount: sampleCount,
+        sttsEntries: sttsEntries,
       ),
     ],
     largeSize: largeBoxSize,
