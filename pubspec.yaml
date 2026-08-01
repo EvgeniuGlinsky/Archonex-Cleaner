@@ -70,6 +70,21 @@ dependencies:
   # `UnsupportedDeviceStorageRepo` answers `null` — see `device_storage/`.
   disk_space_2: ^1.0.13
 
+  # Re-encoding a photograph where there is no native encoder to do it — the
+  # two desktops and macOS. Pure Dart, so it needs nothing installed and runs
+  # everywhere, and slow enough that every call goes through `Isolate.run`:
+  # decoding a 12 MP JPEG takes about a second on a laptop and rather longer on
+  # a phone, which is why Android and iOS use the platform's own encoder
+  # instead. See `media_optimizer/data/encoders/`.
+  image: ^4.5.4
+
+  # And the native one, for the two platforms where a pure-Dart decode of a
+  # camera roll would take an afternoon. Wraps `Bitmap.compress` and
+  # `UIImage`, both hardware-assisted. `keepExif` is not optional here: the
+  # date and the orientation are the file, and a gallery reorders itself
+  # without them.
+  flutter_image_compress: ^2.4.0
+
   # Path arithmetic that knows which separator it is on. Named explicitly rather
   # than leaned on transitively, because `ProtectedPaths` is tested against
   # every platform's rules from whichever one CI runs on, and that needs
