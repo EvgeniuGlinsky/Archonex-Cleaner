@@ -62,6 +62,14 @@ class _IoCleanJob implements CleanJob {
   int _permanentCount = 0;
   int _skippedCount = 0;
 
+  /// What the OS would not part with, in the order it refused.
+  ///
+  /// The paths as well as the count, so the screen can keep those rows rather
+  /// than work out which ones from a number. The files a cancelled run never
+  /// reached join them at the end — from the screen's side the two are the same
+  /// thing, a file still sitting where it was found.
+  final Set<String> _remainingPaths = <String>{};
+
   @override
   Stream<CleanUpdate> get updates => _controller.stream;
 
@@ -77,6 +85,10 @@ class _IoCleanJob implements CleanJob {
 
     for (final JunkItem item in _items) {
       if (_isCancelling || _controller.isClosed) {
+        // Everything from here on was never attempted, and is on disk exactly
+        // as it was found. Owed to the screen for the same reason the skipped
+        // ones are: a row that vanishes is a file the user believes is gone.
+        _remainingPaths.addAll(_items.skip(done).map((item) => item.path));
         break;
       }
 
@@ -101,6 +113,7 @@ class _IoCleanJob implements CleanJob {
           quarantinedCount: _quarantinedCount,
           permanentCount: _permanentCount,
           skippedCount: _skippedCount,
+          remainingPaths: Set<String>.unmodifiable(_remainingPaths),
           batchId: batch?.id,
           wasCancelled: _isCancelling,
         ),
@@ -146,8 +159,11 @@ class _IoCleanJob implements CleanJob {
 
     // Locked by a running process, almost always. Counted rather than reported
     // per file: a Windows cleanup routinely skips a handful, and one banner per
-    // file would bury the result.
+    // file would bury the result. The path is kept alongside the count so the
+    // row survives — the count is what the user reads, the path is what the
+    // screen needs to know which row it belongs to.
     _skippedCount++;
+    _remainingPaths.add(item.path);
   }
 
   static Future<bool> _delete(JunkItem item) async {

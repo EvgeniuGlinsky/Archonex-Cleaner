@@ -396,11 +396,20 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     await _refreshStorage(emit);
   }
 
-  /// Drops everything the run took, keeping what it skipped.
+  /// Drops everything the run took, keeping everything it did not.
   ///
-  /// A skipped file is still on disk and still junk, so it stays on the list
-  /// where the next run can try again. Selection is dropped with the items,
-  /// because an exclusion naming a path that no longer exists is noise.
+  /// A file the OS refused, and a file a cancelled run never reached, are both
+  /// still on disk and still junk, so both stay on the list where the next run
+  /// can try again. Selection is dropped with the items, because an exclusion
+  /// naming a path that no longer exists is noise — and a row that survives
+  /// comes back selected, which is what makes the next run pick it up.
+  ///
+  /// Read off `report.remainingPaths` rather than off the exclusions. Keeping
+  /// only the excluded rows is what this did before, and it dropped every
+  /// skipped file: a skipped file was ticked, so it was never excluded, so it
+  /// vanished — while the result card went on saying "N could not be removed"
+  /// about rows that were no longer there. A cancelled run lost everything past
+  /// the file it stopped on the same way.
   static List<JunkGroup> _withoutDeleted(
     List<JunkGroup> groups,
     CleanReport report,
@@ -414,7 +423,11 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
           (group) => group.copyWith(
             items: group.isSelected
                 ? group.items
-                    .where((item) => group.isExcluded(item.path))
+                    .where(
+                      (item) =>
+                          group.isExcluded(item.path) ||
+                          report.remainingPaths.contains(item.path),
+                    )
                     .toList(growable: false)
                 : group.items,
             excludedPaths: const <String>{},

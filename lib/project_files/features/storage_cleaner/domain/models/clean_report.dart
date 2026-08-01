@@ -12,6 +12,7 @@ final class CleanReport extends Equatable {
     this.quarantinedCount = 0,
     this.permanentCount = 0,
     this.skippedCount = 0,
+    this.remainingPaths = const <String>{},
     this.batchId,
     this.wasCancelled = false,
   });
@@ -32,6 +33,20 @@ final class CleanReport extends Equatable {
   /// Files the OS would not part with — locked by a running process, almost
   /// always.
   final int skippedCount;
+
+  /// Everything the run handed back still sitting where it was found.
+  ///
+  /// Covers two groups the screen has to treat identically and [skippedCount]
+  /// only counts one of: files the OS refused, and files a cancelled run never
+  /// reached. Both are still on disk and still junk, and the list is what lets
+  /// the screen keep their rows instead of guessing from the counts.
+  ///
+  /// The paths rather than the count, because keeping a row needs to know which
+  /// row. The kept side rather than the removed one, because a finished run
+  /// leaves a handful and a finished run is the common case — the inverse would
+  /// be every path of a fifty-thousand-file cleanup, held for as long as the
+  /// result card is up.
+  final Set<String> remainingPaths;
 
   /// The batch the quarantined files went into, `null` when none did.
   final String? batchId;
@@ -57,6 +72,7 @@ final class CleanReport extends Equatable {
     int? quarantinedCount,
     int? permanentCount,
     int? skippedCount,
+    Set<String>? remainingPaths,
     String? batchId,
     bool? wasCancelled,
     bool clearBatchId = false,
@@ -66,6 +82,7 @@ final class CleanReport extends Equatable {
       quarantinedCount: quarantinedCount ?? this.quarantinedCount,
       permanentCount: permanentCount ?? this.permanentCount,
       skippedCount: skippedCount ?? this.skippedCount,
+      remainingPaths: remainingPaths ?? this.remainingPaths,
       batchId: clearBatchId ? null : batchId ?? this.batchId,
       wasCancelled: wasCancelled ?? this.wasCancelled,
     );
@@ -77,6 +94,7 @@ final class CleanReport extends Equatable {
         quarantinedCount,
         permanentCount,
         skippedCount,
+        remainingPaths,
         batchId,
         wasCancelled,
       ];

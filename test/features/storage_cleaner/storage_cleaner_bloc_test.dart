@@ -445,6 +445,61 @@ void main() {
       await bloc.close();
     });
 
+    // The result card says "N could not be removed" and the rows it is talking
+    // about used to be gone from the screen by the time it said it. A skipped
+    // file was ticked, so it was never excluded, so the filter that kept only
+    // excluded rows dropped it — and only a full rescan brought it back.
+    test('a file the OS refused stays on the list', () async {
+      cleanRepo.report = const CleanReport(
+        freedBytes: 100,
+        quarantinedCount: 1,
+        batchId: 'batch',
+        skippedCount: 1,
+        remainingPaths: <String>{'/tmp/b.tmp'},
+      );
+
+      final StorageCleanerBloc bloc = await scanned();
+      bloc.add(const CleanRequested());
+      await settle();
+
+      expect(bloc.state.report?.skippedCount, 1);
+      expect(
+        bloc.state.groups
+            .firstWhere((g) => g.category == JunkCategory.systemTemp)
+            .items
+            .map((item) => item.path),
+        <String>['/tmp/b.tmp'],
+      );
+      // Back to selected, so the next run can try it again.
+      expect(bloc.state.selectedCount, 1);
+      await bloc.close();
+    });
+
+    // The same bug from the other side: a run stopped after the first file
+    // never touched the second, and the second disappeared anyway.
+    test('a cancelled run keeps everything it never reached', () async {
+      cleanRepo.report = const CleanReport(
+        freedBytes: 100,
+        quarantinedCount: 1,
+        batchId: 'batch',
+        wasCancelled: true,
+        remainingPaths: <String>{'/tmp/b.tmp'},
+      );
+
+      final StorageCleanerBloc bloc = await scanned();
+      bloc.add(const CleanRequested());
+      await settle();
+
+      expect(
+        bloc.state.groups
+            .firstWhere((g) => g.category == JunkCategory.systemTemp)
+            .items
+            .map((item) => item.path),
+        <String>['/tmp/b.tmp'],
+      );
+      await bloc.close();
+    });
+
     test('a cancelled run still reports what it managed', () async {
       cleanRepo.report = const CleanReport(
         freedBytes: 100,
