@@ -4,32 +4,42 @@
 [![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Android%20%7C%20Linux%20%7C%20macOS-6c757d)](#platform-support)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-Finds the temporary files your device left behind, and deletes them — with a way
-back. Sibling of [Archonex Converter](https://github.com/EvgeniuGlinsky/Archonex-Converter),
+Two tools for one problem. **Clean up** finds the temporary files your device
+left behind and deletes them, with a way back. **Optimise** finds the photos and
+videos that weigh more than they need to and re-encodes them at the same
+quality. Sibling of [Archonex Converter](https://github.com/EvgeniuGlinsky/Archonex-Converter),
 same architecture, same offline promise: nothing leaves the device, and there is
 no server anywhere in this project.
 
 ## What it is
 
-A storage cleaner that is honest about two things most cleaners are not.
+A storage app that is honest about three things most are not.
 
 **What it can actually reach.** Every platform has a different answer, and on two
 of them the honest answer is "almost nothing". The app says so on the screen
 instead of scanning an empty sandbox and reporting the device clean — see
 [Platform support](#platform-support).
 
-**What deleting means.** Deleting is the one action here that cannot be taken
-back, and the rules deciding what counts as junk are heuristics written by hand.
-So a cleanup **moves files aside** rather than removing them, and they can be
-restored for seven days — see [The quarantine](#the-quarantine).
+**What deleting means.** Deleting is the one action in the cleaner that cannot be
+taken back, and the rules deciding what counts as junk are heuristics written by
+hand. So a cleanup **moves files aside** rather than removing them, and they can
+be restored for seven days — see [The quarantine](#the-quarantine).
+
+**What it is not worth doing.** The optimiser leaves most of what it finds alone
+and says why on the row. A tool that offers to re-encode everything is a tool
+that spends twenty minutes of battery to free three per cent — see
+[Optimising files](#optimising-files).
 
 ## Status
 
-The cleaner is implemented end to end: nine categories, five platform rule
-tables, the quarantine with restore, and 178 tests. A home screen lists the
-tools and draws how full the disk actually is. What is not built is the second
-tool — see [Roadmap](#roadmap). There is no release yet; the download table
-arrives with the first tag.
+Both tools are implemented end to end, and there are 345 tests. There is no
+release yet; the download table arrives with the first tag.
+
+The cleaner has nine categories, five platform rule tables and the quarantine
+with restore. The optimiser has four header parsers, four encoders, and a
+replace ladder that has never lost a file in any of the branches
+`io_media_optimize_repo_test.dart` drives through it. A home screen lists the
+two and draws how full the disk actually is.
 
 The app opens in the device's own language and never asks. The picker is a
 dialog behind the globe in the corner, for the case the device is wrong about
@@ -96,6 +106,149 @@ phone is carrying. `ProtectedPaths.exceptions` names those two directories, and
 `protected_paths_test.dart` checks that nothing beside them slips through with
 them.
 
+## Optimising files
+
+The second tool. It walks the folders you fill yourself, reads the header of
+every large photo and video, works out which are bigger than they need to be,
+and re-encodes those at the same resolution and the same visual quality.
+
+### How it decides
+
+One idea, and everything else follows from it: **compare how many bytes a file
+spends per unit of picture against how many that format needs.**
+
+Raw size says nothing — a 4 GB film can be efficient and a 40 MB clip wasteful —
+and bitrate alone says almost nothing either, because a 4K clip legitimately
+needs four times what 1080p does. Dividing by the pixel count, and for video by
+the frame rate as well, is what removes resolution from the question and leaves
+the part that is a judgement.
+
+For **videos** the measure is bits per pixel per frame, compared against the
+figure its own codec needs. Those live on `VideoCodec`, because the number *is*
+the codec's identity here:
+
+| Codec | Efficient at | Typically found at |
+| --- | --- | --- |
+| H.264 | 0.10 | 0.15–0.40 — every phone, every camera, every download |
+| HEVC | 0.06 | the target, and what a file already in it is measured against |
+| AV1 | 0.045 | better than anything this app can produce |
+| VP9 | 0.065 | close enough to the target to leave alone |
+| MPEG-4 part 2 | 0.20 | DivX, Xvid, camcorder `.avi` — the largest wins there are |
+| Motion JPEG | 0.60 | every frame a separate JPEG. Enormous |
+
+For **photographs** the measure is bytes per pixel. A JPEG above 0.30 was saved
+generously and has room in it; below that it is already tight. A PNG above 1.0
+is a photograph stored losslessly and becomes a JPEG; below that it is a
+screenshot of flat interface colour, which is the one case PNG wins outright.
+
+A file is only offered when the estimate clears **both** thresholds: at least
+20% smaller *and* at least a megabyte. The fraction alone would offer a
+two-megabyte photo for four hundred kilobytes; the megabyte alone would offer a
+four-gigabyte film for the two per cent that is its container overhead.
+
+### What it deliberately will not do
+
+- **Change the container on its own.** An MKV rewrapped as an MP4 copies the
+  video stream byte for byte into a different box and frees well under one per
+  cent. It is the conversion that looks like it should help and does not. MKV
+  and AVI files here become MP4 because they are being re-encoded anyway.
+- **Touch anything already in HEVC or AV1 at a sensible density.** This is the
+  branch that matters most on a phone. Without it the app spends twenty minutes
+  of battery and a hot device to free three per cent of one video.
+- **Reduce the resolution.** Every off-the-shelf video-compression package gets
+  its savings this way, and it is exactly the quality loss this tool exists to
+  avoid. The output is verified against the input's dimensions before it is
+  allowed to replace it.
+- **Convert a screenshot.** JPEG puts ringing around every letter of text and
+  saves very little doing it.
+- **Guess.** A file whose header will not say how long it is, or what encoded
+  it, is left alone and listed as such. "Probably H.264" is how a tool ends up
+  re-encoding an archive master.
+
+Everything refused stays on the list with its reason beside it. Somebody staring
+at a full disk needs to be told *why* nothing can be done about their largest
+video, and a tool that silently drops those rows looks exactly like a tool that
+failed to find them.
+
+### What it will not touch at all
+
+`data/rules/off_limits_paths.dart` is the paranoid file here, and it is the
+inverse of the cleaner's rather than a copy: the cleaner protects your own
+folders, and your own folders are this tool's entire subject. The walk starts
+only at Pictures, Videos, DCIM, Downloads and anything you hand over through the
+picker — never at a disk root — and this refuses findings inside them:
+
+- **Cloud mirrors** — OneDrive, Dropbox, Google Drive, iCloud, Nextcloud and the
+  rest, wherever they are mounted. Rewriting a synced file re-uploads every
+  byte, which on a metered connection is a bill, and on a service with version
+  history replaces a master with a lossy copy on every device on the account.
+  Matched as whole path segments, so `Dropbox Party 2019` is a holiday.
+- **Game and application data** — `SteamLibrary`, `steamapps`, `Program Files`,
+  `AppData`, Android's `Android/`. A game's `intro.mp4` is an asset with a
+  checksum beside it, not your video, and re-encoding it breaks the install in a
+  way that looks like a corrupt download.
+- **Working trees** — anything under `.git` or `node_modules`.
+- **The Photos library on macOS**, which is a database rather than a folder: a
+  rewritten original inside one is a photo the app can no longer open.
+- **This app's own quarantine**, so a restore gives back what was taken.
+
+### There is no undo, and why
+
+The cleaner can promise one because a cleanup moves files aside. This tool
+cannot: keeping the originals means the disk holding both copies, which frees
+nothing, and freeing space is what the button was pressed for. The confirmation
+dialog says so in as many words, along with how many files will end up under a
+different extension.
+
+What makes that safe rather than reckless is the order of six steps, per file:
+
+1. Encode to a hidden working file **beside the original**, on the same volume —
+   a rename across volumes is a copy, and copying four gigabytes to free two is
+   not a saving.
+2. **Verify.** Not just the size: an encoder that hit a corrupt frame and
+   stopped writes a file that is valid, smaller and a third as long. The header
+   is re-read and the dimensions and duration compared.
+3. Carry the modification time across, so a gallery does not reorder itself and
+   put every optimised photograph at the top as though taken today.
+4. Rename the original aside, rename the replacement into place, then delete the
+   original. Never a rename *over* a live file, which throws on Windows; never
+   delete-then-rename, which has a window where neither file exists.
+5. Any failure at any step deletes the working file and leaves the original
+   exactly where it is. One file refusing does not end a run of two hundred, and
+   the result card counts them.
+6. A run sweeps the leavings of a crashed one before it starts, restoring a
+   moved-aside original rather than deleting it.
+
+The figure the screen shows before a run is an **estimate** and is labelled one
+everywhere. The figure on the result card afterwards is measured from the disk.
+Both are shown, so an estimate that was badly wrong is visible rather than
+quietly replaced.
+
+### Encoders
+
+| Platform | Photos | Videos |
+| --- | --- | --- |
+| **Android** | the platform codec, hardware-assisted | `MediaCodec` → HEVC, written for this app |
+| **Windows** | pure Dart, in an isolate | whatever `ffmpeg` is on the `PATH` — and there may be none |
+| **Linux** | same | same |
+| **macOS** | same | same |
+| **iOS** | — | — |
+| **Web** | — | — |
+
+`MediaTranscoder.kt` is the only native code in this project, and it exists
+because nothing on pub does the job: every video-compression package available
+reduces the resolution to get its savings, none will write HEVC, and FFmpegKit
+was retired in January 2025. It extracts, decodes onto a surface, encodes as
+HEVC and muxes, keeping the width, height, frame rate, rotation and every other
+track.
+
+Whether a machine can encode is **asked**, not assumed from the platform. A
+Windows box can walk the whole disk, work out that six gigabytes of video would
+come back, and have no `ffmpeg`; the screen then finds the videos, reports what
+they would save, and says it cannot do it. Silently omitting them would report a
+device with nothing to optimise, which is the same lie as a cleaner reporting an
+empty sandbox as a clean phone.
+
 ## The quarantine
 
 A cleanup moves files into `<app support>/quarantine/<batch>/` and writes a
@@ -138,6 +291,20 @@ one.
 | **Android** | Full *or* app-only | Needs all-files access. Without it: the app's own caches, plus any folder handed over through the picker |
 | **iOS** | App-only, permanently | The container, and no permission exists that widens it |
 | **Web** | None | No file system. The screen says so on the first frame |
+
+The optimiser asks a narrower version of the same question, and gets a different
+answer in two places:
+
+| Platform | Optimiser |
+| --- | --- |
+| **Windows**, **Linux**, **macOS** | Photos always. Videos where `ffmpeg` is on the `PATH`, which the app checks rather than assumes |
+| **Android** | Both, with all-files access. Without it, only folders handed over through the picker — an app's own container holds no photographs you took |
+| **iOS** | Nothing. The photo library is behind an API that hands out copies rather than paths, and there is no permission that changes it |
+| **Web** | Nothing |
+
+`storage_access/` is its own feature because both tools ask this and neither owns
+the answer. It started inside the cleaner and moved out the day the optimiser
+needed it.
 
 ### Android
 
@@ -191,8 +358,9 @@ of adding them, and a test checks they were declared *and* dropped.
 
 | Idea | Notes |
 | --- | --- |
-| **Space saver** — find large files in an expensive codec and re-encode them | The second tool, and the reason `AppRoute` is shaped for a second entry. A 4 GB H.264 video is typically 20–40% smaller as HEVC or AV1 at visually identical quality, and the Converter already has the FFmpeg engine and the codec tables this would need. It is a large feature of its own: the methodology — which formats are worth converting, to what, and at what quality — has to exist before any of the UI does |
-| Large-file browser | The read-only half of the space saver: show what is big, sorted, and let the user decide. Cheap, and probably worth shipping first |
+| **A bundled video encoder** | The one real gap. On Windows and Linux the videos are found, measured and then not touched unless `ffmpeg` happens to be installed, which most people's machines are not. Bundling one means a hundred megabytes in an app whose purpose is freeing disk space, and shipping H.264 and HEVC encoders, which is a licensing question this project has no answer to yet |
+| **An iOS story** | Currently none, and honestly so. PhotoKit can replace an asset's rendition, which is a completely different API from anything here and the only route that exists |
+| **HEIF and AVIF output** | Another 30% over JPEG for photographs. Needs a native encoder on every platform, and the desktops have none |
 | Duplicate finder | Deliberately last. Hashing a terabyte to find two copies of a photo is a lot of disk for an answer that is usually "no", and doing it cheaply means a size-then-partial-hash-then-full-hash ladder |
 
 ## Stack
@@ -207,6 +375,11 @@ of adding them, and a test checks they were declared *and* dropped.
 - [`file_picker`](https://pub.dev/packages/file_picker) — the folder-picker fallback. Nothing is ever picked *for* cleaning; the app only asks where it may look
 - [`shared_preferences`](https://pub.dev/packages/shared_preferences) — the language chosen by hand, and nothing else. The quarantine index is deliberately not here but a file beside its data
 - [`disk_space_2`](https://pub.dev/packages/disk_space_2) — how full the disk is, which `dart:io` cannot answer on any platform. Chosen over `disk_space_plus` and `storage_space`, which are Android and iOS only; this fork also covers Windows and Linux, and on macOS and web the ring is simply not drawn
+- [`image`](https://pub.dev/packages/image) — re-encoding a photograph on the three desktops, in an isolate. Pure Dart, so it needs nothing installed, which matters because the desktop video story is already "you may not have `ffmpeg`"
+- [`flutter_image_compress`](https://pub.dev/packages/flutter_image_compress) — the same job on Android, through the platform codec. Roughly an order of magnitude faster, which is the difference between a camera roll taking a minute and taking an afternoon
+
+Nothing on pub is used for video, and the reason is in
+[Optimising files](#encoders).
 
 No network dependency of any kind. The app issues no requests, rather than
 issuing one nobody counted.
@@ -229,7 +402,7 @@ lib/
 ├── core/
 │   ├── app/                         # root widget, app-wide providers
 │   ├── constants/                   # spacing, radius, durations, byte units,
-│   │                                #   clean policy, quarantine policy
+│   │                                #   clean, quarantine and optimiser policy
 │   ├── router/                      # AppRoute enum + GoRouter config
 │   ├── theme/                       # app_colors, app_typography, app_theme
 │   ├── utils/
@@ -240,6 +413,7 @@ lib/
     ├── device_storage/              # how full the disk is. No screen, one widget
     ├── language_selection/          # the globe dialog and what it remembers
     ├── storage_access/              # what this platform lets the app touch
+    ├── media_optimizer/             # the second tool
     ├── storage_cleaner/             # the first tool
     └── quarantine/                  # where a cleanup puts things for seven days
         ├── data/                    # repo implementations, use cases, platform adapters
@@ -263,7 +437,7 @@ It is the mandatory standard for file structure, naming and coding style in this
 repository, not a suggestion. `CLAUDE.md` beside it owns the rules whose
 violation nothing catches at build time.
 
-### Where the cleaner lives
+### Where the two tools live
 
 `lib/project_files/features/storage_cleaner/` is the reference implementation of
 the pattern, and it is split so that the dangerous part is the part with no I/O
@@ -284,6 +458,26 @@ in it:
 `storage_access/` beside it is the same shape at a smaller size, and its
 `data/access/` holds one implementation per platform answer: Android's real one,
 the desktop constant, the sandbox constant, the web refusal.
+
+`lib/project_files/features/media_optimizer/` is the same split again, and it
+adds two folders the cleaner has no use for:
+
+- `data/rules/` — `SavingsEstimator`, which is the feature. One pure function
+  deciding whether a file is worth re-encoding and into what, with more tests on
+  it than anything else in the project. Beside it `OffLimitsPaths` and
+  `OptimizeGuard`, and per-platform media roots
+- `data/probes/` — four header parsers over a `ByteSource` rather than a file,
+  which is what keeps them pure and their fixtures readable. An MP4's index is
+  routinely written *after* gigabytes of frames, so they seek; a `.mp4` holding
+  a Matroska stream is common enough that they dispatch on magic bytes and never
+  on the extension
+- `data/encoders/` — the `MediaEncoder` seam and its four implementations, plus
+  `UnavailableEncoder` for the platforms and machines that have none. It is the
+  interface every test fakes, because none of the real four run under
+  `flutter test`
+- `data/file_system/` — the walker, and `IoMediaOptimizeRepo`, which holds the
+  replace ladder and is the one place in the app where being wrong loses
+  somebody's photograph
 
 `lib/project_files/features/quarantine/` is its own feature rather than a
 directory inside the cleaner, because the dependency has to point one way: the
@@ -329,7 +523,7 @@ flutter analyze
 flutter test
 ```
 
-178 tests, concentrated where being wrong is expensive:
+345 tests, concentrated where being wrong is expensive:
 
 - **`protected_paths_test.dart`** is the most important file in the repository. It
   checks all five platforms' lists — case sensitivity, `..` normalisation, the
@@ -352,9 +546,33 @@ flutter test
   the first has no ARB, English where neither does, and the hand-made choice
   that outranks all three. Plus a store that will not read, which must cost the
   choice and not the launch.
-- Bloc tests for all three screens, and view tests covering the confirmation
-  dialog, the narrowed and sandboxed access notices, the web refusal, the tool
-  that is not built refusing to open, and a 360 dp phone in all three locales —
+- **`savings_estimator_test.dart`** is the optimiser's equivalent, and the
+  largest single file of the two. Every branch of the methodology written out as
+  arithmetic anybody can check, from realistic figures rather than round ones: a
+  camera JPEG at 0.5 bytes per pixel, a screenshot at 0.3, a phone clip at 0.15
+  bits per pixel per frame, a 4 GB AV1 file left alone. The whole question is
+  whether the thresholds sit in the right place for files people actually have,
+  and a test using a 1000-byte photo would pass whatever the numbers were.
+- `off_limits_paths_test.dart` — the same paranoia as `protected_paths_test.dart`
+  applied to the inverse list, including the case that most matters: the camera
+  roll, which the cleaner refuses outright and this tool exists to work inside.
+- `media_probes_test.dart` — the header parsers against files built byte by byte
+  in `fixtures.dart`. A checked-in binary would be shorter and worthless, because
+  the risk in a header parser is an offset being wrong in a way that still yields
+  a plausible number.
+- `io_media_optimize_repo_test.dart` — the replace ladder, against a real
+  temporary directory with a fake encoder. Every failure branch, not just the
+  happy one: an output too large, wrong dimensions, unparseable, an encoder that
+  threw, a destination name taken, a cancel mid-run, and the leavings of a run
+  killed between the two renames. The question it asks each time is the same —
+  given a file that came out badly, does the original survive?
+- `arb_parity_test.dart` — key sets, placeholder sets including the ones inside
+  ICU plural branches, and long strings left identical to the English by
+  copy-paste. `gen-l10n` fills a missing key from the template and says nothing,
+  so before this the failure was completely silent.
+- Bloc tests for all four screens, and view tests covering both confirmation
+  dialogs, the narrowed and sandboxed access notices, the web refusal, the
+  "no encoder on this machine" notice, and a 360 dp phone in all three locales —
   the layout bug that only a device reports is now the one thing several tests
   exist to catch.
 
@@ -365,8 +583,10 @@ none is to be added.
 `integration_test/` is separate and **not** part of CI — it needs a real device:
 
 ```bash
-flutter test integration_test/scan_probe_test.dart -d windows
-flutter test integration_test/scan_probe_test.dart -d <android-device-id>
+flutter test integration_test/scan_probe_test.dart     -d windows
+flutter test integration_test/optimize_probe_test.dart -d windows
+flutter test integration_test/scan_probe_test.dart     -d <android-device-id>
+flutter test integration_test/optimize_probe_test.dart -d <android-device-id>
 ```
 
 The **scan probe** pumps the real `ArchonexApp` against the real machine and
@@ -396,6 +616,22 @@ categories in 9 seconds — and on the first run, 696 MB of it under *This app's
 cache*, which is how the desktop `getTemporaryDirectory()` mislabelling above was
 found. A unit test could not have: the rule was correct about the path it named,
 and wrong about what that path is.
+
+The **optimise probe** has two halves. The *survey* walks the real media folders,
+prints what it found and what it thinks could be saved, and **writes nothing**.
+The *round trip* builds its own picture in a temporary directory and actually
+re-encodes it, which is the only way to find out whether the encoders do what
+the Dart side believes and whether the estimates are anywhere near the truth.
+
+It earned its place on the first run too, and more expensively. A two-hour film
+was reported at **0.96 frames a second** — an MP4 does not store its frame rate,
+and the parser was reading part of a variable-rate sample table and dividing by
+the whole track's duration. The file looked twenty-five times more wasteful than
+it is and the app offered to free 12 GB it could not. Nothing in `test/` could
+have caught it: the fixture had a single-row table, because a fixture written by
+whoever wrote the parser shares its assumptions. There is a twenty-thousand-row
+one now, and the same run also found the bytes-per-pixel estimate leaning
+optimistic, which is the wrong direction for a promise.
 
 ## CI
 
