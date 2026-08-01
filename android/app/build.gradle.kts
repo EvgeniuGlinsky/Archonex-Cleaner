@@ -1,8 +1,26 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+// Signing credentials, kept out of the repository and out of this file.
+//
+// `key.properties` is listed in `android/.gitignore` along with `*.jks`, so a
+// clone never carries the key. It is absent far more often than it is present —
+// on a fresh checkout, on a contributor's machine, in the analyse-and-test CI
+// job — and every one of those still has to be able to build. See
+// `docs/RELEASING.md` for how to create it and how the release workflow feeds
+// it in from a secret.
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+val hasKeystore = keystorePropertiesFile.exists()
+
+if (hasKeystore) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
 }
 
 android {
@@ -31,11 +49,46 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasKeystore) {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Falls back to the debug key rather than failing the build. A
+            // debug-signed release is fine to run and impossible to publish —
+            // no store accepts one — so the fallback costs nothing and keeps
+            // `flutter build apk --release` working for anyone who just cloned
+            // the repository. Publishing without a key is caught by the store,
+            // not by us guessing on their behalf.
+            signingConfig = if (hasKeystore) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
+
+            // R8 on both counts, worth 3.1 MB of a 22.4 MB arm64 APK — a
+            // seventh of it, measured rather than assumed, because most of what
+            // is in a Flutter release is the engine and the AOT snapshot and
+            // neither of those is something R8 can touch.
+            //
+            // The app ships no reflection of its own, and what does need
+            // keeping is in `proguard-rules.pro` — the platform channel
+            // surface, which Kotlin reaches by the string name of a method and
+            // which looks unreachable from the bytecode.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
