@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
 
 /// The most important test in the project.
 ///

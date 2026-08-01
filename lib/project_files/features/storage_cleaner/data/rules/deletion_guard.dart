@@ -1,6 +1,6 @@
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
 
 /// The four questions asked about every single finding, in order, before it is
 /// allowed onto the list the user sees.

@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:archonex_cleaner/core/router/app_route.dart';
-import 'package:archonex_cleaner/core/theme/app_theme.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/home_view.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/core/router/app_route.dart';
+import 'package:storage_cleaner/core/theme/app_theme.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/home_view.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 import '../device_storage/fakes.dart';
 import '../language_selection/fakes.dart';
@@ -80,7 +80,7 @@ void main() {
       ],
     );
 
-    // The `ValueListenableBuilder` and the `locale:` are what `ArchonexApp`
+    // The `ValueListenableBuilder` and the `locale:` are what `StorageCleanerApp`
     // does, reproduced here on purpose: switching the language is only finished
     // when the app has redrawn in it, and that last step lives above the screen
     // rather than inside it.

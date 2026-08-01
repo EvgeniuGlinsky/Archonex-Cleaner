@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// Everything the cleaner screen can be asked to do, in one bundle.
 ///

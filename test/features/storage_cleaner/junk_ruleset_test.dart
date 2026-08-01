@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/core/constants/app_clean_policy.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_ruleset.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/core/constants/app_clean_policy.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_ruleset.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 void main() {
   const CleanerRoots windowsRoots = CleanerRoots(

@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/optimize_guard.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/optimize_guard.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// The four questions, asked one at a time.
 ///

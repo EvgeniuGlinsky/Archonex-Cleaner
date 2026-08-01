@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 
 /// What the app is willing to hold onto after the user has said delete.
 ///

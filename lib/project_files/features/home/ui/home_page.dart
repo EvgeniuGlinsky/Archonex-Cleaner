@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/home_view.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/home_view.dart';
 
 /// Wires the home dependencies. No UI lives here.
 ///

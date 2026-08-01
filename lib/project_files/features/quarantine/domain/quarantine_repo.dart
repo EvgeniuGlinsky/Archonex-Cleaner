@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
 
 /// Holds what a cleanup moved aside, and puts it back.
 ///
 /// It outlives the cleaner screen — a batch made this morning has to still be
 /// there this evening — so it is one of the two objects constructed in
-/// `archonex_app.dart` rather than in a page.
+/// `storage_cleaner_app.dart` rather than in a page.
 ///
 /// [batchesListenable] rather than a `Stream`: the quarantine screen and the
 /// banner on the cleaner screen both show the same list and both have to

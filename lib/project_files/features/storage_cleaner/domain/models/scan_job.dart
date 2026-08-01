@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
 
 /// One run of the scanner, exposed as a stream that can be stopped.
 ///

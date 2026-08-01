@@ -1,8 +1,8 @@
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/unsupported_junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/unsupported_junk_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/unsupported_junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/unsupported_junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 
 /// Web. There is no file system, so both are the refusing siblings.
 ///

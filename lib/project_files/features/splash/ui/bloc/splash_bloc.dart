@@ -2,9 +2,9 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/core/constants/app_durations.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/use_cases/restore_language_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/purge_expired_quarantine_use_case.dart';
+import 'package:storage_cleaner/core/constants/app_durations.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/use_cases/restore_language_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/purge_expired_quarantine_use_case.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';

@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// One cleanup's open batch, handed to the deleter for the length of the run.
 ///

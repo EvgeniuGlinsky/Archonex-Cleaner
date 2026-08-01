@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// The file formats the walker recognises, and what each one is a container
 /// for.

@@ -1,6 +1,6 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
 
 /// Rewrites the files a scan found, and finds nothing itself.
 ///

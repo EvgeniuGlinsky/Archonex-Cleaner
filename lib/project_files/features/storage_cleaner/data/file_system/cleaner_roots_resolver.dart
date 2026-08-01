@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
 
 /// Turns "this machine" into the paths the rule tables are written against.
 ///

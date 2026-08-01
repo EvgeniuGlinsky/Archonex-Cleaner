@@ -6,30 +6,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/file_byte_source.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/media_roots_resolver.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/media_probe_reader.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_rule.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_ruleset.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/savings_estimator.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/file_byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/media_roots_resolver.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/media_probe_reader.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_rule.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_ruleset.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/savings_estimator.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Runs the optimiser against the real machine.
 ///
@@ -209,7 +209,7 @@ void main() {
     late Directory workspace;
 
     setUp(() async {
-      workspace = await Directory.systemTemp.createTemp('archonex_probe_');
+      workspace = await Directory.systemTemp.createTemp('storage_cleaner_probe_');
     });
 
     tearDown(() async {

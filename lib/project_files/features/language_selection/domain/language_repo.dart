@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 /// Contract for reading and storing the app language.
 abstract interface class LanguageRepo {

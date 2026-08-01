@@ -1,7 +1,7 @@
 {
   "@@locale": "zh",
 
-  "appName": "Archonex Cleaner",
+  "appName": "Storage Cleaner",
   "appTagline": "找回设备已经忘掉的存储空间。",
 
   "languageDialogTitle": "语言",
@@ -79,7 +79,7 @@
   },
 
   "categoryAppCacheTitle": "本应用的缓存",
-  "categoryAppCacheSubtitle": "Archonex Cleaner 自己的临时文件，删除始终安全。",
+  "categoryAppCacheSubtitle": "本应用自己生成的临时文件，删除始终安全。",
   "categorySystemTempTitle": "临时文件",
   "categorySystemTempSubtitle": "安装程序和其他应用留在系统临时目录里的东西。",
   "categoryThumbnailsTitle": "缩略图",
@@ -99,7 +99,7 @@
   "categorySecondLookBadge": "请先确认",
 
   "accessNarrowedTitle": "仅限本应用自己的文件",
-  "accessNarrowedBody": "没有「所有文件」权限，扫描只能覆盖 Archonex Cleaner 自己的缓存。授予权限才能看到整台设备。",
+  "accessNarrowedBody": "没有「所有文件」权限，扫描只能覆盖本应用自己的缓存。授予权限才能看到整台设备。",
   "accessGrantLabel": "授予权限",
   "accessSettingsLabel": "打开设置",
   "accessDeniedPermanentBody": "权限已被永久拒绝。仍可在系统设置的特殊权限中重新打开。",

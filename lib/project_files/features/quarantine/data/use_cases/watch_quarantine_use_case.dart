@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 
 /// Adapts the repository's `ValueListenable` to the `Stream` a bloc lives on.
 ///

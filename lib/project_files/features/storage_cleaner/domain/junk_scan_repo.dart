@@ -1,6 +1,6 @@
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
 
 /// Finds junk. Deletes nothing.
 ///

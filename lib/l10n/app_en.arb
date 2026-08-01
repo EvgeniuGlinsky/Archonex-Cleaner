@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appName": "Archonex Cleaner",
+  "appName": "Storage Cleaner",
   "appTagline": "Take back the space your device forgot about.",
 
   "languageDialogTitle": "Language",
@@ -79,7 +79,7 @@
   },
 
   "categoryAppCacheTitle": "This app's cache",
-  "categoryAppCacheSubtitle": "Archonex Cleaner's own temporary files. Always safe.",
+  "categoryAppCacheSubtitle": "Temporary files this app made itself. Always safe.",
   "categorySystemTempTitle": "Temporary files",
   "categorySystemTempSubtitle": "What installers and applications left in the system temp folder.",
   "categoryThumbnailsTitle": "Thumbnails",
@@ -99,7 +99,7 @@
   "categorySecondLookBadge": "Check first",
 
   "accessNarrowedTitle": "Only this app's own files",
-  "accessNarrowedBody": "Without all-files access the scan is limited to Archonex Cleaner's own cache. Grant it to see the whole device.",
+  "accessNarrowedBody": "Without all-files access the scan is limited to this app's own cache. Grant it to see the whole device.",
   "accessGrantLabel": "Grant access",
   "accessSettingsLabel": "Open settings",
   "accessDeniedPermanentBody": "Access was refused for good. It can still be turned on in the system settings, under Special app access.",

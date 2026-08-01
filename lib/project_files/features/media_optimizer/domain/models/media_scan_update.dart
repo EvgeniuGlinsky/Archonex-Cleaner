@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// Everything a running scan can say while it runs.
 ///

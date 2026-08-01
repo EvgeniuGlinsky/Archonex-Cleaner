@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_radius.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/mappers/app_tool_ui.dart';
+import 'package:storage_cleaner/core/constants/app_radius.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/mappers/app_tool_ui.dart';
 
 /// One thing the app can do, as a card big enough to be the answer to "what now".
 ///

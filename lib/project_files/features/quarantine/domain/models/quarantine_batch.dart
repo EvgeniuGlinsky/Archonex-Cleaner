@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
+import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
 
 /// One cleanup's worth of files, kept together so an undo is one action.
 ///

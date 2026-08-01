@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// Which kinds of file this machine can actually re-encode, asked once when the
 /// screen opens.

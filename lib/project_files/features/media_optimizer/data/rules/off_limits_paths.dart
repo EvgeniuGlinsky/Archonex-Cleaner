@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
 
 /// The list of places no file is ever rewritten, whatever a rule says.
 ///

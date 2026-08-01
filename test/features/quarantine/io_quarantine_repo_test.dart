@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/file_system/io_quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/file_system/io_quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// The one data-layer class with a test, and it earns it: this is what stands
 /// between a cleanup and a set of files nobody can put back. It runs against a
@@ -24,7 +24,7 @@ void main() {
   late DateTime now;
 
   setUp(() async {
-    root = await Directory.systemTemp.createTemp('archonex_quarantine_test_');
+    root = await Directory.systemTemp.createTemp('storage_cleaner_quarantine_test_');
     workspace = Directory(p.join(root.path, 'workspace'));
     await workspace.create();
     now = DateTime.utc(2026, 7, 31, 12);

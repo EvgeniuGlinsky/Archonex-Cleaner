@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_clean_policy.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/deletion_guard.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
+import 'package:storage_cleaner/core/constants/app_clean_policy.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/deletion_guard.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
 
 /// The four questions, one at a time.
 ///

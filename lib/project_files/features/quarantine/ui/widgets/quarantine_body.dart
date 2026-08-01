@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/widgets/quarantine_batch_tile.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
+import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_batch_tile.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
 
 /// State and callbacks in, one list out.
 class QuarantineBody extends StatelessWidget {

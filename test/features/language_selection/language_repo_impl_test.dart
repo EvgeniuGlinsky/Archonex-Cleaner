@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 import 'fakes.dart';
 

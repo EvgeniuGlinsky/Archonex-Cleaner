@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 
 class RestoreLanguageUseCase {
   const RestoreLanguageUseCase(this._repo);

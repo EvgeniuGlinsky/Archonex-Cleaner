@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 
 /// Turns a byte count into the short form shown next to file names.
 class FileSizeFormatter {

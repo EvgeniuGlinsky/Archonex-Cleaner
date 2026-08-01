@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:archonex_cleaner/core/router/app_route.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_header.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_layout.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/home_body.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/home_callbacks.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
+import 'package:storage_cleaner/core/router/app_route.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/widgets/home_body.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/widgets/home_callbacks.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
 
 /// The screen the app opens on. Listeners, builders and callbacks.
 ///

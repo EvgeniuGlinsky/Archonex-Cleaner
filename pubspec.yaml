@@ -1,5 +1,5 @@
-name: archonex_cleaner
-description: "Archonex Cleaner — finds the temporary files your device left behind and gets rid of them, with a way back."
+name: storage_cleaner
+description: "Storage Cleaner — finds the temporary files your device left behind and gets rid of them, with a way back, and shrinks photos and videos without touching their resolution."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

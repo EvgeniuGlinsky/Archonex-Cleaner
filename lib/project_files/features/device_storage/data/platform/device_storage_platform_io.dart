@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/device_storage/data/file_system/plugin_device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/file_system/plugin_device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
 
 /// Four of the five platforms with a file system can be measured.
 ///

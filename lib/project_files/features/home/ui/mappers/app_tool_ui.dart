@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/home/domain/models/app_tool.dart';
 
 /// Everything a widget renders about an [AppTool].
 ///

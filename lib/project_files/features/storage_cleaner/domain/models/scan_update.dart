@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// What a running scan reports.
 sealed class ScanUpdate {

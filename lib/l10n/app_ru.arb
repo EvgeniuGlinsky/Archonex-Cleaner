@@ -1,7 +1,7 @@
 {
   "@@locale": "ru",
 
-  "appName": "Archonex Cleaner",
+  "appName": "Storage Cleaner",
   "appTagline": "Верните место, о котором устройство забыло.",
 
   "languageDialogTitle": "Язык",
@@ -79,7 +79,7 @@
   },
 
   "categoryAppCacheTitle": "Кэш этого приложения",
-  "categoryAppCacheSubtitle": "Временные файлы самого Archonex Cleaner. Удалять безопасно всегда.",
+  "categoryAppCacheSubtitle": "Временные файлы, созданные самим приложением. Удалять безопасно всегда.",
   "categorySystemTempTitle": "Временные файлы",
   "categorySystemTempSubtitle": "То, что установщики и программы оставили в системной папке temp.",
   "categoryThumbnailsTitle": "Миниатюры",
@@ -99,7 +99,7 @@
   "categorySecondLookBadge": "Проверьте",
 
   "accessNarrowedTitle": "Только собственные файлы приложения",
-  "accessNarrowedBody": "Без доступа ко всем файлам сканирование ограничено кэшем самого Archonex Cleaner. Выдайте доступ, чтобы видеть всё устройство.",
+  "accessNarrowedBody": "Без доступа ко всем файлам сканирование ограничено собственным кэшем приложения. Выдайте доступ, чтобы видеть всё устройство.",
   "accessGrantLabel": "Выдать доступ",
   "accessSettingsLabel": "Открыть настройки",
   "accessDeniedPermanentBody": "В доступе отказано окончательно. Включить его всё ещё можно в системных настройках, в разделе особых разрешений.",

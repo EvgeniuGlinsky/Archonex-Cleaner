@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:archonex_cleaner/core/constants/app_durations.dart';
-import 'package:archonex_cleaner/core/router/app_route.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/home_page.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/media_optimizer_page.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/quarantine_page.dart';
-import 'package:archonex_cleaner/project_files/features/splash/ui/splash_page.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_page.dart';
+import 'package:storage_cleaner/core/constants/app_durations.dart';
+import 'package:storage_cleaner/core/router/app_route.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/home_page.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_page.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/quarantine_page.dart';
+import 'package:storage_cleaner/project_files/features/splash/ui/splash_page.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_page.dart';
 
 /// Builds the application router.
 ///

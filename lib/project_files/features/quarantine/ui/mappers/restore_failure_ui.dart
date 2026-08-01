@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
 
 /// The one place a `RestoreFailure` becomes a sentence.
 ///

@@ -2,20 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_update.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
 
 /// Hand-written fakes for the cleaner. There is no mocking package in this
 /// project and none is to be added — see `CLAUDE.md`.

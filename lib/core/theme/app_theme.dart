@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_radius.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
-import 'package:archonex_cleaner/core/theme/app_typography.dart';
+import 'package:storage_cleaner/core/constants/app_radius.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/theme/app_typography.dart';
 
 /// Assembles the two halves of the design into the theme the app runs on.
 ///

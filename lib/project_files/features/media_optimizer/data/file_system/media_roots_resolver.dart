@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Works out where this machine keeps the user's photographs and videos.
 ///

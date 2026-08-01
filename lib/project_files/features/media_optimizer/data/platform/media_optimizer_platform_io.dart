@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/android_video_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/dart_image_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/ffmpeg_video_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/native_image_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/io_media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/io_media_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/android_video_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/dart_image_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/ffmpeg_video_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/native_image_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/io_media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/io_media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
 
 /// Android and the three desktops. iOS compiles against `dart:io` too and gets
 /// the refusals, because its file system holds nothing the user put there.

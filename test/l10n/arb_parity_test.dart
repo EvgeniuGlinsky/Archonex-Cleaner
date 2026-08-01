@@ -114,7 +114,7 @@ void main() {
       });
 
       test('$locale left nothing untranslated by copy-paste', () {
-        // Not every identical string is a mistake — "Archonex Cleaner" is the
+        // Not every identical string is a mistake — "Storage Cleaner" is the
         // same everywhere — so this only looks at the ones long enough that
         // matching by accident is not plausible.
         const int longEnoughToBeProse = 25;

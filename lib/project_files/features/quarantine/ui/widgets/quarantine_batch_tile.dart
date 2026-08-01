@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_radius.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/core/constants/app_radius.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 
 /// One cleanup, with the two things that can be done to it.
 ///

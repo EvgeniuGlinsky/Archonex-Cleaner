@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_radius.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
-import 'package:archonex_cleaner/core/theme/app_typography.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_group.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/mappers/junk_category_ui.dart';
+import 'package:storage_cleaner/core/constants/app_radius.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/theme/app_typography.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_group.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/mappers/junk_category_ui.dart';
 
 /// One category: what it is, how much of it there is, and every row inside.
 ///

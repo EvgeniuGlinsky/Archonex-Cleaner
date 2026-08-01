@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// Everything the optimiser screen can be asked to do, in one bundle.
 ///

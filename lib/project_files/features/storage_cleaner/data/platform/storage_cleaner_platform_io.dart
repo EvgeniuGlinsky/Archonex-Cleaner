@@ -1,8 +1,8 @@
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 
 /// Android, iOS, macOS, Windows and Linux — everything with a file system.
 ///
@@ -16,7 +16,7 @@ import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/j
 JunkScanRepo createJunkScanRepo() => IoJunkScanRepo();
 
 /// Takes the quarantine rather than building one: it is an app-wide singleton,
-/// constructed in `archonex_app.dart` because the quarantine screen reads the
+/// constructed in `storage_cleaner_app.dart` because the quarantine screen reads the
 /// same object this writes into.
 JunkCleanRepo createJunkCleanRepo(QuarantineRepo quarantine) =>
     IoJunkCleanRepo(quarantine: quarantine);

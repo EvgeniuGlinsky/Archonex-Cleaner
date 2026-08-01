@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 
 /// Reads how full the device is.
 ///

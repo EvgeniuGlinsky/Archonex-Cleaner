@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/ui/mappers/storage_access_ui.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_group.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/clean_result_card.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/junk_category_tile.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/quarantine_banner.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/scan_summary_line.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/storage_cleaner_callbacks.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/ui/mappers/storage_access_ui.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_group.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/clean_result_card.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/junk_category_tile.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/quarantine_banner.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/scan_summary_line.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/storage_cleaner_callbacks.dart';
 
 /// State and callbacks in, one scrolling column out.
 ///

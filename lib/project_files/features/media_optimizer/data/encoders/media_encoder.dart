@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 
 /// One way of turning a file into a smaller file, whatever is behind it.
 ///

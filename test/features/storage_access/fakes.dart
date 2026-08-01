@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Hand-written fake for the access question. There is no mocking package in
 /// this project and none is to be added — see `CLAUDE.md`.

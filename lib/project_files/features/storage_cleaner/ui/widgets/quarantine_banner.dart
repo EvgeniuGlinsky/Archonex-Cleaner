@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_radius.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/core/constants/app_radius.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
 
 /// The reminder that the last cleanup can still be taken back.
 ///

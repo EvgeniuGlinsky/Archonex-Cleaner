@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_rule.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_rule.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// The only place a platform is asked which media folders it has.
 ///

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/purge_quarantine_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/purge_quarantine_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
 
 import '../storage_cleaner/fakes.dart';
 

@@ -4,14 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/file_system/quarantine_manifest.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/file_system/quarantine_manifest.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_entry.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// The undo, on `dart:io`.
 ///

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
-import 'package:archonex_cleaner/core/theme/app_typography.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/mappers/optimize_verdict_ui.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/theme/app_typography.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/mappers/optimize_verdict_ui.dart';
 
 /// One file, and either what would be saved or why nothing will be.
 ///

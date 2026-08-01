@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_breakpoints.dart';
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/constants/app_breakpoints.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
 
 /// Positioning-only layout shared by the full-page flow screens.
 ///

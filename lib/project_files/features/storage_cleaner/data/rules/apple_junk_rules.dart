@@ -1,8 +1,8 @@
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// Where the two Apple platforms leave things, and why they get different
 /// answers from one file.
@@ -29,12 +29,12 @@ class AppleJunkRules {
       JunkRule(
         root: roots.appCache,
         category: JunkCategory.appCache,
-        label: 'Archonex Cleaner',
+        label: 'Storage Cleaner',
       ),
       JunkRule(
         root: roots.appCache,
         category: JunkCategory.emptyFolders,
-        label: 'Archonex Cleaner',
+        label: 'Storage Cleaner',
         mode: JunkRuleMode.emptyDirectories,
       ),
     ];

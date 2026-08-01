@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
 
 /// One walk of the user's media folders, exposed as a stream that can be
 /// stopped.

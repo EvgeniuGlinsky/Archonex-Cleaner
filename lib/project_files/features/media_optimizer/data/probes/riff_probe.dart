@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
 /// AVI and WebP, which have nothing in common except the box they arrive in.
 ///

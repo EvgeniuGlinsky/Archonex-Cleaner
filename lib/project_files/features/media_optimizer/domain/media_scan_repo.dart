@@ -1,6 +1,6 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Finds the user's large photos and videos and works out what could be done
 /// about each, and rewrites nothing.

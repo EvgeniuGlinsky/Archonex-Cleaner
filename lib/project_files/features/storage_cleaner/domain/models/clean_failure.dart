@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
 
 /// Everything that can go wrong between asking for a scan and getting the
 /// space back.

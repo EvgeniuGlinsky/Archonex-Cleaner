@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// What the screen says about the access it has.
 ///

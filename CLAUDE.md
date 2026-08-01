@@ -69,8 +69,8 @@
 
 ## Build-time configuration
 
-- **Add one**: `static const X = String.fromEnvironment('ARCHONEX_X', defaultValue: …)` read once, on the platform boundary or in `lib/core/constants/`, with the reason for the default written next to it.
-- **Use it**: `--dart-define=ARCHONEX_X=…` at build time, and the default is the safe value rather than the production one. Nothing in this app is configured this way yet; the pattern is here because the Converter needed it for the store split and this project will need it for the same kind of question.
+- **Add one**: `static const X = String.fromEnvironment('STORAGE_CLEANER_X', defaultValue: …)` read once, on the platform boundary or in `lib/core/constants/`, with the reason for the default written next to it.
+- **Use it**: `--dart-define=STORAGE_CLEANER_X=…` at build time, and the default is the safe value rather than the production one. Nothing in this app is configured this way yet; the pattern is here because the Converter needed it for the store split and this project will need it for the same kind of question.
 
 ## Constants and tokens
 
@@ -79,7 +79,7 @@
 
 ## Where things live
 
-- **App-wide**: repositories that outlive a screen — language, quarantine — are constructed once in `lib/core/app/archonex_app.dart` and provided from there. Anything holding an index of files on disk belongs here, because a per-screen instance would be a second index of one directory, and no test can catch it: every test injects a fake repository and none of them sees the wiring.
+- **App-wide**: repositories that outlive a screen — language, quarantine — are constructed once in `lib/core/app/storage_cleaner_app.dart` and provided from there. Anything holding an index of files on disk belongs here, because a per-screen instance would be a second index of one directory, and no test can catch it: every test injects a fake repository and none of them sees the wiring.
 - **Feature-scoped**: everything else is built in that feature's `ui/<feature>_page.dart`, which wires the BLoC and holds no UI. `ui/<feature>_view.dart` is pure presentation, which is what lets a widget test drive a screen without standing up the app.
 
 ## Doc comments

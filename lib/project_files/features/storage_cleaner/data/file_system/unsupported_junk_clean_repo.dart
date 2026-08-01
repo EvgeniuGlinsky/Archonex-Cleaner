@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_failure.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_update.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
 
 /// The web sibling of `IoJunkCleanRepo`. See `UnsupportedJunkScanRepo`.
 ///

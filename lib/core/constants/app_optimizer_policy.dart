@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 
 /// The numbers that decide whether re-encoding a file is worth doing, and what
 /// to aim at when it is.
@@ -172,6 +172,12 @@ class AppOptimizerPolicy {
   /// Dotted so it is hidden on the platforms that hide dotfiles, and distinctive
   /// so a run interrupted by a crash can find and remove what the last one left
   /// behind. Nothing matching it is ever offered as a candidate.
+  ///
+  /// Named for the publisher rather than the product, alongside the application
+  /// id and the transcoder's channel names. These two strings are written onto
+  /// the user's disk, so renaming them with the product would strand the
+  /// leavings of a crash the previous version never got to sweep — a file the
+  /// user owns, left under a suffix nothing recognises any more.
   static const String workingPrefix = '.archonex-working-';
 
   /// What the original is renamed to for the moment between the replacement

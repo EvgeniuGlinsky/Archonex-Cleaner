@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 
 /// One re-encoding run, exposed as a stream that can be stopped.
 ///

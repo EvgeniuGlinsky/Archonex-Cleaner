@@ -1,6 +1,6 @@
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 
 /// Hand-written fake for the disk reader. No mocking package here — see
 /// `CLAUDE.md`.

@@ -1,9 +1,9 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Web, and iOS.
 ///

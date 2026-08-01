@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 
 /// Re-encodes a video through Android's own media stack.
 ///

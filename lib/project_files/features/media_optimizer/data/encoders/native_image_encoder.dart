@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 
 /// Re-encodes a photograph through the platform's own codec, on the two
 /// platforms where a pure-Dart pass would take an afternoon.

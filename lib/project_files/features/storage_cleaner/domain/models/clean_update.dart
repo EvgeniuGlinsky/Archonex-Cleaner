@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/clean_report.dart';
 
 /// What a running cleanup reports.
 sealed class CleanUpdate {

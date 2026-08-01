@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/app/archonex_app.dart';
+import 'package:storage_cleaner/core/app/storage_cleaner_app.dart';
 
 void main() {
-  runApp(const ArchonexApp());
+  runApp(const StorageCleanerApp());
 }

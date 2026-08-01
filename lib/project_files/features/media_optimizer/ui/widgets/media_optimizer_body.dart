@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_group.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/encoder_notice.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_group_tile.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/optimize_result_card.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_group.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/encoder_notice.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_group_tile.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/optimize_result_card.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
 
 /// State and callbacks in, one list out. No `flutter_bloc`, no `go_router`.
 class MediaOptimizerBody extends StatelessWidget {

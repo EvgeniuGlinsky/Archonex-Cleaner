@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 
 /// Puts one cleanup back.
 ///

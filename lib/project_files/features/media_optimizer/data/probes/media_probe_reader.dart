@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/image_probes.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/iso_bmff_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/matroska_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/riff_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/image_probes.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/iso_bmff_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/matroska_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/riff_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 
 /// Works out what a file actually is, and reads what its header will give up.
 ///

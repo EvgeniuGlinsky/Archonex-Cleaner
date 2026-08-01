@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 
 /// Everything one kind of media turned up, and how much of it the user has
 /// agreed to have rewritten.

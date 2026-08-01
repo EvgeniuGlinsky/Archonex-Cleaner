@@ -2,28 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:archonex_cleaner/core/router/app_router.dart';
-import 'package:archonex_cleaner/core/theme/app_theme.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/platform/quarantine_platform.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/core/router/app_router.dart';
+import 'package:storage_cleaner/core/theme/app_theme.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/platform/quarantine_platform.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 
 /// Application root.
 ///
 /// App-wide singletons are provided here; feature-scoped dependencies stay in
 /// their own `*_page.dart`.
-class ArchonexApp extends StatefulWidget {
-  const ArchonexApp({super.key});
+class StorageCleanerApp extends StatefulWidget {
+  const StorageCleanerApp({super.key});
 
   @override
-  State<ArchonexApp> createState() => _ArchonexAppState();
+  State<StorageCleanerApp> createState() => _StorageCleanerAppState();
 }
 
-class _ArchonexAppState extends State<ArchonexApp> {
+class _StorageCleanerAppState extends State<StorageCleanerApp> {
   // Both outlive every screen. The language repo keeps the chosen language
   // across the whole navigation stack, and the quarantine holds one index of
   // one directory — the cleaner writes batches into it and the quarantine

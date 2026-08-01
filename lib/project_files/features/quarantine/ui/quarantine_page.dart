@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/purge_quarantine_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/quarantine_view.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/purge_quarantine_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/quarantine_view.dart';
 
 /// Dependency injection and `BlocProvider`. No UI.
 ///

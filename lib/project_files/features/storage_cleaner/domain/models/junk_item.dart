@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// One thing a scan found and is willing to delete.
 ///

@@ -1,4 +1,4 @@
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 /// Where the language the user picked by hand survives a restart.
 ///

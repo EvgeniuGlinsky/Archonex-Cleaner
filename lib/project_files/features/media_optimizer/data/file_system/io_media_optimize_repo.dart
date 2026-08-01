@@ -3,18 +3,18 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/file_byte_source.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/media_probe_reader.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/file_byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/media_probe_reader.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 
 /// The real runner, on `dart:io`.
 ///

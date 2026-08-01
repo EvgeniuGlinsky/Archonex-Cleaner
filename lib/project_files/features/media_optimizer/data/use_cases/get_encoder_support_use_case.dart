@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
 
 /// What this machine can actually encode, as opposed to what its platform
 /// could in principle.

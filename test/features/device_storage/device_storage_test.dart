@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
 
 void main() {
   group('DeviceStorageSnapshot', () {

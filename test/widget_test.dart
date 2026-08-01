@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
-import 'package:archonex_cleaner/core/theme/app_theme.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/theme/app_theme.dart';
 
 /// The theme is the one thing every screen shares and nothing else tests.
 ///
-/// `ArchonexApp` itself is deliberately not pumped here: it builds the real
+/// `StorageCleanerApp` itself is deliberately not pumped here: it builds the real
 /// quarantine repository, which reaches `path_provider` and has no platform to
 /// answer it in a unit test. Each screen is covered by its own view test.
 void main() {

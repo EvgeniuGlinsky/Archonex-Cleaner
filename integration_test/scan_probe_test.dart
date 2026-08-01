@@ -6,30 +6,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:archonex_cleaner/core/app/archonex_app.dart';
-import 'package:archonex_cleaner/core/constants/app_durations.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
-import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/cleaner_roots_resolver.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_ruleset.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
+import 'package:storage_cleaner/core/app/storage_cleaner_app.dart';
+import 'package:storage_cleaner/core/constants/app_durations.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/file_system/unsupported_device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/device_storage_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/cleaner_roots_resolver.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/file_system/io_junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_ruleset.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/protected_paths.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_job.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/scan_update.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
 
 /// Runs the app against the real machine, and **deletes nothing**.
 ///
@@ -61,11 +61,11 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('the real app starts and reaches the cleaner', (tester) async {
-    // The one thing no widget test can check: the wiring in `archonex_app.dart`
+    // The one thing no widget test can check: the wiring in `storage_cleaner_app.dart`
     // with the *real* repositories behind it. `IoQuarantineRepo` reaches
     // `path_provider`, which has no platform to answer it under `flutter test`,
     // so a broken app root would pass every test in `test/` and crash on launch.
-    await tester.pumpWidget(const ArchonexApp());
+    await tester.pumpWidget(const StorageCleanerApp());
 
     // The splash beat, plus the expiry sweep and the language read it runs
     // alongside.
@@ -96,7 +96,7 @@ void main() {
     debugPrint('--- locales on $defaultTargetPlatform ---');
     debugPrint('system   ${PlatformDispatcher.instance.locales}');
 
-    await tester.pumpWidget(const ArchonexApp());
+    await tester.pumpWidget(const StorageCleanerApp());
     await tester.pump(AppDurations.splash + const Duration(seconds: 1));
     await tester.pumpAndSettle();
 

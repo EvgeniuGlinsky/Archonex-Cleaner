@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/home/domain/models/app_tool.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/home/domain/models/app_tool.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
 
 import '../device_storage/fakes.dart';
 

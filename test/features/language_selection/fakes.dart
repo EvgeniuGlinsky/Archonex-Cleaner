@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_storage.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_storage.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 /// Hand-written fake for the language store. No mocking package here — see
 /// `CLAUDE.md`.

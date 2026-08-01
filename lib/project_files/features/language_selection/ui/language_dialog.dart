@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/project_files/features/language_selection/data/use_cases/get_available_languages_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/use_cases/get_selected_language_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/data/use_cases/select_language_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/bloc/language_selection_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/widgets/language_dialog_body.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/use_cases/get_available_languages_use_case.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/use_cases/get_selected_language_use_case.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/data/use_cases/select_language_use_case.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/bloc/language_selection_bloc.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/widgets/language_dialog_body.dart';
 
 /// Opens the language picker over whatever screen asked for it.
 ///

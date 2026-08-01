@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
-import 'package:archonex_cleaner/project_files/features/home/ui/widgets/home_callbacks.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
+import 'package:storage_cleaner/project_files/features/home/ui/widgets/home_callbacks.dart';
 
 /// State and callbacks in, one scrolling column out.
 ///

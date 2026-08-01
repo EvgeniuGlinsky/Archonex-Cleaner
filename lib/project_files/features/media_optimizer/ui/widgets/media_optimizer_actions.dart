@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/core/widgets/app_primary_button.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/ui/widgets/clean_progress_indicator.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/clean_progress_indicator.dart';
 
 /// The bottom slot: one button, and what it is doing right now.
 ///

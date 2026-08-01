@@ -1,9 +1,9 @@
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
 
 /// Starts a run over the files the user agreed to.
 ///

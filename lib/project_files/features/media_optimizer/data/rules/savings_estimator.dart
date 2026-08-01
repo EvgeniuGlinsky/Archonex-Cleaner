@@ -1,10 +1,10 @@
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
 /// Decides whether re-encoding a file would free enough to be worth doing, and
 /// what to turn it into.

@@ -1,9 +1,9 @@
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// Where Android leaves things, and what is reachable at each access level.
 ///
@@ -44,13 +44,13 @@ class AndroidJunkRules {
       JunkRule(
         root: roots.appCache,
         category: JunkCategory.appCache,
-        label: 'Archonex Cleaner',
+        label: 'Storage Cleaner',
       ),
       for (final String cache in roots.externalAppCaches)
         JunkRule(
           root: cache,
           category: JunkCategory.appCache,
-          label: 'Archonex Cleaner',
+          label: 'Storage Cleaner',
         ),
     ];
   }

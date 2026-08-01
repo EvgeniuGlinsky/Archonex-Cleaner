@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 
 /// Whether this build can do the job at all.
 ///

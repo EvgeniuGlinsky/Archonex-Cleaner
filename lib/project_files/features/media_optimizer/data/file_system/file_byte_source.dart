@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
 
 /// A [ByteSource] over an open file.
 ///

@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/savings_estimator.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/savings_estimator.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
 /// The methodology, pinned down.
 ///

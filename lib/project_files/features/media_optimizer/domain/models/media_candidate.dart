@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
 
 /// One file the walk found, everything the header said about it, and what the
 /// estimator decided to do with it.

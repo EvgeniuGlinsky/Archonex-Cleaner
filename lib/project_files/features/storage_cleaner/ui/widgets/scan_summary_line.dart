@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
 
 /// What the ring above it is made of: how much is ticked, out of how much there
 /// was.

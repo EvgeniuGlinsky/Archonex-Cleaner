@@ -3,9 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_repo.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/language_storage.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/language_storage.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
 
 /// Answers the language question in the order the user would expect it asked.
 ///

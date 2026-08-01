@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 
 /// Why a file is being left alone, in a few words.
 ///

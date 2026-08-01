@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_header.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_layout.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/mappers/optimize_failure_ui.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_actions.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_body.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/mappers/optimize_failure_ui.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_actions.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_body.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
 
 /// The optimiser screen. Listeners, builders and callbacks — no layout maths.
 class MediaOptimizerView extends StatelessWidget {

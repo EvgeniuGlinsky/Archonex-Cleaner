@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/core/constants/app_clean_policy.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/core/constants/app_clean_policy.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// What a rule is looking for once it has a root.
 enum JunkRuleMode {

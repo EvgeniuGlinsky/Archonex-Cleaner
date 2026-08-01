@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
 /// What `SavingsEstimator` decided about one file: whether to touch it, and if
 /// so what to turn it into.

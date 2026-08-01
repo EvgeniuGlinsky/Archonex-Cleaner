@@ -4,16 +4,16 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/core/constants/app_optimizer_policy.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/file_system/io_media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
+import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/io_media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 
 import 'fakes.dart';
 import 'fixtures.dart';
@@ -33,7 +33,7 @@ void main() {
   late Directory workspace;
 
   setUp(() async {
-    workspace = await Directory.systemTemp.createTemp('archonex_optimize_');
+    workspace = await Directory.systemTemp.createTemp('storage_cleaner_optimize_');
   });
 
   tearDown(() async {

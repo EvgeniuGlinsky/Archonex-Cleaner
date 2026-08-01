@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/core/constants/app_spacing.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/bloc/language_selection_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/language_selection/ui/widgets/language_list.dart';
+import 'package:storage_cleaner/core/constants/app_spacing.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/bloc/language_selection_bloc.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/widgets/language_list.dart';
 
 /// The contents of the language dialog.
 ///

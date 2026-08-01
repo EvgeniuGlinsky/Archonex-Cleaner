@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/media_roots.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/rules/off_limits_paths.dart';
 
 /// The optimiser's paranoid file, checked from whichever platform CI runs on.
 ///

@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:archonex_cleaner/project_files/features/storage_access/data/access/android_storage_access_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/access/open_storage_access_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/access/sandbox_storage_access_repo.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/access/android_storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/access/open_storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/access/sandbox_storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Android, iOS, macOS, Windows and Linux — everything with a file system.
 ///

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 
 /// Everything a running re-encode can say.
 sealed class OptimizeUpdate {

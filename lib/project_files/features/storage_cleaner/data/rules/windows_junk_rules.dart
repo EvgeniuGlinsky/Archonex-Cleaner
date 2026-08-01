@@ -1,8 +1,8 @@
 import 'package:path/path.dart' as p;
 
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
-import 'package:archonex_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/cleaner_roots.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/data/rules/junk_rule.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 
 /// Where Windows leaves things.
 ///
@@ -30,8 +30,8 @@ class WindowsJunkRules {
       // Windows answers `GetTempPath()`, which is `%TEMP%` itself — not a
       // subdirectory of it — so a rule for "this app's cache" here would be the
       // system temp folder wearing the wrong label. The probe caught exactly
-      // that: 696 MB of other applications' leftovers filed under Archonex
-      // Cleaner's own name. The `systemTemp` rules below cover the same bytes
+      // that: 696 MB of other applications' leftovers filed under this app's
+      // own name. The `systemTemp` rules below cover the same bytes
       // and describe them honestly. Only Android and iOS have a cache directory
       // that is genuinely this app's.
       if (temp != null) ...<JunkRule>[

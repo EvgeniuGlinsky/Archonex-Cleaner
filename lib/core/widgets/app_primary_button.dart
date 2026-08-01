@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:archonex_cleaner/core/theme/app_colors.dart';
+import 'package:storage_cleaner/core/theme/app_colors.dart';
 
 /// Full width call-to-action button. Styling lives in `AppTheme`.
 class AppPrimaryButton extends StatelessWidget {

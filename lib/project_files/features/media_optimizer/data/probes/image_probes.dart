@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/probes/byte_source.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 
 /// The five still formats whose dimensions are near the front of the file.
 ///

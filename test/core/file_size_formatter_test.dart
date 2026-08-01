@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:archonex_cleaner/core/constants/app_byte_units.dart';
-import 'package:archonex_cleaner/core/utils/file_size_formatter.dart';
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
+import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
 
 void main() {
   test('bytes are shown whole, because a fraction of a byte is noise', () {

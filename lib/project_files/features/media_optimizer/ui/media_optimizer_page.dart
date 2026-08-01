@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
-import 'package:archonex_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/use_cases/optimize_media_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/media_optimizer/ui/media_optimizer_view.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/optimize_media_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_view.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Dependency injection and `BlocProvider`. No UI.
 ///
 /// Everything here dies with the screen. Nothing in this feature holds an index
-/// of anything, which is what keeps it out of `archonex_app.dart` — a rewritten
+/// of anything, which is what keeps it out of `storage_cleaner_app.dart` — a rewritten
 /// file leaves no record behind, deliberately, and the two encoders are
 /// stateless behind their channels.
 class MediaOptimizerPage extends StatelessWidget {

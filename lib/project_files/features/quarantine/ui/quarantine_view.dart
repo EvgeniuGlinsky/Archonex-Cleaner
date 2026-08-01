@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:archonex_cleaner/core/constants/app_quarantine_policy.dart';
-import 'package:archonex_cleaner/core/widgets/app_primary_button.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_header.dart';
-import 'package:archonex_cleaner/core/widgets/app_screen_layout.dart';
-import 'package:archonex_cleaner/l10n/app_localizations.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/mappers/restore_failure_ui.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/widgets/quarantine_body.dart';
-import 'package:archonex_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
+import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
+import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
+import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
+import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/mappers/restore_failure_ui.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_body.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
 
 /// The quarantine screen. Listeners, builders and callbacks.
 class QuarantineView extends StatelessWidget {

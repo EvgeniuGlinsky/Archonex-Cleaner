@@ -1,11 +1,11 @@
 {
-    "name": "Archonex Cleaner",
-    "short_name": "Archonex Cleaner",
+    "name": "Storage Cleaner",
+    "short_name": "Storage Cleaner",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#17A47B",
+    "theme_color": "#17A47B",
+    "description": "Storage Cleaner finds the temporary files your device left behind and gets rid of them, with a way back, and shrinks photos and videos without touching their resolution.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

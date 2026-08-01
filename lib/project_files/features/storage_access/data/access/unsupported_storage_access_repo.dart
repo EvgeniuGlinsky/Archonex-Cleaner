@@ -1,5 +1,5 @@
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
-import 'package:archonex_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Web: no file system, so no access to grant and nothing to ask for.
 class UnsupportedStorageAccessRepo implements StorageAccessRepo {
