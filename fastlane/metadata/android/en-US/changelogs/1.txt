@@ -1,0 +1,7 @@
+First release.
+
+- Junk cleaner with a 7-day quarantine you can restore from
+- Photo and video optimiser that shrinks files without changing their resolution
+- Protected paths and an age floor, so nothing in use is ever offered
+- English, Russian and Chinese
+- No ads, no accounts, no tracking, and no network permission at all

@@ -1,0 +1,59 @@
+# F-Droid build metadata.
+#
+# A draft of the file that goes into a merge request against
+# https://gitlab.com/fdroid/fdroiddata, at metadata/com.archonex.cleaner.yml.
+# Kept in this repository so it moves with the project rather than living only
+# in someone's fork of fdroiddata.
+#
+# F-Droid builds from source on its own machines and signs with its own key, so
+# nothing here refers to the release keystore. The APKs it produces are not the
+# ones on the GitHub releases page and will not install over them — that is
+# expected, and is what "reproducible from source" costs.
+#
+# The application id keeps the publisher's namespace rather than the product
+# name; see the rename commit for why. It is what the installed app is
+# identified by, and it is not going to change.
+
+Categories:
+  - System
+  - Security
+
+License: Apache-2.0
+
+AuthorName: Evgeny Glynskyi
+SourceCode: https://github.com/EvgeniuGlinsky/storage-cleaner
+IssueTracker: https://github.com/EvgeniuGlinsky/storage-cleaner/issues
+Changelog: https://github.com/EvgeniuGlinsky/storage-cleaner/blob/main/CHANGELOG.md
+
+AutoName: Storage Cleaner
+
+RepoType: git
+Repo: https://github.com/EvgeniuGlinsky/storage-cleaner.git
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.0
+    subdir: android/app
+    sudo:
+      - apt-get update
+      - apt-get install -y openjdk-17-jdk-headless
+      - update-alternatives --auto java
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.41.2
+    prebuild: $$flutter$$/bin/flutter config --no-analytics
+    scanignore:
+      # Flutter vendors its own toolchain under the srclib; the scanner reads
+      # the SDK's bundled binaries as if they were ours.
+      - android/app/build.gradle.kts
+    build: |
+      $$flutter$$/bin/flutter packages pub get
+      $$flutter$$/bin/flutter build apk --release
+
+AllowedAPKSigningKeys: []
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[0-9.]+$
+CurrentVersion: 1.0.0
+CurrentVersionCode: 1

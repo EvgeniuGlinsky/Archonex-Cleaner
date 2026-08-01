@@ -1,6 +1,7 @@
-# Archonex Cleaner
+# Storage Cleaner
 
-[![CI](https://github.com/EvgeniuGlinsky/Archonex-Cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/EvgeniuGlinsky/Archonex-Cleaner/actions/workflows/ci.yml)
+[![CI](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/ci.yml)
+[![Release](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/release.yml/badge.svg)](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/release.yml)
 [![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Android%20%7C%20Linux%20%7C%20macOS-6c757d)](#platform-support)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
@@ -10,6 +11,31 @@ videos that weigh more than they need to and re-encodes them at the same
 quality. Sibling of [Archonex Converter](https://github.com/EvgeniuGlinsky/Archonex-Converter),
 same architecture, same offline promise: nothing leaves the device, and there is
 no server anywhere in this project.
+
+No ads, no accounts, no tracking — and no network permission in the release
+build at all, which you can check for yourself before installing:
+
+```
+aapt2 dump permissions storage-cleaner-1.0.0-android-arm64.apk
+```
+
+## Download
+
+| Platform | File |
+| --- | --- |
+| Android, most phones since 2016 | `storage-cleaner-1.0.0-android-arm64.apk` |
+| Android, older 32-bit devices | `storage-cleaner-1.0.0-android-arm32.apk` |
+| Android, emulators and x86 tablets | `storage-cleaner-1.0.0-android-x86_64.apk` |
+| Android, if unsure | `storage-cleaner-1.0.0-android-universal.apk` |
+| Windows 10 and 11, 64-bit | `storage-cleaner-1.0.0-windows-x64.zip` |
+| Linux, 64-bit | `storage-cleaner-1.0.0-linux-x64.tar.gz` |
+
+From the [releases page](https://github.com/EvgeniuGlinsky/storage-cleaner/releases).
+Every release carries `SHA256SUMS.txt`; check a download with `sha256sum -c`.
+
+The desktop builds are unsigned — code signing certificates cost money this
+project does not take — so Windows will show a SmartScreen prompt. macOS is
+built from source for now; see [Getting started](#getting-started).
 
 ## What it is
 
@@ -32,8 +58,9 @@ that spends twenty minutes of battery to free three per cent — see
 
 ## Status
 
-Both tools are implemented end to end, and there are 345 tests. There is no
-release yet; the download table arrives with the first tag.
+Both tools are implemented end to end, and there are 362 tests. Version 1.0.0 is
+tagged and built by [`release.yml`](.github/workflows/release.yml) — see
+[CHANGELOG.md](CHANGELOG.md) for what is in it.
 
 The cleaner has nine categories, five platform rule tables and the quarantine
 with restore. The optimiser has four header parsers, four encoders, and a
@@ -398,7 +425,7 @@ verified against is recorded in `.metadata`.
 
 ```
 lib/
-├── main.dart                        # runApp(ArchonexApp()) — nothing else
+├── main.dart                        # runApp(StorageCleanerApp()) — nothing else
 ├── core/
 │   ├── app/                         # root widget, app-wide providers
 │   ├── constants/                   # spacing, radius, durations, byte units,
@@ -485,7 +512,7 @@ cleaner needs somewhere to put files, and the quarantine owns retention. It has
 its own failure hierarchy (`RestoreFailure`) for the same reason — the cleaner's
 `CleanFailure` cannot hold members the quarantine throws without the arrow
 pointing both ways. The repository is an app-wide singleton in
-`archonex_app.dart`: the batch the cleaner writes is the batch the quarantine
+`storage_cleaner_app.dart`: the batch the cleaner writes is the batch the quarantine
 screen reads, and a second instance would be a second index of one directory.
 
 `lib/project_files/features/storage_access/` is its own feature for the same
@@ -589,7 +616,7 @@ flutter test integration_test/scan_probe_test.dart     -d <android-device-id>
 flutter test integration_test/optimize_probe_test.dart -d <android-device-id>
 ```
 
-The **scan probe** pumps the real `ArchonexApp` against the real machine and
+The **scan probe** pumps the real `StorageCleanerApp` against the real machine and
 deletes nothing. The unit tests answer whether the rules are right about every
 platform; only a device answers the other half, and every one of those questions
 fails *quietly* under `flutter test`:
@@ -603,7 +630,7 @@ fails *quietly* under `flutter test`:
   a Russian phone and pass everything;
 - whether `shared_preferences` is registered, which a storage that swallows its
   own failures makes look exactly like a first run, for ever;
-- whether the wiring in `archonex_app.dart` holds, which no widget test can
+- whether the wiring in `storage_cleaner_app.dart` holds, which no widget test can
   reach: it builds `IoQuarantineRepo`, which needs `path_provider`, which has no
   platform to answer it in a unit test.
 
@@ -633,11 +660,32 @@ whoever wrote the parser shares its assumptions. There is a twenty-thousand-row
 one now, and the same run also found the bytes-per-pixel estimate leaning
 optimistic, which is the wrong direction for a promise.
 
-## CI
+## CI and releases
 
 `.github/workflows/ci.yml` runs `flutter analyze` and `flutter test` on every
 push to `main` and on every pull request, against a pinned Flutter version so a
 Flutter release cannot turn CI red on its own.
+
+`.github/workflows/release.yml` runs on a `v*` tag and nothing else. It checks
+the tag against `pubspec.yaml` before building anything, re-runs analyse and
+test — a tag can point at a commit whose checks never ran — then builds four
+APKs, an app bundle, a Windows zip and a Linux tarball, and publishes them with
+`SHA256SUMS.txt`.
+
+Cutting a release, and creating the signing key it needs, is
+[`docs/RELEASING.md`](docs/RELEASING.md).
+
+## Privacy
+
+Nothing is collected and nothing is sent, and that is a property of the build
+rather than a promise: the release manifest declares no `INTERNET` permission,
+so the operating system refuses every network call the app could make. See
+[PRIVACY.md](PRIVACY.md), and verify it yourself with `aapt2 dump permissions`
+on any release APK.
+
+Security reports go through GitHub's private reporting — see
+[SECURITY.md](SECURITY.md). This app deletes files and rewrites them in place,
+so the classes of bug that matter most are listed there explicitly.
 
 ## License
 

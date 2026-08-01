@@ -1,0 +1,34 @@
+Storage Cleaner shows you what is actually filling your device, and gives you two ways to get the space back.
+
+No ads. No accounts. No tracking. It cannot even reach the internet — the release build declares no network permission at all, which you can verify yourself from the APK.
+
+SEE WHAT IS THERE
+
+Scan your storage and get a list, by category, of what is taking up room: temporary files, thumbnail caches, crash reports, installer leftovers, and the app's own cache. Every entry shows its full path, its size and when it was last touched. Nothing is hidden behind a number.
+
+REMOVE IT, WITH A WAY BACK
+
+You choose what goes, one row at a time, and a confirmation tells you how much is leaving before anything happens. Removed files are moved into a quarantine on your device and can be put back for seven days — not deleted the moment you press the button.
+
+Files it will not touch are on a separate list from the ones it looks for, so a mistake in one is caught by the other. Nothing under an hour old is ever offered, because a file written a minute ago is in use.
+
+SHRINK PHOTOS AND VIDEOS WITHOUT LOSING QUALITY
+
+The second tool re-encodes your media to a more efficient format. Same resolution, same length, same frame rate — usually a third to a half smaller.
+
+This is the part most apps get wrong. Video-compression tools free space by lowering the resolution, so your 4K holiday video comes back as 1080p and you find out months later. This one does not resize anything. It writes HEVC through your device's own hardware encoder, and re-reads the finished file to check its dimensions and duration match the original before it lets go of the old one.
+
+You are told plainly that this step cannot be undone, before it starts.
+
+ON YOUR DEVICE, AND NOWHERE ELSE
+
+Everything happens locally. Nothing is uploaded, nothing is measured, nothing is reported. There is no account to create and no permission asked for until you press the button that needs it.
+
+OPEN SOURCE
+
+Apache License 2.0. The source, the tests and the workflow that builds the releases are all public:
+https://github.com/EvgeniuGlinsky/storage-cleaner
+
+ALSO ON WINDOWS, MACOS AND LINUX
+
+The same app, with the same rules for what is safe to delete, built for the desktop too.
