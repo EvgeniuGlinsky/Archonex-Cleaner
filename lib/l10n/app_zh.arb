@@ -102,6 +102,7 @@
   "accessNarrowedBody": "没有「所有文件」权限，扫描只能覆盖本应用自己的缓存。授予权限才能看到整台设备。",
   "accessGrantLabel": "授予权限",
   "accessSettingsLabel": "打开设置",
+  "accessDeniedPermanentTitle": "权限已被永久拒绝",
   "accessDeniedPermanentBody": "权限已被永久拒绝。仍可在系统设置的特殊权限中重新打开。",
   "accessAddFolderLabel": "添加文件夹",
   "accessScopedTitle": "已添加 {count} 个文件夹",

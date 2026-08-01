@@ -22,4 +22,10 @@ class SandboxStorageAccessRepo implements StorageAccessRepo {
 
   @override
   Future<StorageAccess> addFolder() async => const StorageAccess.sandboxed();
+
+  @override
+  Future<void> openSettings() async {
+    // Nothing to open. The container is the platform, not a refused permission,
+    // and the screen never offers the button that would land here.
+  }
 }

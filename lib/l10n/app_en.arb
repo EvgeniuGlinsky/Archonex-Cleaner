@@ -102,6 +102,7 @@
   "accessNarrowedBody": "Without all-files access the scan is limited to this app's own cache. Grant it to see the whole device.",
   "accessGrantLabel": "Grant access",
   "accessSettingsLabel": "Open settings",
+  "accessDeniedPermanentTitle": "Access refused for good",
   "accessDeniedPermanentBody": "Access was refused for good. It can still be turned on in the system settings, under Special app access.",
   "accessAddFolderLabel": "Add a folder",
   "accessScopedTitle": "{count, plural, =1{1 folder added} other{{count} folders added}}",

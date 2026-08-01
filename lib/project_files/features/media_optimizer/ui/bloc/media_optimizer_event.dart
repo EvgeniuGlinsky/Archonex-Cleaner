@@ -55,6 +55,11 @@ final class OptimizerFolderRequested extends MediaOptimizerEvent {
   const OptimizerFolderRequested();
 }
 
+/// Sends the user to the system settings page, once the sheet is gone for good.
+final class OptimizerAccessSettingsRequested extends MediaOptimizerEvent {
+  const OptimizerAccessSettingsRequested();
+}
+
 final class OptimizerFailureDismissed extends MediaOptimizerEvent {
   const OptimizerFailureDismissed();
 }

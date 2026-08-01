@@ -53,6 +53,9 @@ class AndroidStorageAccessRepo implements StorageAccessRepo {
     return current();
   }
 
+  @override
+  Future<void> openSettings() => openAppSettings();
+
   /// Whether the picker gave back a path `dart:io` can actually walk.
   ///
   /// It hands back `/` for a folder Android refuses to resolve to a real path —
@@ -80,6 +83,10 @@ class AndroidStorageAccessRepo implements StorageAccessRepo {
       grantedRoots: List<String>.unmodifiable(_grantedFolders),
       canRequestMore: !status.isPermanentlyDenied,
       canAddFolder: true,
+      // Carried rather than left to be inferred from `!canRequestMore`, which
+      // is also true of iOS. The two produce the same buttons and completely
+      // different sentences, and this is the field that tells them apart.
+      isPermanentlyDenied: status.isPermanentlyDenied,
     );
   }
 }

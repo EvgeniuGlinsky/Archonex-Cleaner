@@ -25,6 +25,12 @@ class FakeStorageAccessRepo implements StorageAccessRepo {
   int requestCount = 0;
   int addFolderCount = 0;
 
+  /// How many times the screen sent the user to the system settings page.
+  ///
+  /// Counted rather than acted on: the real one leaves the app, so there is no
+  /// state afterwards to assert against and the count is the whole behaviour.
+  int openSettingsCount = 0;
+
   @override
   Future<StorageAccess> current() async => access;
 
@@ -42,5 +48,10 @@ class FakeStorageAccessRepo implements StorageAccessRepo {
     access = picked ?? access;
 
     return access;
+  }
+
+  @override
+  Future<void> openSettings() async {
+    openSettingsCount++;
   }
 }

@@ -18,6 +18,7 @@ class StorageCleanerCallbacks {
     required this.onItemToggled,
     required this.onGrantAccessPressed,
     required this.onAddFolderPressed,
+    required this.onOpenSettingsPressed,
     required this.onFailureDismissed,
     required this.onResultDismissed,
     required this.onQuarantinePressed,
@@ -31,6 +32,9 @@ class StorageCleanerCallbacks {
   final ValueChanged<ToggledItem> onItemToggled;
   final VoidCallback onGrantAccessPressed;
   final VoidCallback onAddFolderPressed;
+
+  /// Offered in place of grant once the system has stopped showing the sheet.
+  final VoidCallback onOpenSettingsPressed;
   final VoidCallback onFailureDismissed;
   final VoidCallback onResultDismissed;
 

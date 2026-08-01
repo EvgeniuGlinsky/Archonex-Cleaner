@@ -18,6 +18,7 @@ class StorageAccessNotice extends StatelessWidget {
     required this.access,
     required this.onGrantPressed,
     required this.onAddFolderPressed,
+    required this.onOpenSettingsPressed,
     super.key,
   });
 
@@ -26,6 +27,13 @@ class StorageAccessNotice extends StatelessWidget {
   final StorageAccess access;
   final VoidCallback onGrantPressed;
   final VoidCallback onAddFolderPressed;
+
+  /// Offered instead of *Grant* once the system has stopped showing the sheet.
+  ///
+  /// Never beside it: the two are the same intention taking the only route
+  /// still open to it, and a screen showing both would be offering a button the
+  /// platform has already decided will do nothing.
+  final VoidCallback onOpenSettingsPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +68,9 @@ class StorageAccessNotice extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(access.body(context), style: theme.textTheme.bodyMedium),
-          if (access.canRequestMore || access.canAddFolder) ...<Widget>[
+          if (access.canRequestMore ||
+              access.isPermanentlyDenied ||
+              access.canAddFolder) ...<Widget>[
             const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: AppSpacing.sm,
@@ -70,6 +80,11 @@ class StorageAccessNotice extends StatelessWidget {
                   FilledButton.tonal(
                     onPressed: onGrantPressed,
                     child: Text(l10n.accessGrantLabel),
+                  )
+                else if (access.isPermanentlyDenied)
+                  FilledButton.tonal(
+                    onPressed: onOpenSettingsPressed,
+                    child: Text(l10n.accessSettingsLabel),
                   ),
                 if (access.canAddFolder)
                   TextButton(

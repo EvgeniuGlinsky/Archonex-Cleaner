@@ -97,6 +97,8 @@ class StorageCleanerView extends StatelessWidget {
       ),
       onGrantAccessPressed: () => _add(context, const AccessRequested()),
       onAddFolderPressed: () => _add(context, const ScanFolderRequested()),
+      onOpenSettingsPressed: () =>
+          _add(context, const AccessSettingsRequested()),
       onFailureDismissed: () => _add(context, const FailureDismissed()),
       onResultDismissed: () => _add(context, const ResultDismissed()),
       onQuarantinePressed: () =>

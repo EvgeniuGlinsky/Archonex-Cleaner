@@ -23,6 +23,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
@@ -38,6 +39,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     required GetStorageAccessUseCase getAccess,
     required RequestStorageAccessUseCase requestAccess,
     required AddAccessFolderUseCase addFolder,
+    required OpenAccessSettingsUseCase openAccessSettings,
     required ScanForMediaUseCase scanForMedia,
     required OptimizeMediaUseCase optimizeMedia,
     required GetDeviceStorageUseCase getDeviceStorage,
@@ -47,6 +49,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
         _getAccess = getAccess,
         _requestAccess = requestAccess,
         _addFolder = addFolder,
+        _openAccessSettings = openAccessSettings,
         _scanForMedia = scanForMedia,
         _optimizeMedia = optimizeMedia,
         _getDeviceStorage = getDeviceStorage,
@@ -59,6 +62,10 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     on<OptimizeRequested>(_onOptimizeRequested, transformer: droppable());
     on<OptimizerAccessRequested>(_onAccessRequested, transformer: droppable());
     on<OptimizerFolderRequested>(_onFolderRequested, transformer: droppable());
+    on<OptimizerAccessSettingsRequested>(
+      _onAccessSettingsRequested,
+      transformer: droppable(),
+    );
 
     on<MediaScanCancelled>(_onScanCancelled, transformer: sequential());
     on<OptimizeCancelled>(_onOptimizeCancelled, transformer: sequential());
@@ -74,6 +81,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
   final GetStorageAccessUseCase _getAccess;
   final RequestStorageAccessUseCase _requestAccess;
   final AddAccessFolderUseCase _addFolder;
+  final OpenAccessSettingsUseCase _openAccessSettings;
   final ScanForMediaUseCase _scanForMedia;
   final OptimizeMediaUseCase _optimizeMedia;
   final GetDeviceStorageUseCase _getDeviceStorage;
@@ -136,6 +144,18 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     } on AccessFailure catch (failure) {
       emit(state.copyWith(failure: OptimizeAccessRefusedFailure(failure)));
     }
+  }
+
+  /// Leaves for Settings and emits nothing.
+  ///
+  /// There is no state to move to: the app is going to the background, and what
+  /// the user does there is read back by `MediaOptimizerStarted` when the screen
+  /// is built again.
+  Future<void> _onAccessSettingsRequested(
+    OptimizerAccessSettingsRequested event,
+    Emitter<MediaOptimizerState> emit,
+  ) async {
+    await _openAccessSettings();
   }
 
   Future<void> _onFolderRequested(

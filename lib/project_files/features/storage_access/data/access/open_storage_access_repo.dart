@@ -18,4 +18,9 @@ class OpenStorageAccessRepo implements StorageAccessRepo {
 
   @override
   Future<StorageAccess> addFolder() async => const StorageAccess.open();
+
+  @override
+  Future<void> openSettings() async {
+    // There is no permission to restore, so there is no page to send them to.
+  }
 }

@@ -13,18 +13,22 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/me
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_view.dart';
-import 'package:storage_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
 /// Dependency injection and `BlocProvider`. No UI.
 ///
-/// Everything here dies with the screen. Nothing in this feature holds an index
-/// of anything, which is what keeps it out of `storage_cleaner_app.dart` — a rewritten
-/// file leaves no record behind, deliberately, and the two encoders are
-/// stateless behind their channels.
+/// The scanner and the optimiser die with the screen. Nothing in this feature
+/// holds an index of anything — a rewritten file leaves no record behind,
+/// deliberately, and the two encoders are stateless behind their channels.
+///
+/// The access repository is the exception, and comes from the app-wide provider
+/// in `storage_cleaner_app.dart`. It is the one thing here with memory: the
+/// folders the user handed over through the picker, which the cleaner may well
+/// be the screen that asked for them.
 class MediaOptimizerPage extends StatelessWidget {
   const MediaOptimizerPage({super.key});
 
@@ -32,7 +36,7 @@ class MediaOptimizerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final MediaScanRepo scanRepo = createMediaScanRepo();
     final MediaOptimizeRepo optimizeRepo = createMediaOptimizeRepo();
-    final StorageAccessRepo accessRepo = createStorageAccessRepo();
+    final StorageAccessRepo accessRepo = context.read<StorageAccessRepo>();
 
     return BlocProvider<MediaOptimizerBloc>(
       create: (_) {
@@ -48,6 +52,7 @@ class MediaOptimizerPage extends StatelessWidget {
           getAccess: GetStorageAccessUseCase(accessRepo),
           requestAccess: RequestStorageAccessUseCase(accessRepo),
           addFolder: AddAccessFolderUseCase(accessRepo),
+          openAccessSettings: OpenAccessSettingsUseCase(accessRepo),
           scanForMedia: ScanForMediaUseCase(scanRepo),
           optimizeMedia: OptimizeMediaUseCase(
             repo: optimizeRepo,

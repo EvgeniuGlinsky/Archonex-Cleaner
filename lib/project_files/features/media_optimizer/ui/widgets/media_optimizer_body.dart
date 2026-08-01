@@ -34,6 +34,7 @@ class MediaOptimizerBody extends StatelessWidget {
             access: state.access,
             onGrantPressed: callbacks.onGrantAccessPressed,
             onAddFolderPressed: callbacks.onAddFolderPressed,
+            onOpenSettingsPressed: callbacks.onOpenSettingsPressed,
           ),
           const SizedBox(height: AppSpacing.lg),
         ],

@@ -60,6 +60,11 @@ final class ScanFolderRequested extends StorageCleanerEvent {
   const ScanFolderRequested();
 }
 
+/// Sends the user to the system settings page, once the sheet is gone for good.
+final class AccessSettingsRequested extends StorageCleanerEvent {
+  const AccessSettingsRequested();
+}
+
 final class FailureDismissed extends StorageCleanerEvent {
   const FailureDismissed();
 }

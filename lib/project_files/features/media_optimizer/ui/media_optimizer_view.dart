@@ -91,6 +91,8 @@ class MediaOptimizerView extends StatelessWidget {
       onGrantAccessPressed: () =>
           _add(context, const OptimizerAccessRequested()),
       onAddFolderPressed: () => _add(context, const OptimizerFolderRequested()),
+      onOpenSettingsPressed: () =>
+          _add(context, const OptimizerAccessSettingsRequested()),
       onResultDismissed: () => _add(context, const OptimizerResultDismissed()),
     );
   }

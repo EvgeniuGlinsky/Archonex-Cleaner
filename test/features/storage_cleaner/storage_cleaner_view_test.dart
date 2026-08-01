@@ -14,6 +14,7 @@ import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/data/use_cases/clean_junk_use_case.dart';
@@ -95,6 +96,7 @@ void main() {
               getAccess: GetStorageAccessUseCase(accessRepo),
               requestAccess: RequestStorageAccessUseCase(accessRepo),
               addScanFolder: AddAccessFolderUseCase(accessRepo),
+              openAccessSettings: OpenAccessSettingsUseCase(accessRepo),
               getCategories: GetScannableCategoriesUseCase(scanRepo),
               scanForJunk: ScanForJunkUseCase(scanRepo),
               cleanJunk: CleanJunkUseCase(cleanRepo),
@@ -373,6 +375,40 @@ void main() {
     expect(find.text("Only this app's own files"), findsOneWidget);
     // Nothing to ask for, so no button that would visibly do nothing.
     expect(find.text('Grant access'), findsNothing);
+    expect(find.text('Open settings'), findsNothing);
+  });
+
+  // The case that used to read as the sandbox above, word for word: both are
+  // `appOnly` with nothing left to request, and the screen told a permanently
+  // refused Android that no app can read another one's files — which is untrue
+  // there, and dead ends a user two taps from the setting that fixes it.
+  testWidgets('a permanent refusal on Android says so and offers settings',
+      (tester) async {
+    accessRepo.access = const StorageAccess(
+      level: StorageAccessLevel.appOnly,
+      canAddFolder: true,
+      isPermanentlyDenied: true,
+    );
+    scanRepo.categories = <JunkCategory>{JunkCategory.appCache};
+
+    await pump(tester);
+
+    expect(find.text('Access refused for good'), findsOneWidget);
+    expect(
+      find.textContaining('can still be turned on in the system settings'),
+      findsOneWidget,
+    );
+    expect(find.text("Only this app's own files"), findsNothing);
+
+    // Grant is gone rather than sitting beside it: the system has stopped
+    // showing the sheet, so it is the button that would do nothing.
+    expect(find.text('Grant access'), findsNothing);
+    expect(find.text('Add a folder'), findsOneWidget);
+
+    await tester.tap(find.text('Open settings'));
+    await tester.pump();
+
+    expect(accessRepo.openSettingsCount, 1);
   });
 
   testWidgets('web says the platform cannot do this at all', (tester) async {

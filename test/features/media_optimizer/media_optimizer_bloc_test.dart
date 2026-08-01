@@ -16,6 +16,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
@@ -54,6 +55,7 @@ void main() {
       getAccess: GetStorageAccessUseCase(accessRepo),
       requestAccess: RequestStorageAccessUseCase(accessRepo),
       addFolder: AddAccessFolderUseCase(accessRepo),
+      openAccessSettings: OpenAccessSettingsUseCase(accessRepo),
       scanForMedia: ScanForMediaUseCase(scanRepo),
       optimizeMedia: OptimizeMediaUseCase(
         repo: optimizeRepo,

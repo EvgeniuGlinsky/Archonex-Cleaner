@@ -102,6 +102,7 @@
   "accessNarrowedBody": "Без доступа ко всем файлам сканирование ограничено собственным кэшем приложения. Выдайте доступ, чтобы видеть всё устройство.",
   "accessGrantLabel": "Выдать доступ",
   "accessSettingsLabel": "Открыть настройки",
+  "accessDeniedPermanentTitle": "В доступе отказано окончательно",
   "accessDeniedPermanentBody": "В доступе отказано окончательно. Включить его всё ещё можно в системных настройках, в разделе особых разрешений.",
   "accessAddFolderLabel": "Добавить папку",
   "accessScopedTitle": "{count, plural, one{Добавлена {count} папка} few{Добавлено {count} папки} many{Добавлено {count} папок} other{Добавлено {count} папки}}",

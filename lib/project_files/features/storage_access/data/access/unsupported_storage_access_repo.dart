@@ -13,4 +13,9 @@ class UnsupportedStorageAccessRepo implements StorageAccessRepo {
 
   @override
   Future<StorageAccess> addFolder() async => const StorageAccess.unavailable();
+
+  @override
+  Future<void> openSettings() async {
+    // A browser has no settings page for a file system it does not have.
+  }
 }

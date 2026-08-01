@@ -18,6 +18,7 @@ class MediaOptimizerCallbacks {
     required this.onCandidateToggled,
     required this.onGrantAccessPressed,
     required this.onAddFolderPressed,
+    required this.onOpenSettingsPressed,
     required this.onResultDismissed,
   });
 
@@ -29,6 +30,9 @@ class MediaOptimizerCallbacks {
   final ValueChanged<ToggledCandidate> onCandidateToggled;
   final VoidCallback onGrantAccessPressed;
   final VoidCallback onAddFolderPressed;
+
+  /// Offered in place of grant once the system has stopped showing the sheet.
+  final VoidCallback onOpenSettingsPressed;
   final VoidCallback onResultDismissed;
 }
 

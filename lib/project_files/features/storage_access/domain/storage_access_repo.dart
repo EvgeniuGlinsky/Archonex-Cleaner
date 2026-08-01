@@ -20,4 +20,13 @@ abstract interface class StorageAccessRepo {
   ///
   /// Returns the access unchanged when the user closed the picker.
   Future<StorageAccess> addFolder();
+
+  /// Opens the system settings page where a refused permission can be undone.
+  ///
+  /// Returns nothing, and deliberately: the app is leaving the foreground, and
+  /// whatever the user does there is read back by [current] when they return.
+  /// A refusal the system has stopped asking about is only reversible here, so
+  /// on the platforms with no such page this is a no-op rather than an error —
+  /// they are the platforms that never report `isPermanentlyDenied` either.
+  Future<void> openSettings();
 }

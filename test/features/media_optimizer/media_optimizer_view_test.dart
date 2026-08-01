@@ -22,6 +22,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/m
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_view.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
@@ -84,6 +85,7 @@ void main() {
               getAccess: GetStorageAccessUseCase(accessRepo),
               requestAccess: RequestStorageAccessUseCase(accessRepo),
               addFolder: AddAccessFolderUseCase(accessRepo),
+              openAccessSettings: OpenAccessSettingsUseCase(accessRepo),
               scanForMedia: ScanForMediaUseCase(scanRepo),
               optimizeMedia: OptimizeMediaUseCase(
                 repo: optimizeRepo,
@@ -295,6 +297,25 @@ void main() {
     // Nothing to scan until it is widened: an app's own container holds no
     // photographs the user took.
     expect(primaryButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('a permanent refusal on Android says so and offers settings',
+      (tester) async {
+    accessRepo.access = const StorageAccess(
+      level: StorageAccessLevel.appOnly,
+      canAddFolder: true,
+      isPermanentlyDenied: true,
+    );
+
+    await pump(tester);
+
+    expect(find.text('Access refused for good'), findsOneWidget);
+    expect(find.text('Grant access'), findsNothing);
+
+    await tester.tap(find.text('Open settings'));
+    await tester.pump();
+
+    expect(accessRepo.openSettingsCount, 1);
   });
 
   testWidgets('a platform with no reachable media explains itself',

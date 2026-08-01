@@ -5,6 +5,7 @@ import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
@@ -52,6 +53,7 @@ void main() {
       getAccess: GetStorageAccessUseCase(accessRepo),
       requestAccess: RequestStorageAccessUseCase(accessRepo),
       addScanFolder: AddAccessFolderUseCase(accessRepo),
+      openAccessSettings: OpenAccessSettingsUseCase(accessRepo),
       getCategories: GetScannableCategoriesUseCase(scanRepo),
       scanForJunk: ScanForJunkUseCase(scanRepo),
       cleanJunk: CleanJunkUseCase(cleanRepo),

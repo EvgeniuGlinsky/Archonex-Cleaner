@@ -19,16 +19,17 @@ enum StorageAccessLevel {
 
 /// The answer to "where may I look", and what can still be done about it.
 ///
-/// [canRequestMore] and [canAddFolder] are fields rather than questions derived
-/// from [level], because the same level means different things per platform:
-/// iOS is `appOnly` and there is nothing to ask for, Android is `appOnly` and
-/// there is.
+/// [canRequestMore], [canAddFolder] and [isPermanentlyDenied] are fields rather
+/// than questions derived from [level], because the same level means different
+/// things per platform: iOS is `appOnly` and there is nothing to ask for,
+/// Android is `appOnly` and there is — or was, until the user closed the door.
 final class StorageAccess extends Equatable {
   const StorageAccess({
     required this.level,
     this.grantedRoots = const <String>[],
     this.canRequestMore = false,
     this.canAddFolder = false,
+    this.isPermanentlyDenied = false,
   });
 
   /// Every desktop: the rules name paths the process can already read.
@@ -36,21 +37,28 @@ final class StorageAccess extends Equatable {
       : level = StorageAccessLevel.full,
         grantedRoots = const <String>[],
         canRequestMore = false,
-        canAddFolder = false;
+        canAddFolder = false,
+        isPermanentlyDenied = false;
 
   /// Web: no file system, and no permission that would produce one.
   const StorageAccess.unavailable()
       : level = StorageAccessLevel.none,
         grantedRoots = const <String>[],
         canRequestMore = false,
-        canAddFolder = false;
+        canAddFolder = false,
+        isPermanentlyDenied = false;
 
   /// iOS, and a sandboxed macOS build: the container, permanently.
+  ///
+  /// Not [isPermanentlyDenied], which would be the wrong word for it: nothing
+  /// was refused here and there is no setting to go and change. The platform is
+  /// simply built this way, and those are two different sentences to read.
   const StorageAccess.sandboxed()
       : level = StorageAccessLevel.appOnly,
         grantedRoots = const <String>[],
         canRequestMore = false,
-        canAddFolder = false;
+        canAddFolder = false,
+        isPermanentlyDenied = false;
 
   final StorageAccessLevel level;
 
@@ -62,6 +70,14 @@ final class StorageAccess extends Equatable {
 
   /// Whether the folder picker is a route to more coverage.
   final bool canAddFolder;
+
+  /// Whether the system has stopped offering the permission sheet.
+  ///
+  /// The one state that used to be indistinguishable from iOS, and read as it:
+  /// both are `appOnly` with nothing to request, but here the door is closed
+  /// rather than absent, and Settings is the way back through it. Told apart so
+  /// the screen can say which of the two it is and offer the route that exists.
+  final bool isPermanentlyDenied;
 
   /// Whether a scan is worth starting at all.
   bool get canScan => level != StorageAccessLevel.none;
@@ -82,16 +98,23 @@ final class StorageAccess extends Equatable {
     List<String>? grantedRoots,
     bool? canRequestMore,
     bool? canAddFolder,
+    bool? isPermanentlyDenied,
   }) {
     return StorageAccess(
       level: level ?? this.level,
       grantedRoots: grantedRoots ?? this.grantedRoots,
       canRequestMore: canRequestMore ?? this.canRequestMore,
       canAddFolder: canAddFolder ?? this.canAddFolder,
+      isPermanentlyDenied: isPermanentlyDenied ?? this.isPermanentlyDenied,
     );
   }
 
   @override
-  List<Object?> get props =>
-      <Object?>[level, grantedRoots, canRequestMore, canAddFolder];
+  List<Object?> get props => <Object?>[
+        level,
+        grantedRoots,
+        canRequestMore,
+        canAddFolder,
+        isPermanentlyDenied,
+      ];
 }

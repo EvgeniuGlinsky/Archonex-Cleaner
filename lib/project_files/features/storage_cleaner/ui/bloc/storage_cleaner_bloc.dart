@@ -11,6 +11,7 @@ import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
+import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/access_failure.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
@@ -37,6 +38,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     required GetStorageAccessUseCase getAccess,
     required RequestStorageAccessUseCase requestAccess,
     required AddAccessFolderUseCase addScanFolder,
+    required OpenAccessSettingsUseCase openAccessSettings,
     required GetScannableCategoriesUseCase getCategories,
     required ScanForJunkUseCase scanForJunk,
     required CleanJunkUseCase cleanJunk,
@@ -46,6 +48,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
         _getAccess = getAccess,
         _requestAccess = requestAccess,
         _addScanFolder = addScanFolder,
+        _openAccessSettings = openAccessSettings,
         _getCategories = getCategories,
         _scanForJunk = scanForJunk,
         _cleanJunk = cleanJunk,
@@ -61,6 +64,10 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     on<CleanRequested>(_onCleanRequested, transformer: droppable());
     on<AccessRequested>(_onAccessRequested, transformer: droppable());
     on<ScanFolderRequested>(_onScanFolderRequested, transformer: droppable());
+    on<AccessSettingsRequested>(
+      _onAccessSettingsRequested,
+      transformer: droppable(),
+    );
 
     on<ScanCancelled>(_onScanCancelled, transformer: sequential());
     on<CleanCancelled>(_onCleanCancelled, transformer: sequential());
@@ -74,6 +81,7 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
   final GetStorageAccessUseCase _getAccess;
   final RequestStorageAccessUseCase _requestAccess;
   final AddAccessFolderUseCase _addScanFolder;
+  final OpenAccessSettingsUseCase _openAccessSettings;
   final GetScannableCategoriesUseCase _getCategories;
   final ScanForJunkUseCase _scanForJunk;
   final CleanJunkUseCase _cleanJunk;
@@ -168,6 +176,18 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     Emitter<StorageCleanerState> emit,
   ) async {
     await _refreshAccess(emit, await _addScanFolder());
+  }
+
+  /// Leaves for Settings and emits nothing.
+  ///
+  /// There is no state to move to: the app is going to the background, and what
+  /// the user does there is read back by `StorageCleanerStarted` when the screen
+  /// is built again.
+  Future<void> _onAccessSettingsRequested(
+    AccessSettingsRequested event,
+    Emitter<StorageCleanerState> emit,
+  ) async {
+    await _openAccessSettings();
   }
 
   /// Access decides which categories exist, so the two always move together.
