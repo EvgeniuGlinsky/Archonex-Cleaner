@@ -2,7 +2,7 @@ import 'package:storage_cleaner/project_files/features/quarantine/domain/quarant
 
 /// Puts one cleanup back.
 ///
-/// Throws a `RestoreFailure` — nothing is wrapped and nothing is swallowed,
+/// Throws a `QuarantineFailure` — nothing is wrapped and nothing is swallowed,
 /// because both members of that hierarchy are things the user can act on.
 class RestoreQuarantineBatchUseCase {
   const RestoreQuarantineBatchUseCase(this._repo);

@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/purge_quarantine_use_case.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_failure.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
 
 import '../storage_cleaner/fakes.dart';
@@ -132,6 +134,39 @@ void main() {
 
     expect(repo.purgedAll, isTrue);
     expect(bloc.state.isEmpty, isTrue);
+    await bloc.close();
+  });
+
+  // Both purge handlers ran bare where the restore beside them had a `try`.
+  // An exception left the bloc in `working`, where canAct and canPurgeAll are
+  // both false: every button on the screen dead for good, and nothing said.
+  test('a purge that throws leaves the screen usable and says why', () async {
+    repo.publish(<QuarantineBatch>[fakeBatch(id: 'a')]);
+    repo.purgeFailure = const FileSystemException('cannot read the directory');
+
+    final QuarantineBloc bloc = await started();
+    bloc.add(const BatchPurgeRequested('a'));
+    await settle();
+
+    expect(bloc.state.status, QuarantineStatus.ready);
+    expect(bloc.state.failure, isA<PurgeFailure>());
+    expect(bloc.state.canAct, isTrue);
+    // The batch is still there, which is what the copy tells the user.
+    expect(bloc.state.batches.single.id, 'a');
+    await bloc.close();
+  });
+
+  test('an emptying that throws leaves the screen usable too', () async {
+    repo.publish(<QuarantineBatch>[fakeBatch(id: 'a')]);
+    repo.purgeFailure = const FileSystemException('cannot read the directory');
+
+    final QuarantineBloc bloc = await started();
+    bloc.add(const PurgeAllRequested());
+    await settle();
+
+    expect(bloc.state.status, QuarantineStatus.ready);
+    expect(bloc.state.failure, isA<PurgeFailure>());
+    expect(bloc.state.canPurgeAll, isTrue);
     await bloc.close();
   });
 

@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:storage_cleaner/core/constants/app_quarantine_policy.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/data/file_system/io_quarantine_repo.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_failure.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_writer.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_category.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/models/junk_item.dart';

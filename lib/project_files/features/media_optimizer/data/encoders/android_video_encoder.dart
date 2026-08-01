@@ -68,6 +68,12 @@ class AndroidVideoEncoder implements MediaEncoder {
       await _channel.invokeMethod<void>('cancel');
     } on PlatformException {
       // The run had already finished. Nothing to stop.
+    } on MissingPluginException {
+      // The channel was never registered — another platform's build, or a
+      // widget test. Caught here as well as in `_probeAvailability` because
+      // this one is reached from `MediaOptimizerBloc.close()`: an exception
+      // there is thrown while the screen is being torn down, where nothing is
+      // left to catch it.
     }
   }
 
@@ -96,15 +102,29 @@ class AndroidVideoEncoder implements MediaEncoder {
         'input': candidate.path,
         'output': outputPath,
       },
-    ).whenComplete(() async {
+    ).catchError((Object error, StackTrace stackTrace) {
+      // Put onto the stream rather than left on the future, because the future
+      // is only awaited below if the consumer drains the stream — and the one
+      // consumer that does not is the user pressing Cancel, which is exactly
+      // when a half-finished transcode is most likely to fail. Left on the
+      // future it surfaced as an unhandled zone error with the screen already
+      // gone; here it reaches whoever is still listening, and is dropped
+      // quietly by whoever is not.
+      if (!progress.isClosed) {
+        progress.addError(error, stackTrace);
+      }
+    }).whenComplete(() async {
       await events.cancel();
-      await progress.close();
+
+      if (!progress.isClosed) {
+        await progress.close();
+      }
     });
 
     yield* progress.stream;
 
-    // Awaited after the stream drains, so a failure arrives as an error from
-    // this stream rather than as an unhandled one from the future.
+    // Still awaited, so a caller that drains the stream to its end does not
+    // return before the platform side has finished with the file.
     await transcode;
   }
 }

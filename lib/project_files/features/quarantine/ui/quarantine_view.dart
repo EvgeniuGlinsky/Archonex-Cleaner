@@ -6,9 +6,9 @@ import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
-import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_failure.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
-import 'package:storage_cleaner/project_files/features/quarantine/ui/mappers/restore_failure_ui.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/ui/mappers/quarantine_failure_ui.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_body.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
 
@@ -70,7 +70,7 @@ class QuarantineView extends StatelessWidget {
   }
 
   static void _showFailure(BuildContext context, QuarantineState state) {
-    final RestoreFailure? failure = state.failure;
+    final QuarantineFailure? failure = state.failure;
 
     if (failure == null) {
       return;

@@ -181,6 +181,7 @@
       "lost": { "type": "int" }
     }
   },
+  "failurePurge": "无法清空隔离区。文件仍在，请重试。",
 
   "quarantineTitle": "隔离区",
   "quarantineSubtitle": "清理时移走的全部内容。保留 {days} 天，之后彻底删除。",

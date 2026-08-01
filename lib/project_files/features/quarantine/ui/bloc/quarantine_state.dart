@@ -14,7 +14,7 @@ final class QuarantineState extends Equatable {
   /// Newest first, as the repository publishes them.
   final List<QuarantineBatch> batches;
 
-  final RestoreFailure? failure;
+  final QuarantineFailure? failure;
 
   bool get isEmpty => batches.isEmpty;
 
@@ -34,7 +34,7 @@ final class QuarantineState extends Equatable {
   QuarantineState copyWith({
     QuarantineStatus? status,
     List<QuarantineBatch>? batches,
-    RestoreFailure? failure,
+    QuarantineFailure? failure,
     bool clearFailure = false,
   }) {
     return QuarantineState(

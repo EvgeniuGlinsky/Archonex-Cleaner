@@ -8,7 +8,7 @@ import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases
 import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/restore_quarantine_batch_use_case.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/data/use_cases/watch_quarantine_use_case.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_batch.dart';
-import 'package:storage_cleaner/project_files/features/quarantine/domain/models/restore_failure.dart';
+import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_failure.dart';
 
 part 'quarantine_event.dart';
 part 'quarantine_state.dart';
@@ -84,18 +84,40 @@ class QuarantineBloc extends Bloc<QuarantineEvent, QuarantineState> {
     try {
       await _restoreBatch(event.batchId);
       emit(state.copyWith(status: QuarantineStatus.restored));
-    } on RestoreFailure catch (failure) {
+    } on QuarantineFailure catch (failure) {
       emit(state.copyWith(status: QuarantineStatus.ready, failure: failure));
     }
   }
 
+  /// Guarded like the restore beside it, and for a sharper reason.
+  ///
+  /// This ran bare. An exception out of `_purge` left the bloc in `working`,
+  /// where `canAct` and `canPurgeAll` are both false — every button on the
+  /// screen dead, permanently, with no message saying why and nothing on the
+  /// screen to press to get out of it.
+  ///
+  /// `Object` rather than `QuarantineFailure`, because the repository does not
+  /// raise one here: what comes out of emptying a directory is a
+  /// `FileSystemException`, or whatever `path_provider` throws when it cannot
+  /// answer at all. Mapping happens on the way in, which is what keeps the
+  /// screen out of `working` whatever the reason turns out to be.
   Future<void> _onPurgeRequested(
     BatchPurgeRequested event,
     Emitter<QuarantineState> emit,
   ) async {
     emit(state.copyWith(status: QuarantineStatus.working, clearFailure: true));
-    await _purge(batchId: event.batchId);
-    emit(state.copyWith(status: QuarantineStatus.ready));
+
+    try {
+      await _purge(batchId: event.batchId);
+      emit(state.copyWith(status: QuarantineStatus.ready));
+    } on Object {
+      emit(
+        state.copyWith(
+          status: QuarantineStatus.ready,
+          failure: const PurgeFailure(),
+        ),
+      );
+    }
   }
 
   Future<void> _onPurgeAllRequested(
@@ -103,8 +125,18 @@ class QuarantineBloc extends Bloc<QuarantineEvent, QuarantineState> {
     Emitter<QuarantineState> emit,
   ) async {
     emit(state.copyWith(status: QuarantineStatus.working, clearFailure: true));
-    await _purge();
-    emit(state.copyWith(status: QuarantineStatus.ready));
+
+    try {
+      await _purge();
+      emit(state.copyWith(status: QuarantineStatus.ready));
+    } on Object {
+      emit(
+        state.copyWith(
+          status: QuarantineStatus.ready,
+          failure: const PurgeFailure(),
+        ),
+      );
+    }
   }
 
   void _onNoticeDismissed(

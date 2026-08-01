@@ -53,22 +53,28 @@ class MediaOptimizerBody extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
         ],
-        if (groups.isEmpty)
-          _EmptyState(state: state)
-        else
-          ...groups.map(
-            (group) => Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: MediaGroupTile(
-                group: group,
-                canEdit: state.canEditSelection,
-                onToggled: () => callbacks.onGroupToggled(group.kind),
-                onCandidateToggled: (path) => callbacks.onCandidateToggled(
-                  ToggledCandidate(kind: group.kind, path: path),
-                ),
+        // Above the rows rather than instead of them. A device whose video is
+        // all already efficient needs both halves of the answer: the sentence
+        // saying why the button is off, and the four gigabytes of files it is
+        // talking about, each with its own reason — which is what
+        // `MediaCandidate` keeps refusals in the list for.
+        if (state.hasNothingToDo) ...<Widget>[
+          _EmptyState(state: state),
+          if (groups.isNotEmpty) const SizedBox(height: AppSpacing.lg),
+        ],
+        ...groups.map(
+          (group) => Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.md),
+            child: MediaGroupTile(
+              group: group,
+              canEdit: state.canEditSelection,
+              onToggled: () => callbacks.onGroupToggled(group.kind),
+              onCandidateToggled: (path) => callbacks.onCandidateToggled(
+                ToggledCandidate(kind: group.kind, path: path),
               ),
             ),
           ),
+        ),
       ],
     );
   }
@@ -127,6 +133,12 @@ class _Ring extends StatelessWidget {
 /// and "everything here is already as small as it goes" are four sentences, and
 /// the last is the one a naive version of this screen gets wrong: a device full
 /// of efficiently-encoded video is not a device with no video on it.
+///
+/// It got it wrong here too, for a while. Drawing this only when there were no
+/// groups meant the fourth branch could not be reached — an already-efficient
+/// device has groups, they are simply full of rows nothing can be done with.
+/// `MediaOptimizerState.hasNothingToDo` is the question that distinguishes
+/// them, and this widget asks it rather than working it out from the list.
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.state});
 

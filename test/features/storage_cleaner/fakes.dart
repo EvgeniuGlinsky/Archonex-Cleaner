@@ -258,6 +258,13 @@ class FakeQuarantineRepo implements QuarantineRepo {
   /// Thrown by the next `restore()`. Cleared once thrown.
   Object? restoreFailure;
 
+  /// Thrown by the next `purge()` or `purgeAll()`. Cleared once thrown.
+  ///
+  /// A bare `Object` rather than a `QuarantineFailure`: the real repository
+  /// raises whatever the file system does, which is exactly the case the screen
+  /// used to hang on.
+  Object? purgeFailure;
+
   int loadCount = 0;
   int purgeExpiredCount = 0;
   final List<String> restored = <String>[];
@@ -294,6 +301,8 @@ class FakeQuarantineRepo implements QuarantineRepo {
 
   @override
   Future<void> purge(String batchId) async {
+    _throwPurgeFailureIfSet();
+
     purged.add(batchId);
     publish(
       _batches.value.where((batch) => batch.id != batchId).toList(
@@ -304,8 +313,19 @@ class FakeQuarantineRepo implements QuarantineRepo {
 
   @override
   Future<void> purgeAll() async {
+    _throwPurgeFailureIfSet();
+
     purgedAll = true;
     publish(const <QuarantineBatch>[]);
+  }
+
+  void _throwPurgeFailureIfSet() {
+    final Object? failure = purgeFailure;
+    purgeFailure = null;
+
+    if (failure != null) {
+      throw failure;
+    }
   }
 
   @override

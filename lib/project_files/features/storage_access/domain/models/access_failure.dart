@@ -2,7 +2,7 @@
 /// given it.
 ///
 /// A hierarchy of its own rather than three more members of `CleanFailure`,
-/// for the reason `RestoreFailure` has one: a sealed class can only be extended
+/// for the reason `QuarantineFailure` has one: a sealed class can only be extended
 /// in its own library, so a shared hierarchy would make the cleaner and the
 /// optimiser both own the access failures and the arrow point every way at
 /// once. Two tools ask this question and neither of them owns the answer.

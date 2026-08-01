@@ -181,6 +181,7 @@
       "lost": { "type": "int" }
     }
   },
+  "failurePurge": "The quarantine could not be emptied. The files are still there — try again.",
 
   "quarantineTitle": "Quarantine",
   "quarantineSubtitle": "Everything a cleanup moved aside. Kept for {days} days, then deleted for good.",

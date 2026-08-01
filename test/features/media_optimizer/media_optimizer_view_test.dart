@@ -183,8 +183,13 @@ void main() {
       findsOneWidget,
     );
     // And no button offering to do something about it.
-    expect(find.text('Everything is already efficient'), findsNothing);
     expect(find.textContaining('Save '), findsNothing);
+
+    // Said as well as shown. This used to assert the opposite — that the
+    // heading was absent — which was the bug written down as the expectation:
+    // the screen drew four gigabytes of unactionable rows under no heading at
+    // all, and left the user to work out why the button was off.
+    expect(find.text('Everything is already efficient'), findsOneWidget);
   });
 
   testWidgets('a device with nothing worth doing says so plainly',

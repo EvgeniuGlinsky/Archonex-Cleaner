@@ -106,6 +106,22 @@ final class MediaOptimizerState extends Equatable {
     return groups.where((group) => !group.isEmpty).toList(growable: false);
   }
 
+  /// Whether the screen owes the user a sentence rather than a list of rows.
+  ///
+  /// Not the same question as "did the scan find anything", which is what the
+  /// screen used to ask by checking [visibleGroups] alone — and a device full of
+  /// already-efficient HEVC answers yes to that. Its groups are not empty, so
+  /// the rows were drawn, every one of them unactionable, under no heading and
+  /// above a bare *Rescan*. The sentence explaining that a scan can succeed and
+  /// still leave nothing to do sat in the ARB files with nothing able to reach
+  /// it.
+  ///
+  /// Not asked mid-scan: the first worthwhile file may be the next one, and a
+  /// screen that says "everything is already efficient" while it is still
+  /// looking is saying something it does not know yet.
+  bool get hasNothingToDo =>
+      visibleGroups.isEmpty || (hasScanned && !isScanning && !hasWorthwhile);
+
   /// Groups as well as access, because the two are not the same question.
   ///
   /// An Android with all-files access refused answers `canScan` true — the

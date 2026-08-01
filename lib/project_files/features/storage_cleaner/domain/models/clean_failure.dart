@@ -68,8 +68,8 @@ final class CleanRunFailure extends CleanFailure {
 /// own library, so one shared hierarchy would make the dependency arrow point
 /// both ways.
 ///
-/// Putting a cleanup back is `RestoreFailure` in
-/// `quarantine/domain/models/restore_failure.dart` — the cleaner depends on the
+/// Putting a cleanup back is `QuarantineFailure` in
+/// `quarantine/domain/models/quarantine_failure.dart` — the cleaner depends on the
 /// quarantine and not the other way round. Being refused reach is
 /// `AccessFailure` in `storage_access/domain/models/access_failure.dart`, which
 /// the optimiser needs as much as the cleaner does and neither of them owns;
