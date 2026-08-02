@@ -14,7 +14,12 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widget
 import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/scan_summary_line.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/storage_cleaner_callbacks.dart';
 
-/// State and callbacks in, one scrolling column out.
+/// State and callbacks in, one column out.
+///
+/// A `Column` and not a `ListView`: `AppScreenLayout` owns the one scroll view
+/// on the screen, so that the title scrolls with the findings instead of the
+/// findings sliding under it. Nothing is lost by it — this was a
+/// `ListView(children:)`, which builds every child up front too.
 ///
 /// It knows nothing about where the state came from: no `flutter_bloc` import,
 /// no `go_router`, which is what lets a widget test drive it with a literal.
@@ -32,7 +37,8 @@ class StorageCleanerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<JunkGroup> groups = state.visibleGroups;
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (state.hasQuarantine) ...<Widget>[
           QuarantineBanner(

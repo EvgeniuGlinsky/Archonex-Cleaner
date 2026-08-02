@@ -6,6 +6,7 @@ import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/widgets/language_button.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/models/quarantine_failure.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quarantine_bloc.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/mappers/quarantine_failure_ui.dart';
@@ -26,7 +27,9 @@ class QuarantineView extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(),
+      // Back arrow and language button, as on the two tool screens — the
+      // cleaner's view carries the reason the button is up here.
+      appBar: AppBar(actions: const <Widget>[LanguageButton()]),
       body: MultiBlocListener(
         listeners: <BlocListener<QuarantineBloc, QuarantineState>>[
           BlocListener<QuarantineBloc, QuarantineState>(

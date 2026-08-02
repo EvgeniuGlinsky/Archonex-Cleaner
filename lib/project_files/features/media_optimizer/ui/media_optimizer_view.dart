@@ -5,7 +5,7 @@ import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_header.dart';
 import 'package:storage_cleaner/core/widgets/app_screen_layout.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
-import 'package:storage_cleaner/project_files/features/language_selection/ui/language_dialog.dart';
+import 'package:storage_cleaner/project_files/features/language_selection/ui/widgets/language_button.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/mappers/optimize_failure_ui.dart';
@@ -22,10 +22,10 @@ class MediaOptimizerView extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      // An empty bar, purely for the back arrow: this screen is pushed from the
-      // home screen and the other tool is behind it. The title stays in
-      // `AppScreenHeader` below, where it can carry a subtitle.
-      appBar: AppBar(),
+      // The back arrow and the language button, and nothing else — the cleaner
+      // screen carries the full reason. The title stays in `AppScreenHeader`,
+      // where it can carry a subtitle and where it scrolls away with the list.
+      appBar: AppBar(actions: const <Widget>[LanguageButton()]),
       body: BlocListener<MediaOptimizerBloc, MediaOptimizerState>(
         listenWhen: (previous, current) =>
             previous.failure != current.failure && current.failure != null,
@@ -40,11 +40,6 @@ class MediaOptimizerView extends StatelessWidget {
               header: AppScreenHeader(
                 title: l10n.optimizerTitle,
                 subtitle: l10n.optimizerSubtitle,
-                trailing: IconButton(
-                  tooltip: l10n.languageButtonTooltip,
-                  icon: const Icon(Icons.language),
-                  onPressed: () => showLanguageDialog(context),
-                ),
               ),
               body: MediaOptimizerBody(state: state, callbacks: callbacks),
               bottom: MediaOptimizerActions(state: state, callbacks: callbacks),

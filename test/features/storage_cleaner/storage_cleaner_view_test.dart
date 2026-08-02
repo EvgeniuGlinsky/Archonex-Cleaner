@@ -265,6 +265,42 @@ void main() {
     expect(find.textContaining('2 KB'), findsWidgets);
   });
 
+  testWidgets('the title scrolls with the findings and the button does not',
+      (tester) async {
+    // The screen used to pin its title over a list of its own, and on a phone
+    // that left about two collapsed tiles of scrolling room with the rest
+    // clipping flush against the header. The button is the exception on
+    // purpose: it is the one thing the screen exists to let the user press.
+    scanRepo.updates = <ScanUpdate>[
+      JunkFound(<JunkItem>[
+        for (int index = 0; index < 12; index++)
+          fakeItem(path: '/tmp/file-$index.tmp', sizeInBytes: 1024 * index),
+      ]),
+    ];
+
+    await pump(tester, surface: narrow);
+    await tester.tap(find.text('Scan'));
+    await tester.pumpAndSettle();
+
+    final double titleBefore = tester.getTopLeft(find.text('Free up space')).dy;
+    final double buttonBefore =
+        tester.getTopLeft(find.byType(AppPrimaryButton)).dy;
+
+    await tester.drag(find.byType(ListView), const Offset(0, -160));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getTopLeft(find.text('Free up space')).dy,
+      lessThan(titleBefore),
+      reason: 'the header should scroll away with the list',
+    );
+    expect(
+      tester.getTopLeft(find.byType(AppPrimaryButton)).dy,
+      buttonBefore,
+      reason: 'the primary action should stay where it is',
+    );
+  });
+
   testWidgets('the clean button names what it will take', (tester) async {
     scanRepo.updates = <ScanUpdate>[
       JunkFound(<JunkItem>[fakeItem(sizeInBytes: 1024)]),

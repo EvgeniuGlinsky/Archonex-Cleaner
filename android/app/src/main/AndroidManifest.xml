@@ -33,11 +33,21 @@
         android:label="Storage Cleaner"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!--
+            `screenOrientation` is upright, and says so here as well as in
+            `main.dart`. Dart cannot run before the engine does, so without the
+            attribute the launch theme appears sideways on a phone held that way
+            and then snaps upright. `configChanges` already lists `orientation`
+            and `screenSize`, so a rotation never recreated the activity — which
+            matters more than it looks: a recreated activity tears down the
+            `MediaCodec` in the middle of an encode.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
+            android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"

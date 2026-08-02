@@ -8,7 +8,10 @@ import 'package:storage_cleaner/project_files/features/quarantine/ui/bloc/quaran
 import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_batch_tile.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/ui/widgets/quarantine_callbacks.dart';
 
-/// State and callbacks in, one list out.
+/// State and callbacks in, one column out.
+///
+/// A `Column` and not a `ListView`, for the reason `StorageCleanerBody` gives:
+/// `AppScreenLayout` owns the screen's only scroll view.
 class QuarantineBody extends StatelessWidget {
   const QuarantineBody({
     required this.state,
@@ -27,7 +30,8 @@ class QuarantineBody extends StatelessWidget {
       return const _EmptyState();
     }
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         for (final QuarantineBatch batch in state.batches)
           Padding(

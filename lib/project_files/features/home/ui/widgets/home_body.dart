@@ -9,10 +9,11 @@ import 'package:storage_cleaner/project_files/features/home/ui/bloc/home_bloc.da
 import 'package:storage_cleaner/project_files/features/home/ui/widgets/app_tool_card.dart';
 import 'package:storage_cleaner/project_files/features/home/ui/widgets/home_callbacks.dart';
 
-/// State and callbacks in, one scrolling column out.
+/// State and callbacks in, one column out.
 ///
 /// No `flutter_bloc` import and no `go_router`, so a widget test can drive it
-/// with a literal state — the same rule `StorageCleanerBody` follows.
+/// with a literal state — the same rule `StorageCleanerBody` follows, along
+/// with the reason it is a `Column` rather than a list of its own.
 class HomeBody extends StatelessWidget {
   const HomeBody({
     required this.state,
@@ -27,7 +28,8 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final DeviceStorageSnapshot? storage = state.storage;
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         // Absent rather than zeroed where the platform cannot measure the disk.
         // A ring at nought would read as an empty device, which is the one thing

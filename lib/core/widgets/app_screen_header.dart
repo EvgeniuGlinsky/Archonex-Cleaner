@@ -14,8 +14,9 @@ class AppScreenHeader extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  /// The one action a screen keeps next to its title rather than at the bottom
-  /// — the language button, the quarantine button. `null` on most screens.
+  /// The one action a screen keeps next to its title rather than in its
+  /// `AppBar`. Only the home screen has one, because only the home screen has
+  /// no `AppBar` to put it in — see `LanguageButton`. `null` everywhere else.
   final Widget? trailing;
 
   @override

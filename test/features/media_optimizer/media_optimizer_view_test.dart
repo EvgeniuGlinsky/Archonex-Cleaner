@@ -357,6 +357,46 @@ void main() {
         reason: locale.languageCode,
       );
       expect(tester.takeException(), isNull, reason: locale.languageCode);
+
+      // `pumpWidget` reuses the element tree, so the bloc survives the turn of
+      // the loop with its findings in it: the first pass taps a scan button and
+      // the ones after it tap "Save 500 MB", which opens the confirmation. Left
+      // open, that dialog covers the next locale's screen and swallows its tap,
+      // and the iteration then asserts against a screen nothing was done to.
+      if (find.byType(AlertDialog).evaluate().isNotEmpty) {
+        tester.state<NavigatorState>(find.byType(Navigator).last).pop();
+        await tester.pumpAndSettle();
+      }
     }
+  });
+
+  testWidgets('the title scrolls with the list and the button does not',
+      (tester) async {
+    // The screen used to pin its title above a list of its own, which on a
+    // phone left about two collapsed tiles of scrolling room and clipped the
+    // rest flush against the header. The button is the deliberate exception.
+    findsVideos();
+
+    await pump(tester, surface: narrow);
+    await scan(tester);
+
+    final String title = 'Make files smaller';
+    final double titleBefore = tester.getTopLeft(find.text(title)).dy;
+    final double buttonBefore =
+        tester.getTopLeft(find.byType(AppPrimaryButton)).dy;
+
+    await tester.drag(find.byType(ListView), const Offset(0, -160));
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getTopLeft(find.text(title)).dy,
+      lessThan(titleBefore),
+      reason: 'the header should scroll away with the list',
+    );
+    expect(
+      tester.getTopLeft(find.byType(AppPrimaryButton)).dy,
+      buttonBefore,
+      reason: 'the primary action should stay where it is',
+    );
   });
 }

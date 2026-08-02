@@ -12,7 +12,10 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widget
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/optimize_result_card.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
 
-/// State and callbacks in, one list out. No `flutter_bloc`, no `go_router`.
+/// State and callbacks in, one column out. No `flutter_bloc`, no `go_router`.
+///
+/// A `Column` and not a `ListView`, for the reason `StorageCleanerBody` gives:
+/// `AppScreenLayout` owns the screen's only scroll view.
 class MediaOptimizerBody extends StatelessWidget {
   const MediaOptimizerBody({
     required this.state,
@@ -27,7 +30,8 @@ class MediaOptimizerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<MediaGroup> groups = state.visibleGroups;
 
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (state.access.isNarrowed) ...<Widget>[
           StorageAccessNotice(
