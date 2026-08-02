@@ -24,8 +24,8 @@ class AppToolCard extends StatelessWidget {
     super.key,
   });
 
-  static const double _markSize = 52;
-  static const double _iconSize = 26;
+  static const double _markSize = 44;
+  static const double _iconSize = 22;
   static const double _unavailableOpacity = 0.55;
   static const EdgeInsets _badgePadding =
       EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs);
@@ -48,7 +48,7 @@ class AppToolCard extends StatelessWidget {
         child: InkWell(
           onTap: onPressed,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: <Widget>[
                 _Mark(icon: tool.icon, isEnabled: isEnabled),

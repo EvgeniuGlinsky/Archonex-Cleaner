@@ -17,25 +17,29 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/mapper
 /// and untick the one file they recognise, which is the whole reason the
 /// per-row exclusions exist.
 ///
-/// The size wants to be a column of its own on the right, because the one thing
-/// a user does on this screen is compare categories, and figures buried at
-/// different points in a sentence cannot be compared without reading all of
-/// them. On a phone it cannot have one, so it drops under the title instead.
+/// The figures sit on the *ends of the lines they belong to* — the size beside
+/// the name, the count beside the description — rather than in a column of
+/// their own. That column is what the first two versions of this had, and the
+/// arithmetic never let it happen. It needed 284 dp of title row and a phone
+/// gave it 192, so every tile fell back to the tall arrangement: four stacked
+/// lines of small text in a 144 dp column inside a 312 dp card, with the other
+/// half of the card empty. Nothing was wrong with the fallback except that it
+/// was the only thing anyone ever saw.
 ///
-/// That is not a preference, it is arithmetic. A 360 dp screen leaves this tile
-/// 312, the row padding takes 32, the checkbox 48, its gap 16 and the expansion
-/// arrow another 40: 128 reaches the mark, the text and the figures together.
-/// A 92 dp column of figures out of that leaves 24 for the name, and the first
-/// build of this shipped exactly that — "Установщики и архивы" drawn one letter
-/// per row, eighteen rows tall.
-///
-/// Nothing warns about it. A `Flexible` beside a child that cannot shrink is
-/// given whatever is left over, and nothing is a legal amount: there is no
-/// overflow to report, so the console stays silent and only a device says
-/// anything. The rule that came out of it — no unshrinkable child on a line with
-/// flexible text unless the line is provably wide enough — is why the badge has
-/// a line of its own here and in `AppToolCard`, and why the countdown chip has
-/// one in `QuarantineBatchTile`.
+/// It still switches, and the switch still matters, because the trap underneath
+/// it is real. A 360 dp screen leaves this tile 328, the row padding takes 24,
+/// the checkbox 32, its gap 8 and the expansion arrow 24: 240 reaches the mark,
+/// the text and the figures. The mark and its gap take 36 and a figure may ask
+/// for [_figureWidth], which leaves the name 112 — enough. Below that the
+/// figures drop under the text instead, because a `Flexible` beside a child
+/// that cannot shrink is given whatever is left over and nothing is a legal
+/// amount: there is no overflow to report, so the console stays silent and only
+/// a device says anything. The first build of this shipped exactly that —
+/// "Установщики и архивы" drawn one letter per row, eighteen rows tall. The
+/// rule it left behind — no unshrinkable child on a line with flexible text
+/// unless the line is provably wide enough — is why the badge has a line of its
+/// own here and in `AppToolCard`, and why the countdown chip has one in
+/// `QuarantineBatchTile`.
 ///
 /// The width is read with `LayoutBuilder` rather than `MediaQuery`, per the
 /// Constants section of the skill: `AppScreenLayout` caps the content far below
@@ -56,17 +60,18 @@ class JunkCategoryTile extends StatelessWidget {
   /// somebody spot a file they recognise, and nobody reads past two hundred.
   static const int _maxVisibleItems = 200;
 
-  static const double _iconSize = 22;
-  static const double _markSize = 36;
+  static const double _iconSize = 18;
+  static const double _markSize = 28;
 
-  /// Width of the figures when they sit on the right. "465.1 GB" over
-  /// "1 234 файла" is the widest either line gets on a real disk.
-  static const double _amountWidth = 92;
+  /// Width a figure may take from the line it shares. "465.1 GB" at
+  /// `titleMedium` is about 72 on a device, so this has a little room in it and
+  /// no more: every point of it comes out of the category name.
+  static const double _figureWidth = 84;
 
-  /// What the category name needs before the figures may take a column beside
-  /// it. Two words of Russian at `titleMedium` on two lines; below it they start
-  /// breaking mid-word, and well below it the row becomes a staircase.
-  static const double _minTitleWidth = 132;
+  /// What the category name needs before a figure may sit beside it. Two words
+  /// of Russian at `titleMedium` on two lines; below it they start breaking
+  /// mid-word, and well below it the row becomes a staircase.
+  static const double _minTitleWidth = 96;
 
   final JunkGroup group;
   final bool canEdit;
@@ -86,17 +91,27 @@ class JunkCategoryTile extends StatelessWidget {
         collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
+        // The gap between the checkbox and the title, and the width reserved
+        // for the checkbox itself, come from `listTileTheme` in `AppTheme` —
+        // `ExpansionTile` takes neither directly, and the `ListTile` it builds
+        // reads them from there.
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         // The checkbox goes in `leading`, not `trailing`: `ExpansionTile.trailing`
         // replaces the rotating arrow, and a row that opens with no affordance
         // saying so is a row nobody opens.
         leading: Checkbox(
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           // `null` is the dash: ticked, but with rows unticked inside it.
           value: group.isPartiallySelected ? null : group.isSelected,
           tristate: true,
           onChanged: canEdit ? (_) => onToggled() : null,
         ),
+        // Four either side, on top of the four `ListTile` insists on. Eight is
+        // what keeps a two-line name off the card's own edge; the sixteen this
+        // had before was half the height the tile did not need.
         title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final String? size = group.isEmpty
@@ -113,20 +128,16 @@ class JunkCategoryTile extends StatelessWidget {
                     icon: group.category.icon,
                     needsSecondLook: group.category.needsSecondLook,
                   ),
-                  const SizedBox(width: AppSpacing.md),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _Details(
                       group: group,
                       badge: l10n.categorySecondLookBadge,
-                      // Only when there is no column to put them in.
-                      size: beside ? null : size,
-                      count: beside ? null : count,
+                      size: size,
+                      count: count,
+                      figuresOnTheEnds: beside,
                     ),
                   ),
-                  if (beside) ...<Widget>[
-                    const SizedBox(width: AppSpacing.md),
-                    _Amount(size: size, count: count!),
-                  ],
                 ],
               );
             },
@@ -176,21 +187,22 @@ class JunkCategoryTile extends StatelessWidget {
 
   int get _hiddenCount => group.items.length - _visibleItems.length;
 
-  /// Whether the figures can take a column beside the name without starving it.
+  /// Whether a figure can sit on the end of a line without starving the text.
   static bool _fitsBeside(double rowWidth) =>
-      rowWidth - _markSize - AppSpacing.md - AppSpacing.md - _amountWidth >=
+      rowWidth - _markSize - AppSpacing.sm - AppSpacing.sm - _figureWidth >=
       _minTitleWidth;
 }
 
-/// The name, the warning and whatever else has to go under them.
+/// The name, the warning, the description, and the figures wherever they fit.
 ///
-/// One widget for both arrangements, taking the figures only when there is no
-/// column for them: two columns kept in step by hand is how the wide layout ends
-/// up saying something the narrow one does not.
+/// One widget for both arrangements, taking a flag rather than two different
+/// sets of arguments: two columns kept in step by hand is how the wide layout
+/// ends up saying something the narrow one does not.
 class _Details extends StatelessWidget {
   const _Details({
     required this.group,
     required this.badge,
+    required this.figuresOnTheEnds,
     this.size,
     this.count,
   });
@@ -198,9 +210,13 @@ class _Details extends StatelessWidget {
   final JunkGroup group;
   final String badge;
 
-  /// Set only in the stacked arrangement.
+  /// `null` until the scan has put something in this category.
   final String? size;
   final String? count;
+
+  /// The size beside the name and the count beside the description, rather than
+  /// both on a line of their own underneath.
+  final bool figuresOnTheEnds;
 
   @override
   Widget build(BuildContext context) {
@@ -210,20 +226,30 @@ class _Details extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          group.category.title(context),
-          style: theme.textTheme.titleMedium,
+        _Line(
+          text: Text(
+            group.category.title(context),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium,
+          ),
+          figure: figuresOnTheEnds && size != null
+              ? _Figure(text: size, style: theme.textTheme.titleMedium)
+              : null,
         ),
-        if (group.category.needsSecondLook) ...<Widget>[
-          const SizedBox(height: AppSpacing.xs),
-          _SecondLookBadge(label: badge),
-        ],
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          group.category.subtitle(context),
-          style: theme.textTheme.bodyMedium,
+        _Line(
+          text: Text(
+            group.category.subtitle(context),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall,
+          ),
+          figure: figuresOnTheEnds && count != null
+              ? _Figure(text: count!, style: theme.textTheme.labelLarge)
+              : null,
         ),
-        if (size != null) ...<Widget>[
+        if (size != null && !figuresOnTheEnds) ...<Widget>[
           const SizedBox(height: AppSpacing.xs),
           Text(
             '$size · $count',
@@ -231,6 +257,36 @@ class _Details extends StatelessWidget {
               fontFeatures: AppTypography.tabularFigures,
             ),
           ),
+        ],
+        if (group.category.needsSecondLook) ...<Widget>[
+          const SizedBox(height: AppSpacing.xs),
+          _SecondLookBadge(label: badge),
+        ],
+      ],
+    );
+  }
+}
+
+/// Flexible text with an optional figure pinned to the end of it.
+///
+/// The figure is the child that cannot shrink, so it is capped and never wraps;
+/// `JunkCategoryTile._fitsBeside` is what decides whether it may be here at all.
+class _Line extends StatelessWidget {
+  const _Line({required this.text, this.figure});
+
+  final Widget text;
+  final Widget? figure;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: <Widget>[
+        Expanded(child: text),
+        if (figure != null) ...<Widget>[
+          const SizedBox(width: AppSpacing.sm),
+          figure!,
         ],
       ],
     );
@@ -264,43 +320,12 @@ class _CategoryMark extends StatelessWidget {
   static const double _tintAlpha = 0.14;
 }
 
-/// Size over count, right-aligned, in tabular figures so a column of them lines
+/// A number on the end of a line, in tabular figures so a column of them lines
 /// up on the decimal point instead of jittering as a scan fills them in.
 ///
-/// Capped, and single-line: this is the child of the title row that cannot
-/// shrink, so whatever it asks for comes straight out of the category name
-/// beside it. `JunkCategoryTile._amountWidth` is the most it may ask.
-class _Amount extends StatelessWidget {
-  const _Amount({required this.size, required this.count});
-
-  final String size;
-  final String count;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: JunkCategoryTile._amountWidth,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          _Figure(
-            text: size,
-            style: theme.textTheme.titleMedium,
-          ),
-          _Figure(
-            text: count,
-            style: theme.textTheme.labelLarge,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+/// Capped and single-line: this is the child of the row that cannot shrink, so
+/// whatever it asks for comes straight out of the text beside it.
+/// [JunkCategoryTile._figureWidth] is the most it may ask.
 class _Figure extends StatelessWidget {
   const _Figure({required this.text, required this.style});
 
@@ -309,12 +334,17 @@ class _Figure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.end,
-      style: style?.copyWith(fontFeatures: AppTypography.tabularFigures),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxWidth: JunkCategoryTile._figureWidth,
+      ),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.end,
+        style: style?.copyWith(fontFeatures: AppTypography.tabularFigures),
+      ),
     );
   }
 }

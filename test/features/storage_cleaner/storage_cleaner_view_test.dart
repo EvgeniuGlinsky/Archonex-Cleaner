@@ -66,10 +66,11 @@ void main() {
   /// The comfortable phone every test that is not about width runs on.
   const Size roomy = Size(440, 1000);
 
-  /// The narrowest phone still worth supporting. Everything the title row of a
-  /// category has to hold comes out of about 184 logical pixels here, which is
-  /// where a child that cannot shrink starves the one that can.
-  const Size narrow = Size(360, 800);
+  /// A small phone with its system bars taken off, for the one test about
+  /// scrolling. The tiles are compact enough now that a scan of a single
+  /// category fits on [narrow] without scrolling at all, which is the good news
+  /// and also why that surface cannot ask this question.
+  const Size short = Size(360, 560);
 
   /// The bloc is built inside `BlocProvider.create`, never in `setUp`: one from
   /// `setUp` lives in another async zone and silently never receives its
@@ -173,39 +174,53 @@ void main() {
       'zh': '安装包与压缩包',
     };
 
-    for (final MapEntry<String, String> entry in longestTitle.entries) {
-      testWidgets('the ${entry.key} title stays on a few lines, not a staircase',
-          (tester) async {
-        scanRepo.categories = <JunkCategory>{JunkCategory.installerLeftovers};
-        scanRepo.updates = <ScanUpdate>[
-          JunkFound(<JunkItem>[
-            fakeItem(
-              sizeInBytes: 500 * 1024 * 1024 * 1024,
-              category: JunkCategory.installerLeftovers,
-            ),
-          ]),
-        ];
+    /// Both widths the tile has to survive, and they take different branches.
+    ///
+    /// At 360 the size fits on the end of the name's line; at 320 it does not
+    /// and drops underneath instead. The 320 case is the one that matters: it
+    /// is the branch that stops a figure taking the name's width away from it,
+    /// and the only proof that the threshold is still in the right place.
+    const Map<String, Size> widths = <String, Size>{
+      '360': Size(360, 800),
+      '320': Size(320, 800),
+    };
 
-        await pump(tester, surface: narrow, locale: Locale(entry.key));
+    for (final MapEntry<String, Size> width in widths.entries) {
+      for (final MapEntry<String, String> entry in longestTitle.entries) {
+        testWidgets(
+            'at ${width.key} the ${entry.key} title stays on a few lines, '
+            'not a staircase', (tester) async {
+          scanRepo.categories = <JunkCategory>{JunkCategory.installerLeftovers};
+          scanRepo.updates = <ScanUpdate>[
+            JunkFound(<JunkItem>[
+              fakeItem(
+                sizeInBytes: 500 * 1024 * 1024 * 1024,
+                category: JunkCategory.installerLeftovers,
+              ),
+            ]),
+          ];
 
-        // Before the scan, and again after it — the amount column only appears
-        // once there is something to count, so the row is at its tightest then.
-        expect(
-          tester.getSize(find.text(entry.value)).height,
-          lessThan(maxTitleHeight),
-          reason: 'the title collapsed before a scan',
-        );
+          await pump(tester, surface: width.value, locale: Locale(entry.key));
 
-        await tester.tap(find.byType(AppPrimaryButton));
-        await tester.pumpAndSettle();
+          // Before the scan, and again after it — the figures only appear once
+          // there is something to count, so the row is at its tightest then.
+          expect(
+            tester.getSize(find.text(entry.value)).height,
+            lessThan(maxTitleHeight),
+            reason: 'the title collapsed before a scan',
+          );
 
-        expect(
-          tester.getSize(find.text(entry.value)).height,
-          lessThan(maxTitleHeight),
-          reason: 'the title collapsed once the size column appeared',
-        );
-        expect(tester.takeException(), isNull);
-      });
+          await tester.tap(find.byType(AppPrimaryButton));
+          await tester.pumpAndSettle();
+
+          expect(
+            tester.getSize(find.text(entry.value)).height,
+            lessThan(maxTitleHeight),
+            reason: 'the title collapsed once the figures appeared',
+          );
+          expect(tester.takeException(), isNull);
+        });
+      }
     }
   });
 
@@ -278,7 +293,7 @@ void main() {
       ]),
     ];
 
-    await pump(tester, surface: narrow);
+    await pump(tester, surface: short);
     await tester.tap(find.text('Scan'));
     await tester.pumpAndSettle();
 

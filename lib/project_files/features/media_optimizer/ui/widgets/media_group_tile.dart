@@ -14,10 +14,13 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widget
 /// One kind of media, collapsed to a line and openable to the files.
 ///
 /// `JunkCategoryTile` next door is the same shape and carries the full story of
-/// the narrow-phone layout bug both of them are written around: no unshrinkable
-/// child on a line with flexible text unless the line is provably wide enough,
-/// and the width read with `LayoutBuilder` rather than `MediaQuery`, because
-/// `AppScreenLayout` caps the content far below the window.
+/// both the narrow-phone layout bug these are written around and the reason the
+/// figures now sit on the ends of the lines they belong to instead of in a
+/// column of their own. Every number here — the mark, the gaps, the figure cap
+/// and the width a name needs before a figure may share its line — is that
+/// file's, restated rather than imported, because a tile that quietly followed
+/// its neighbour's constants would break the moment the neighbour changed for
+/// reasons of its own.
 ///
 /// What differs is which figure the collapsed line shows. The cleaner shows how
 /// much is there, because all of it is going; this shows how much would be
@@ -37,15 +40,19 @@ class MediaGroupTile extends StatelessWidget {
   /// long is slow to build and useless to read.
   static const int _maxVisibleRows = 200;
 
-  static const double _markSize = 36;
-  static const double _iconSize = 22;
+  static const double _markSize = 28;
+  static const double _iconSize = 18;
 
-  /// Width of the figures when they sit on the right. "−4.8 GB" over "12 files"
-  /// is the widest either line gets.
-  static const double _amountWidth = 92;
+  /// Width a figure may take from the line it shares. "−4.8 GB" is the widest
+  /// either of them gets.
+  static const double _figureWidth = 84;
 
-  /// What the name needs before the figures may take a column beside it.
-  static const double _minTitleWidth = 132;
+  /// What the name needs before a figure may sit beside it.
+  static const double _minTitleWidth = 96;
+
+  /// A compact `Checkbox`, and the placeholder that stands in for it where the
+  /// group has nothing worth ticking.
+  static const double _checkboxWidth = 32;
 
   final MediaGroup group;
   final bool canEdit;
@@ -65,12 +72,17 @@ class MediaGroupTile extends StatelessWidget {
         collapsedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
+        // The leading width and the gap after it come from `listTileTheme` in
+        // `AppTheme`, for the reason `JunkCategoryTile` gives.
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
         // In `leading`, because `trailing` replaces the rotating arrow and a row
         // that opens with nothing saying so is a row nobody opens. Absent
         // entirely where the group turned up nothing that can be acted on:
         // an unticked box and a box that does nothing look identical.
         leading: group.hasWorthwhile
             ? Checkbox(
+                visualDensity: VisualDensity.compact,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 // `null` is the dash: ticked, with rows unticked inside it.
                 value: group.isPartiallySelected ? null : group.isSelected,
                 tristate: true,
@@ -78,7 +90,7 @@ class MediaGroupTile extends StatelessWidget {
               )
             : const SizedBox(width: _checkboxWidth),
         title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final String? saving = group.hasWorthwhile
@@ -92,19 +104,15 @@ class MediaGroupTile extends StatelessWidget {
               return Row(
                 children: <Widget>[
                   _KindMark(group: group),
-                  const SizedBox(width: AppSpacing.md),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _Details(
                       group: group,
-                      // Only when there is no column to put them in.
-                      saving: beside ? null : saving,
-                      count: beside ? null : count,
+                      saving: saving,
+                      count: count,
+                      figuresOnTheEnds: beside,
                     ),
                   ),
-                  if (beside) ...<Widget>[
-                    const SizedBox(width: AppSpacing.md),
-                    _Amount(saving: saving, count: count ?? ''),
-                  ],
                 ],
               );
             },
@@ -168,12 +176,10 @@ class MediaGroupTile extends StatelessWidget {
 
   int get _hiddenCount => group.totalCount - _visibleCandidates.length;
 
-  /// Whether the figures can take a column beside the name without starving it.
+  /// Whether a figure can sit on the end of a line without starving the text.
   static bool _fitsBeside(double rowWidth) =>
-      rowWidth - _markSize - AppSpacing.md - AppSpacing.md - _amountWidth >=
+      rowWidth - _markSize - AppSpacing.sm - AppSpacing.sm - _figureWidth >=
       _minTitleWidth;
-
-  static const double _checkboxWidth = 48;
 }
 
 /// The icon in its circle, tinted by whether there is anything to do.
@@ -206,43 +212,74 @@ class _KindMark extends StatelessWidget {
   }
 }
 
-/// The name, what it says about itself, and whatever the wide layout did not
-/// take away into a column.
+/// The name, what the group says about itself, and the figures wherever they
+/// fit — beside the lines they belong to, or stacked underneath on a screen too
+/// narrow for that.
 class _Details extends StatelessWidget {
-  const _Details({required this.group, this.saving, this.count});
+  const _Details({
+    required this.group,
+    required this.figuresOnTheEnds,
+    this.saving,
+    this.count,
+  });
 
   final MediaGroup group;
+
+  /// `null` where there is nothing worth re-encoding in this group.
   final String? saving;
+
+  /// `null` until the walk has put something in it.
   final String? count;
+
+  final bool figuresOnTheEnds;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final AppColors colors = AppColors.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final String? saving = this.saving;
+
+    final TextStyle? savingStyle = theme.textTheme.titleMedium?.copyWith(
+      color: colors.freed,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(group.kind.title(context), style: theme.textTheme.titleMedium),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          group.isEmpty
-              ? group.kind.subtitle(context)
-              : l10n.mediaGroupSummary(
-                  l10n.fileCount(group.worthwhile.length),
-                  l10n.fileCount(group.totalCount),
-                ),
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
+        _Line(
+          text: Text(
+            group.kind.title(context),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium,
           ),
+          figure: figuresOnTheEnds && saving != null
+              ? _Figure(text: saving, style: savingStyle)
+              : null,
         ),
-        if (saving != null) ...<Widget>[
+        const SizedBox(height: AppSpacing.xs),
+        _Line(
+          text: Text(
+            group.isEmpty
+                ? group.kind.subtitle(context)
+                : l10n.mediaGroupSummary(
+                    l10n.fileCount(group.worthwhile.length),
+                    l10n.fileCount(group.totalCount),
+                  ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall,
+          ),
+          figure: figuresOnTheEnds && count != null
+              ? _Figure(text: count!, style: theme.textTheme.labelLarge)
+              : null,
+        ),
+        if (saving != null && !figuresOnTheEnds) ...<Widget>[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            count == null ? saving! : '$saving · $count',
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: colors.freed,
+            count == null ? saving : '$saving · $count',
+            style: savingStyle?.copyWith(
               fontFeatures: AppTypography.tabularFigures,
             ),
           ),
@@ -252,42 +289,52 @@ class _Details extends StatelessWidget {
   }
 }
 
-/// The figures in a column of their own, where the row is wide enough.
+/// Flexible text with an optional figure pinned to the end of it.
 ///
-/// A column because the one thing anybody does on this screen is compare the
-/// two groups, and figures buried at different points in a sentence cannot be
-/// compared without reading all of them.
-class _Amount extends StatelessWidget {
-  const _Amount({required this.saving, required this.count});
+/// The same shape as `JunkCategoryTile`'s, and for the same reason: the figure
+/// is the child that cannot shrink, so it is capped and never wraps.
+class _Line extends StatelessWidget {
+  const _Line({required this.text, this.figure});
 
-  final String? saving;
-  final String count;
+  final Widget text;
+  final Widget? figure;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final AppColors colors = AppColors.of(context);
-
-    return SizedBox(
-      width: MediaGroupTile._amountWidth,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Text(
-            saving ?? '',
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: colors.freed,
-              fontFeatures: AppTypography.tabularFigures,
-            ),
-          ),
-          Text(
-            count,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              fontFeatures: AppTypography.tabularFigures,
-            ),
-          ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: <Widget>[
+        Expanded(child: text),
+        if (figure != null) ...<Widget>[
+          const SizedBox(width: AppSpacing.sm),
+          figure!,
         ],
+      ],
+    );
+  }
+}
+
+/// A number on the end of a line, capped at [MediaGroupTile._figureWidth] and
+/// set in tabular figures so a pair of tiles can be compared at a glance.
+class _Figure extends StatelessWidget {
+  const _Figure({required this.text, required this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxWidth: MediaGroupTile._figureWidth,
+      ),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.end,
+        style: style?.copyWith(fontFeatures: AppTypography.tabularFigures),
       ),
     );
   }

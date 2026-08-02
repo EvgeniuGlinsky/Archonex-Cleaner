@@ -52,6 +52,11 @@ void main() {
   /// The narrowest phone still worth supporting.
   const Size narrow = Size(360, 800);
 
+  /// A small phone with its system bars taken off, for the one test about
+  /// scrolling: the tiles are compact enough now that two of them and a ring
+  /// fit on [narrow] with nothing left to scroll.
+  const Size short = Size(360, 560);
+
   /// The bloc is built inside `BlocProvider.create`, never in `setUp`: one from
   /// `setUp` lives in another async zone and silently never receives its
   /// events, and the test then just does nothing with no error pointing at it.
@@ -377,10 +382,10 @@ void main() {
     // rest flush against the header. The button is the deliberate exception.
     findsVideos();
 
-    await pump(tester, surface: narrow);
+    await pump(tester, surface: short);
     await scan(tester);
 
-    final String title = 'Make files smaller';
+    const String title = 'Make files smaller';
     final double titleBefore = tester.getTopLeft(find.text(title)).dy;
     final double buttonBefore =
         tester.getTopLeft(find.byType(AppPrimaryButton)).dy;

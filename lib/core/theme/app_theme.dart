@@ -15,6 +15,12 @@ class AppTheme {
 
   static const double _buttonHeight = 54;
 
+  /// What a row reserves for whatever sits before its text.
+  ///
+  /// A compact `Checkbox` and a 24 dp icon both fit; the framework's 40 does
+  /// not correspond to anything this app puts there.
+  static const double _leadingWidth = 32;
+
   static ThemeData light() => _build(Brightness.light, AppColors.light);
 
   static ThemeData dark() => _build(Brightness.dark, AppColors.dark);
@@ -76,8 +82,16 @@ class AppTheme {
           ),
         ),
       ),
+      // `minLeadingWidth` and `horizontalTitleGap` are here rather than on the
+      // two tiles that want them because `ExpansionTile` exposes neither, and
+      // the `ListTile` it builds reads both from this. The defaults are 40 and
+      // 16; a compact `Checkbox` is 32 across, and the 24 those two give back
+      // is 24 a category name gets on a 360 dp phone — see `JunkCategoryTile`,
+      // where the arithmetic is written out.
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        minLeadingWidth: _leadingWidth,
+        horizontalTitleGap: AppSpacing.sm,
       ),
       dividerTheme: DividerThemeData(
         space: AppSpacing.lg,

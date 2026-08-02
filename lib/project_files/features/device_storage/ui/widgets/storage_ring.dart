@@ -30,8 +30,14 @@ class StorageRing extends StatelessWidget {
     super.key,
   });
 
-  static const double _diameter = 208;
-  static const double _stroke = 18;
+  /// Big enough to be the first thing read, and no bigger.
+  ///
+  /// It was 208, which on a 640 dp phone was a third of the screen before a
+  /// single row of findings was drawn. 184 keeps the figure in the middle at
+  /// full size — the `FittedBox` is what would tell us otherwise — and gives a
+  /// tile and a half back to the list under it.
+  static const double _diameter = 184;
+  static const double _stroke = 16;
 
   /// `0`–`1` of the whole volume.
   final double usedFraction;

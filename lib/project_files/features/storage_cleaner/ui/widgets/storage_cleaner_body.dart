@@ -148,8 +148,8 @@ class _Ring extends StatelessWidget {
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.state});
 
-  static const double _iconSize = 48;
-  static const double _markSize = 88;
+  static const double _iconSize = 40;
+  static const double _markSize = 72;
 
   final StorageCleanerState state;
 
@@ -179,7 +179,7 @@ class _EmptyState extends StatelessWidget {
     };
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
       child: Column(
         children: <Widget>[
           Container(
