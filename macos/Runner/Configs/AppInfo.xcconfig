@@ -8,7 +8,7 @@
 PRODUCT_NAME = Storage Cleaner
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.archonex.cleaner
+PRODUCT_BUNDLE_IDENTIFIER = io.github.evgeniuglinsky.storagecleaner
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 Archonex. Licensed under the Apache License 2.0.
+PRODUCT_COPYRIGHT = Copyright © 2026 Evgeny Glynskyi. Licensed under the Apache License 2.0.

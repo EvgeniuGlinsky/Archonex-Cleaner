@@ -8,9 +8,8 @@
 Two tools for one problem. **Clean up** finds the temporary files your device
 left behind and deletes them, with a way back. **Optimise** finds the photos and
 videos that weigh more than they need to and re-encodes them at the same
-quality. Sibling of [Archonex Converter](https://github.com/EvgeniuGlinsky/Archonex-Converter),
-same architecture, same offline promise: nothing leaves the device, and there is
-no server anywhere in this project.
+quality. Nothing leaves the device, and there is no server anywhere in this
+project.
 
 No ads, no accounts, no tracking — and no network permission in the release
 build at all, which you can check for yourself before installing:

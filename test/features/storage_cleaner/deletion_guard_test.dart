@@ -15,8 +15,8 @@ void main() {
   final DateTime now = DateTime.utc(2026, 7, 31, 12);
 
   const CleanerRoots roots = CleanerRoots(
-    appCache: '/home/tester/.cache/archonex',
-    appSupport: '/home/tester/.local/share/archonex',
+    appCache: '/home/tester/.cache/storage_cleaner',
+    appSupport: '/home/tester/.local/share/storage_cleaner',
     home: '/home/tester',
     systemTemp: '/tmp',
   );

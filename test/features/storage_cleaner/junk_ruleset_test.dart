@@ -11,8 +11,8 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/mo
 
 void main() {
   const CleanerRoots windowsRoots = CleanerRoots(
-    appCache: r'C:\Users\tester\AppData\Local\Temp\archonex',
-    appSupport: r'C:\Users\tester\AppData\Roaming\com.archonex.cleaner',
+    appCache: r'C:\Users\tester\AppData\Local\Temp\storage_cleaner',
+    appSupport: r'C:\Users\tester\AppData\Roaming\io.github.evgeniuglinsky.storagecleaner',
     home: r'C:\Users\tester',
     systemTemp: r'C:\Users\tester\AppData\Local\Temp',
     localAppData: r'C:\Users\tester\AppData\Local',
@@ -20,15 +20,15 @@ void main() {
   );
 
   const CleanerRoots posixRoots = CleanerRoots(
-    appCache: '/home/tester/.cache/archonex',
-    appSupport: '/home/tester/.local/share/archonex',
+    appCache: '/home/tester/.cache/storage_cleaner',
+    appSupport: '/home/tester/.local/share/storage_cleaner',
     home: '/home/tester',
     systemTemp: '/tmp',
   );
 
   const CleanerRoots androidRoots = CleanerRoots(
-    appCache: '/data/user/0/com.archonex.cleaner/cache',
-    appSupport: '/data/user/0/com.archonex.cleaner/files',
+    appCache: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/cache',
+    appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
     externalAppCaches: <String>['/storage/emulated/0/Android/data/x/cache'],
     externalStorage: '/storage/emulated/0',
   );

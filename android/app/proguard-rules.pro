@@ -14,8 +14,8 @@
 # `MediaCodec` and `MediaMuxer` pipeline underneath it is driven through
 # framework callbacks, and the Dart side reaches it by the string name of a
 # method rather than by a call R8 can follow. See `MediaTranscoder.kt`.
--keep class com.archonex.cleaner.MediaTranscoder { *; }
--keep class com.archonex.cleaner.MediaTranscoderChannel { *; }
+-keep class io.github.evgeniuglinsky.storagecleaner.MediaTranscoder { *; }
+-keep class io.github.evgeniuglinsky.storagecleaner.MediaTranscoderChannel { *; }
 
 # Flutter's embedding is entered from native code the shrinker never analyses:
 # the engine loads `FlutterActivity` and its plugin registrant by name.

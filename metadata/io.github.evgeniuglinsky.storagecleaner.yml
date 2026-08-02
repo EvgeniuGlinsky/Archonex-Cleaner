@@ -1,18 +1,23 @@
 # F-Droid build metadata.
 #
 # A draft of the file that goes into a merge request against
-# https://gitlab.com/fdroid/fdroiddata, at metadata/com.archonex.cleaner.yml.
-# Kept in this repository so it moves with the project rather than living only
-# in someone's fork of fdroiddata.
+# https://gitlab.com/fdroid/fdroiddata, at
+# metadata/io.github.evgeniuglinsky.storagecleaner.yml. Kept in this repository
+# so it moves with the project rather than living only in someone's fork of
+# fdroiddata.
 #
 # F-Droid builds from source on its own machines and signs with its own key, so
 # nothing here refers to the release keystore. The APKs it produces are not the
 # ones on the GitHub releases page and will not install over them — that is
 # expected, and is what "reproducible from source" costs.
 #
-# The application id keeps the publisher's namespace rather than the product
-# name; see the rename commit for why. It is what the installed app is
-# identified by, and it is not going to change.
+# The application id is under the author's GitHub namespace, which is a name
+# nobody else can claim and which F-Droid can check against the source URL
+# below. This file's name has to match it exactly, so the two move together.
+#
+# It is settled now and not later: an application id is what an installed app is
+# identified by, and changing it after the first tag would be a different app to
+# every device holding the old one, with no update path between them.
 
 Categories:
   - System
