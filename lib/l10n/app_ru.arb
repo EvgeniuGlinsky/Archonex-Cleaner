@@ -375,13 +375,6 @@
   "insightsEmptyBody": "На устройстве нет ничего, что приложению разрешено видеть.",
   "insightsUnsupportedTitle": "Не на этой платформе",
   "insightsUnsupportedBody": "Здесь нет хранилища, которое приложение может посчитать.",
-  "insightsMeasuredSummary": "{count} \u00b7 {size}",
-  "@insightsMeasuredSummary": {
-    "placeholders": {
-      "count": { "type": "String" },
-      "size": { "type": "String" }
-    }
-  },
   "insightsTruncatedNotice": "Остановились на {count} файлах. Диаграмма близка к правде, но не точна.",
   "@insightsTruncatedNotice": {
     "placeholders": {

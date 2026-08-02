@@ -375,13 +375,6 @@
   "insightsEmptyBody": "There is nothing on this device the app is allowed to see.",
   "insightsUnsupportedTitle": "Not on this platform",
   "insightsUnsupportedBody": "There is no storage this app can measure here.",
-  "insightsMeasuredSummary": "{count} counted \u00b7 {size}",
-  "@insightsMeasuredSummary": {
-    "placeholders": {
-      "count": { "type": "String" },
-      "size": { "type": "String" }
-    }
-  },
   "insightsTruncatedNotice": "Stopped after {count} files. The chart is close, not exact.",
   "@insightsTruncatedNotice": {
     "placeholders": {

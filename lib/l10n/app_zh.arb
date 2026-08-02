@@ -375,13 +375,6 @@
   "insightsEmptyBody": "设备上没有本应用有权查看的内容。",
   "insightsUnsupportedTitle": "此平台不支持",
   "insightsUnsupportedBody": "这里没有本应用可以统计的存储空间。",
-  "insightsMeasuredSummary": "{count} \u00b7 {size}",
-  "@insightsMeasuredSummary": {
-    "placeholders": {
-      "count": { "type": "String" },
-      "size": { "type": "String" }
-    }
-  },
   "insightsTruncatedNotice": "统计到 {count} 个文件后停止。图表接近实际，但并不精确。",
   "@insightsTruncatedNotice": {
     "placeholders": {
