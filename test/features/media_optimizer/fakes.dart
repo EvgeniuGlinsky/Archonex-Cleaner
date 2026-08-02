@@ -18,6 +18,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/run_notice.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 import 'fixtures.dart';
@@ -386,5 +387,51 @@ class FakeMediaEncoder implements MediaEncoder {
     await File(outputPath).writeAsBytes(bytes, flush: true);
 
     yield 1;
+  }
+}
+
+/// Records what the shade was told, and can press its Stop button.
+///
+/// Faked rather than driven through the real channel, for the reason
+/// `MediaEncoder` is: the thing on the other side is a foreground service, and
+/// nothing under `flutter test` can start one.
+class FakeRunNotice implements RunNotice {
+  final StreamController<void> _stopRequests = StreamController<void>.broadcast();
+
+  final List<String> shown = <String>[];
+  final List<double?> progresses = <double?>[];
+
+  int hideCount = 0;
+  int disposeCount = 0;
+
+  bool get isShowing => shown.isNotEmpty && hideCount == 0;
+
+  /// The user pressed Stop on the notification.
+  void pressStop() => _stopRequests.add(null);
+
+  @override
+  Stream<void> get stopRequests => _stopRequests.stream;
+
+  @override
+  Future<void> show({
+    required String channelName,
+    required String title,
+    required String text,
+    required String stopLabel,
+    double? progress,
+  }) async {
+    shown.add(text);
+    progresses.add(progress);
+  }
+
+  @override
+  Future<void> hide() async {
+    hideCount++;
+  }
+
+  @override
+  Future<void> dispose() async {
+    disposeCount++;
+    await _stopRequests.close();
   }
 }

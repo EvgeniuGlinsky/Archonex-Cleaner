@@ -340,6 +340,19 @@
   },
   "optimizeCancelledNote": "Stopped early. The files not reached are untouched.",
 
+  "runNoticeChannelName": "Compression progress",
+  "runNoticeTitle": "Making files smaller",
+  "runNoticePreparing": "Getting ready…",
+  "runNoticeBody": "{done} of {total} · {freed} freed",
+  "@runNoticeBody": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "freed": { "type": "String" }
+    }
+  },
+  "runNoticeStopLabel": "Stop",
+
   "failureMediaScanCancelled": "Stopped looking.",
   "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
   "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",

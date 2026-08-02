@@ -29,6 +29,31 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
+    <!--
+        What keeps an hour-long re-encode running once the phone is in a pocket.
+
+        Android freezes a process it considers idle, and a transcode the user
+        started, watched begin and then locked the screen on is exactly that as
+        far as the system is concerned. A foreground service is the only thing
+        that says otherwise, and it comes with a notification the user can see
+        and stop the work from — which is the honest trade and the reason the
+        platform makes it.
+
+        `DATA_SYNC` is the type: processing the user asked for by name. The wake
+        lock is what keeps the CPU going with the screen off, held only while a
+        run is and with a six-hour ceiling on it. `POST_NOTIFICATIONS` is
+        Android 13's runtime permission for showing the thing at all; refusing
+        it does not stop the work, it only hides the progress.
+
+        None of this is a background job. Nothing here ever starts on its own,
+        on a schedule, or on boot: there is no receiver, and the service is
+        started by a button and stopped when the run it is reporting ends.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:label="Storage Cleaner"
         android:name="${applicationName}"
@@ -65,6 +90,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!--
+            Not exported: nothing outside this app has any business starting it,
+            and it is only ever reached through `RunNoticeChannel` in the same
+            process.
+        -->
+        <service
+            android:name=".RunNoticeService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:storage_cleaner/project_files/features/device_storage/data/platform/device_storage_platform.dart';
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/run_notice_platform.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
@@ -11,7 +14,9 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/run_notice.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/run_notice_listener.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
@@ -42,15 +47,35 @@ import 'package:storage_cleaner/project_files/features/storage_access/domain/sto
 /// The access repository stays app-wide for its own reason, in
 /// `storage_cleaner_app.dart`: it holds the folders the user handed over
 /// through the picker, and the cleaner may well be the screen that asked.
-class MediaOptimizerScope extends StatelessWidget {
+class MediaOptimizerScope extends StatefulWidget {
   const MediaOptimizerScope({required this.child, super.key});
 
   final Widget child;
 
   @override
+  State<MediaOptimizerScope> createState() => _MediaOptimizerScopeState();
+}
+
+class _MediaOptimizerScopeState extends State<MediaOptimizerScope> {
+  // Fields rather than locals in `build`. `MaterialApp.builder` runs again on
+  // every language change, and a repository built there would be a new object
+  // each time — thrown away unread, because `BlocProvider.create` only fires
+  // once, but the notice holds a channel subscription and a foreground service
+  // and would not be so harmless.
+  final MediaScanRepo _scanRepo = createMediaScanRepo();
+  final MediaOptimizeRepo _optimizeRepo = createMediaOptimizeRepo();
+  final RunNotice _notice = createRunNotice();
+
+  @override
+  void dispose() {
+    unawaited(_notice.dispose());
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final MediaScanRepo scanRepo = createMediaScanRepo();
-    final MediaOptimizeRepo optimizeRepo = createMediaOptimizeRepo();
+    final MediaScanRepo scanRepo = _scanRepo;
+    final MediaOptimizeRepo optimizeRepo = _optimizeRepo;
     final StorageAccessRepo accessRepo = context.read<StorageAccessRepo>();
 
     return BlocProvider<MediaOptimizerBloc>(
@@ -82,7 +107,7 @@ class MediaOptimizerScope extends StatelessWidget {
 
         return bloc..add(const MediaOptimizerStarted());
       },
-      child: child,
+      child: RunNoticeListener(notice: _notice, child: widget.child),
     );
   }
 }

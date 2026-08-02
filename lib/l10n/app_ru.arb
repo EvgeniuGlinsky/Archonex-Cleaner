@@ -340,6 +340,19 @@
   },
   "optimizeCancelledNote": "Остановлено раньше времени. Файлы, до которых не дошли, не тронуты.",
 
+  "runNoticeChannelName": "Прогресс сжатия",
+  "runNoticeTitle": "Уменьшаем файлы",
+  "runNoticePreparing": "Готовимся…",
+  "runNoticeBody": "{done} из {total} · освобождено {freed}",
+  "@runNoticeBody": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "freed": { "type": "String" }
+    }
+  },
+  "runNoticeStopLabel": "Остановить",
+
   "failureMediaScanCancelled": "Поиск остановлен.",
   "failureOptimizeUnsupported": "На этой платформе нет фото и видео, до которых приложение может дотянуться.",
   "failureNoVideoEncoder": "На этой машине нет кодировщика видео. Установите FFmpeg и попробуйте снова.",

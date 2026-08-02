@@ -340,6 +340,19 @@
   },
   "optimizeCancelledNote": "提前停止。未处理到的文件没有改动。",
 
+  "runNoticeChannelName": "压缩进度",
+  "runNoticeTitle": "正在缩小文件",
+  "runNoticePreparing": "准备中…",
+  "runNoticeBody": "{done} / {total} · 已释放 {freed}",
+  "@runNoticeBody": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" },
+      "freed": { "type": "String" }
+    }
+  },
+  "runNoticeStopLabel": "停止",
+
   "failureMediaScanCancelled": "已停止查找。",
   "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
   "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",
