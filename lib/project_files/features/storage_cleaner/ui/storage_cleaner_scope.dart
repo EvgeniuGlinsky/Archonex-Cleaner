@@ -18,18 +18,25 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/data/use_
 import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_clean_repo.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/junk_scan_repo.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/bloc/storage_cleaner_bloc.dart';
-import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
 
-/// Dependency injection and `BlocProvider`. No UI.
+/// Dependency injection and `BlocProvider` for the cleaner. No UI.
 ///
-/// The scanner and the deleter are built here and die with the screen. The
-/// quarantine and the access repository are not: both are read from the
-/// app-wide provider. The batch this screen writes is the batch the quarantine
-/// screen reads, and the folders the user hands over here are the folders the
-/// optimiser is meant to see — a second instance of either would be a second
-/// answer to a question with one.
-class StorageCleanerPage extends StatelessWidget {
-  const StorageCleanerPage({super.key});
+/// It wraps the app rather than the cleaner's route, for the reason
+/// `MediaOptimizerScope` sets out in full: the work outlives the screen and
+/// does not outlive the app, and `close()` now means the second of those. The
+/// cleaner's own case for it is milder than the optimiser's — deleting is over
+/// in seconds — but a walk of a full phone is minutes, and a user who steps
+/// back to the home screen to check the free space and returns should find the
+/// scan they were reading, not an empty list and a Scan button.
+///
+/// The quarantine and the access repository come from the app-wide provider in
+/// `storage_cleaner_app.dart`, as they did when this was a page: the batch this
+/// screen writes is the batch the quarantine screen reads, and the folders the
+/// user hands over here are the folders the optimiser is meant to see.
+class StorageCleanerScope extends StatelessWidget {
+  const StorageCleanerScope({required this.child, super.key});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class StorageCleanerPage extends StatelessWidget {
         watchQuarantine: WatchQuarantineUseCase(quarantine),
         getDeviceStorage: GetDeviceStorageUseCase(createDeviceStorageRepo()),
       )..add(const StorageCleanerStarted()),
-      child: const StorageCleanerView(),
+      child: child,
     );
   }
 }

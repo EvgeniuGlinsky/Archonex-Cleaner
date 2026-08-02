@@ -122,6 +122,75 @@ void main() {
     });
   });
 
+  group('coming back to the screen', () {
+    setUp(() {
+      scanRepo.updates = <MediaScanUpdate>[
+        MediaFound(<MediaCandidate>[fakeCandidate()]),
+      ];
+    });
+
+    test('keeps the findings when nothing about the access moved', () async {
+      // The bloc outlives the screen now, and this is the reason it was worth
+      // doing: a user who walks their camera roll, steps back to the home
+      // screen and returns should find the list they were reading.
+      final MediaOptimizerBloc bloc = await scanned();
+      final int found = bloc.state.groups
+          .fold<int>(0, (sum, group) => sum + group.totalCount);
+
+      bloc.add(const MediaOptimizerResumed());
+      await settle();
+
+      expect(
+        bloc.state.groups.fold<int>(0, (sum, g) => sum + g.totalCount),
+        found,
+      );
+      expect(found, greaterThan(0));
+      await bloc.close();
+    });
+
+    test('drops them when the access was revoked while away', () async {
+      // All-files access can be taken back from Settings, and a list measured
+      // under the old one is a list nobody can reason about.
+      final MediaOptimizerBloc bloc = await scanned();
+
+      accessRepo.access = const StorageAccess(
+        level: StorageAccessLevel.appOnly,
+        canAddFolder: true,
+      );
+      scanRepo.kinds = const <MediaKind>{};
+
+      bloc.add(const MediaOptimizerResumed());
+      await settle();
+
+      expect(bloc.state.groups, isEmpty);
+      await bloc.close();
+    });
+
+    test('leaves a run that is still going completely alone', () async {
+      optimizeRepo.holdOpen = true;
+
+      final MediaOptimizerBloc bloc = await scanned();
+      bloc.add(const OptimizeRequested());
+      await settle();
+
+      expect(bloc.state.isOptimizing, isTrue);
+
+      // Even a revoked access must not interrupt it. The files it is partway
+      // through rewriting are on disk either way, and the report is owed.
+      accessRepo.access = const StorageAccess(
+        level: StorageAccessLevel.appOnly,
+        canAddFolder: true,
+      );
+
+      bloc.add(const MediaOptimizerResumed());
+      await settle();
+
+      expect(bloc.state.isOptimizing, isTrue);
+      expect(bloc.state.groups, isNotEmpty);
+      await bloc.close();
+    });
+  });
+
   group('scan', () {
     test('files findings into their kinds and ends scanned', () async {
       scanRepo.updates = <MediaScanUpdate>[

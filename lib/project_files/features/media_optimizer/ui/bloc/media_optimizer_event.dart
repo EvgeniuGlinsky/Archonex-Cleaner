@@ -7,9 +7,22 @@ sealed class MediaOptimizerEvent extends Equatable {
   List<Object?> get props => const <Object?>[];
 }
 
-/// The screen opened. Asks the platform, the encoders, the access and the disk.
+/// The bloc was built. Asks the platform, the encoders, the access and the disk.
+///
+/// Once, now. The bloc outlives the screen, so returning to it is
+/// [MediaOptimizerResumed] rather than another one of these.
 final class MediaOptimizerStarted extends MediaOptimizerEvent {
   const MediaOptimizerStarted();
+}
+
+/// The screen has been opened again.
+///
+/// Re-reads the access level and how full the disk is, and touches nothing else
+/// unless the access moved. A run left going is the reason the bloc outlives
+/// the screen at all; re-reading must not disturb it, and dropping the findings
+/// underneath it would.
+final class MediaOptimizerResumed extends MediaOptimizerEvent {
+  const MediaOptimizerResumed();
 }
 
 final class MediaScanRequested extends MediaOptimizerEvent {

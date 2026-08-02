@@ -17,8 +17,23 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widget
 import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/storage_cleaner_callbacks.dart';
 
 /// The cleaner screen. Listeners, builders and callbacks — no layout maths.
-class StorageCleanerView extends StatelessWidget {
+///
+/// Stateful for one line, for the reason `MediaOptimizerView` sets out: the
+/// bloc is provided app-wide now and does not arrive fresh with the route, so
+/// the screen has to say when it is being looked at again.
+class StorageCleanerView extends StatefulWidget {
   const StorageCleanerView({super.key});
+
+  @override
+  State<StorageCleanerView> createState() => _StorageCleanerViewState();
+}
+
+class _StorageCleanerViewState extends State<StorageCleanerView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<StorageCleanerBloc>().add(const StorageCleanerResumed());
+  }
 
   @override
   Widget build(BuildContext context) {

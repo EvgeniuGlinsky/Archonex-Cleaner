@@ -12,25 +12,40 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
-import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_view.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/request_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
 
-/// Dependency injection and `BlocProvider`. No UI.
+/// Dependency injection and `BlocProvider` for the optimiser. No UI.
 ///
-/// The scanner and the optimiser die with the screen. Nothing in this feature
-/// holds an index of anything — a rewritten file leaves no record behind,
-/// deliberately, and the two encoders are stateless behind their channels.
+/// It wraps the whole app rather than the optimiser's route, and that is the
+/// point. This was a page, and the bloc died with the screen: `close()` cancels
+/// the run, so a user who started a two-hour transcode and pressed Back lost
+/// all of it, silently, with the button back to "Look for large files" as
+/// though nothing had happened. Nothing about the cancel was wrong — a walk of
+/// a camera roll really must not outlive the screen that has no reason to want
+/// it any more — but the *screen* was the wrong thing to measure it against.
+/// The work outlives the screen; it does not outlive the app, and `close()` now
+/// means exactly that.
 ///
-/// The access repository is the exception, and comes from the app-wide provider
-/// in `storage_cleaner_app.dart`. It is the one thing here with memory: the
-/// folders the user handed over through the picker, which the cleaner may well
-/// be the screen that asked for them.
-class MediaOptimizerPage extends StatelessWidget {
-  const MediaOptimizerPage({super.key});
+/// It is `lazy`, which `BlocProvider` is by default: nothing is built until the
+/// user first opens the tool, so an app that never leaves the home screen never
+/// asks the platform whether it has an HEVC encoder.
+///
+/// Placed in `MaterialApp.builder`, so it sits below `Localizations` and above
+/// the `Navigator`. Below matters as much as above: the foreground-service
+/// notice reads its copy from `AppLocalizations` here, and has to be able to
+/// keep writing it while the user is on another screen entirely.
+///
+/// The access repository stays app-wide for its own reason, in
+/// `storage_cleaner_app.dart`: it holds the folders the user handed over
+/// through the picker, and the cleaner may well be the screen that asked.
+class MediaOptimizerScope extends StatelessWidget {
+  const MediaOptimizerScope({required this.child, super.key});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +82,7 @@ class MediaOptimizerPage extends StatelessWidget {
 
         return bloc..add(const MediaOptimizerStarted());
       },
-      child: const MediaOptimizerView(),
+      child: child,
     );
   }
 }

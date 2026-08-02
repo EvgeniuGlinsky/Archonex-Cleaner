@@ -111,6 +111,49 @@ void main() {
     });
   });
 
+  group('coming back to the screen', () {
+    Future<StorageCleanerBloc> withFindings() async {
+      scanRepo.updates = <ScanUpdate>[
+        JunkFound(<JunkItem>[fakeItem(path: '/tmp/a.tmp', sizeInBytes: 100)]),
+      ];
+
+      final StorageCleanerBloc bloc = await started();
+      bloc.add(const ScanRequested());
+      await settle();
+
+      return bloc;
+    }
+
+    test('keeps the findings when nothing about the access moved', () async {
+      // The bloc outlives the screen now: stepping back to the home screen to
+      // look at the free space and returning should not empty the list.
+      final StorageCleanerBloc bloc = await withFindings();
+
+      expect(bloc.state.hasFindings, isTrue);
+
+      bloc.add(const StorageCleanerResumed());
+      await settle();
+
+      expect(bloc.state.hasFindings, isTrue);
+      await bloc.close();
+    });
+
+    test('drops them when the access was revoked while away', () async {
+      final StorageCleanerBloc bloc = await withFindings();
+
+      accessRepo.access = const StorageAccess(
+        level: StorageAccessLevel.appOnly,
+        canAddFolder: true,
+      );
+
+      bloc.add(const StorageCleanerResumed());
+      await settle();
+
+      expect(bloc.state.hasFindings, isFalse);
+      await bloc.close();
+    });
+  });
+
   group('scan', () {
     test('files findings into their categories and ends scanned', () async {
       scanRepo.updates = <ScanUpdate>[

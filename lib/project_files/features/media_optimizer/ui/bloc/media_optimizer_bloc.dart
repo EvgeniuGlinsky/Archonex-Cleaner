@@ -55,6 +55,9 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
         _getDeviceStorage = getDeviceStorage,
         super(const MediaOptimizerState()) {
     on<MediaOptimizerStarted>(_onStarted, transformer: restartable());
+    // Dropped rather than queued: stepping in and out of the screen twice in a
+    // second wants one re-read, not two behind each other.
+    on<MediaOptimizerResumed>(_onResumed, transformer: droppable());
 
     // Each of these opens a system dialog or starts a run. The OS shows one
     // dialog, so a second tap must be dropped rather than queued behind it.
@@ -124,6 +127,28 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     await _refreshStorage(emit);
   }
 
+  /// Back on the screen: re-read what can have moved, keep what cannot.
+  ///
+  /// A walk or a run in flight is left strictly alone — the run is why the bloc
+  /// is still alive, and `_refreshAccess` would drop the list it is working
+  /// through.
+  Future<void> _onResumed(
+    MediaOptimizerResumed event,
+    Emitter<MediaOptimizerState> emit,
+  ) async {
+    if (state.isBusy || !state.isSupported) {
+      return;
+    }
+
+    final StorageAccess access = await _getAccess();
+
+    if (access != state.access) {
+      await _refreshAccess(emit, access);
+    }
+
+    await _refreshStorage(emit);
+  }
+
   /// Re-reads how full the disk is.
   ///
   /// On arrival and again once a run has finished, which are the two moments
@@ -149,8 +174,8 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
   /// Leaves for Settings and emits nothing.
   ///
   /// There is no state to move to: the app is going to the background, and what
-  /// the user does there is read back by `MediaOptimizerStarted` when the screen
-  /// is built again.
+  /// the user does there is read back by [MediaOptimizerResumed] when the
+  /// screen comes forward again.
   Future<void> _onAccessSettingsRequested(
     OptimizerAccessSettingsRequested event,
     Emitter<MediaOptimizerState> emit,

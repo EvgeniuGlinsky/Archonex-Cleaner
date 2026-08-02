@@ -9,15 +9,19 @@ import 'package:storage_cleaner/project_files/features/language_selection/data/l
 import 'package:storage_cleaner/project_files/features/language_selection/data/prefs_language_storage.dart';
 import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 import 'package:storage_cleaner/project_files/features/language_selection/domain/models/app_language.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_optimizer_scope.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/data/platform/quarantine_platform.dart';
 import 'package:storage_cleaner/project_files/features/quarantine/domain/quarantine_repo.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/platform/storage_access_platform.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/storage_access_repo.dart';
+import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_scope.dart';
 
 /// Application root.
 ///
 /// App-wide singletons are provided here; feature-scoped dependencies stay in
-/// their own `*_page.dart`.
+/// their own `*_page.dart`. The two tools are the exception and say so in their
+/// own files: their blocs hold work that has to survive the screen being
+/// closed, so they are provided from `MaterialApp.builder` below.
 class StorageCleanerApp extends StatefulWidget {
   const StorageCleanerApp({super.key});
 
@@ -62,6 +66,16 @@ class _StorageCleanerAppState extends State<StorageCleanerApp> {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: _router,
+          // The two tools' blocs live here, above the `Navigator`, so that a
+          // transcode outlives the screen that started it. `builder` rather
+          // than a wrapper around `MaterialApp`, because it is the one place
+          // that is both above the navigator and below `Localizations` — and
+          // the optimiser's scope needs the second of those to write a
+          // notification in the language the user chose. Each scope's own file
+          // carries the rest of the argument.
+          builder: (context, child) => StorageCleanerScope(
+            child: MediaOptimizerScope(child: child!),
+          ),
         ),
       ),
     );

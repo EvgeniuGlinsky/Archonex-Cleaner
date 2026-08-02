@@ -14,8 +14,25 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widget
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
 
 /// The optimiser screen. Listeners, builders and callbacks — no layout maths.
-class MediaOptimizerView extends StatelessWidget {
+///
+/// Stateful for one line of it. The bloc is provided app-wide by
+/// `MediaOptimizerScope` and no longer arrives fresh with the route, so
+/// something has to tell it the screen is being looked at again — all-files
+/// access can be revoked from Settings while the app is away, and the disk
+/// figure can have moved. That is the whole of the state here.
+class MediaOptimizerView extends StatefulWidget {
   const MediaOptimizerView({super.key});
+
+  @override
+  State<MediaOptimizerView> createState() => _MediaOptimizerViewState();
+}
+
+class _MediaOptimizerViewState extends State<MediaOptimizerView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<MediaOptimizerBloc>().add(const MediaOptimizerResumed());
+  }
 
   @override
   Widget build(BuildContext context) {

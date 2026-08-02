@@ -56,6 +56,9 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
         _getDeviceStorage = getDeviceStorage,
         super(const StorageCleanerState()) {
     on<StorageCleanerStarted>(_onStarted, transformer: restartable());
+    // Dropped rather than queued: a user stepping in and out of the screen
+    // twice in a second wants one re-read, not two behind each other.
+    on<StorageCleanerResumed>(_onResumed, transformer: droppable());
     on<_QuarantineChanged>(_onQuarantineChanged, transformer: sequential());
 
     // Each of these either opens a system dialog or starts a run. The OS shows
@@ -130,6 +133,31 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
     await _refreshStorage(emit);
   }
 
+  /// Back on the screen: re-read what can have moved, keep what cannot.
+  ///
+  /// A scan or a cleanup in flight is left strictly alone. It started under the
+  /// access it is still running under, and `_refreshAccess` would drop the very
+  /// findings the run is working through.
+  Future<void> _onResumed(
+    StorageCleanerResumed event,
+    Emitter<StorageCleanerState> emit,
+  ) async {
+    if (state.isBusy || !state.isSupported) {
+      return;
+    }
+
+    final StorageAccess access = await _getAccess();
+
+    // Only when it moved. Unconditionally refreshing would throw away a scan
+    // the user stepped away from for ten seconds, which is the whole thing this
+    // is here to prevent.
+    if (access != state.access) {
+      await _refreshAccess(emit, access);
+    }
+
+    await _refreshStorage(emit);
+  }
+
   /// Re-reads how full the disk is.
   ///
   /// Called on arrival and again once a cleanup has finished, which are the two
@@ -181,8 +209,8 @@ class StorageCleanerBloc extends Bloc<StorageCleanerEvent, StorageCleanerState> 
   /// Leaves for Settings and emits nothing.
   ///
   /// There is no state to move to: the app is going to the background, and what
-  /// the user does there is read back by `StorageCleanerStarted` when the screen
-  /// is built again.
+  /// the user does there is read back by [StorageCleanerResumed] when the
+  /// screen comes forward again.
   Future<void> _onAccessSettingsRequested(
     AccessSettingsRequested event,
     Emitter<StorageCleanerState> emit,
