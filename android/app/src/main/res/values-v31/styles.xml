@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12 took the splash screen over.
+
+     From API 31 the system draws it itself and ignores `windowBackground`: it
+     puts the launcher icon in a circle on a colour of its choosing. Left
+     unconfigured that colour is the theme's background — white — and the icon
+     it centres is the whole adaptive icon, its own blue field included. The
+     result is the icon inside a blue circle inside a white screen, three
+     nested shapes where there should be one.
+
+     So the field is set to the icon's own colour and the animated icon is the
+     adaptive *foreground* rather than the icon: the broom, on one flat blue,
+     edge to edge. `windowSplashScreenIconBackgroundColor` is the same colour
+     again, because the system draws a plate behind the icon and a plate that
+     matches the field is a plate nobody sees.
+
+     `values/styles.xml` still carries `LaunchTheme` for API 24–30, where
+     `windowBackground` is what shows. -->
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash_background</item>
+    </style>
+
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>

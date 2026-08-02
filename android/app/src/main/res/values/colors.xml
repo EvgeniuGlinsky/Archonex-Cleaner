@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by tool/brand_assets.py, out of the icon itself. Both are
+     the same blue on purpose: the launcher's mask, the window behind a
+     starting app and the icon's own field have to agree, or the icon
+     arrives framed by whatever they disagreed about. -->
+<resources>
+    <color name="ic_launcher_background">#5572A1</color>
+    <color name="splash_background">#5572A1</color>
+</resources>
