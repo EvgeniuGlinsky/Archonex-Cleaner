@@ -95,6 +95,8 @@ class _MediaOptimizerViewState extends State<MediaOptimizerView> {
       onScanCancelled: () => _add(context, const MediaScanCancelled()),
       onOptimizePressed: () => _confirmOptimize(context),
       onOptimizeCancelled: () => _add(context, const OptimizeCancelled()),
+      onQualityChanged: (quality) =>
+          _add(context, OptimizeQualityChanged(quality)),
       onGroupToggled: (kind) => _add(context, MediaGroupToggled(kind)),
       onCandidateToggled: (candidate) => _add(
         context,

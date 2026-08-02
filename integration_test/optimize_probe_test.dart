@@ -25,6 +25,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
@@ -140,7 +141,11 @@ void main() {
           OffLimitsPaths.of(defaultTargetPlatform, roots);
 
       final Stopwatch clock = Stopwatch()..start();
-      final MediaScanJob job = await repo.scan(kinds: kinds, access: access);
+      final MediaScanJob job = await repo.scan(
+        kinds: kinds,
+        access: access,
+        quality: OptimizeQuality.fallback,
+      );
 
       final List<MediaCandidate> found = <MediaCandidate>[];
 

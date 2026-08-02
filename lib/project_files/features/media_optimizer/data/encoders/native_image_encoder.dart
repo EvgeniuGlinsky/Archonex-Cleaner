@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
 /// Re-encodes a photograph through the platform's own codec, on the two
 /// platforms where a pure-Dart pass would take an afternoon.
@@ -46,7 +46,7 @@ class NativeImageEncoder implements MediaEncoder {
     // bar stepping per file is the progress that matters.
     final Uint8List encoded = await FlutterImageCompress.compressWithFile(
           candidate.path,
-          quality: candidate.plan.quality ?? AppOptimizerPolicy.photoQuality,
+          quality: _qualityFor(candidate),
           format: CompressFormat.jpeg,
           keepExif: true,
           // The dimensions are never touched. Shrinking a photograph by making
@@ -75,4 +75,14 @@ class NativeImageEncoder implements MediaEncoder {
   /// Larger than any camera sensor in existence, which is how this plugin is
   /// told not to resize. It has no other way of being told.
   static const int _noLimit = 100000;
+
+  /// The JPEG quality the plan was made at.
+  ///
+  /// A refusal has no preset, and a refusal should never reach an encoder — but
+  /// throwing here would turn a wiring mistake into a lost file in the middle of
+  /// a ladder that is careful not to lose one. The shipped default is the safe
+  /// answer, and the run's verify step catches an output that is no smaller.
+  static int _qualityFor(MediaCandidate candidate) =>
+      (candidate.plan.preset ?? OptimizeQuality.fallback).photoQuality;
+
 }

@@ -80,6 +80,7 @@ void main() {
                 support: () => created.state.support,
               ),
               getDeviceStorage: GetDeviceStorageUseCase(storageRepo),
+              quality: FakeOptimizeQualityRepo(),
             );
 
             bloc = created;

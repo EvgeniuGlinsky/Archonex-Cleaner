@@ -1,5 +1,6 @@
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// Finds the user's large photos and videos and works out what could be done
@@ -25,8 +26,16 @@ abstract interface class MediaScanRepo {
 
   /// Starts a walk. Nothing happens until something listens to
   /// `MediaScanJob.updates`.
+  ///
+  /// [quality] is the preset every finding is measured against — it decides
+  /// both what a file is estimated to shrink to and whether that is enough to
+  /// offer at all, so a walk started under one and read under another would be
+  /// a list of numbers nobody could act on. Passed in rather than read here:
+  /// this is the seam the whole feature is tested through, and a repository
+  /// that reached for a preference store would need one in every test.
   Future<MediaScanJob> scan({
     required Set<MediaKind> kinds,
     required StorageAccess access,
+    required OptimizeQuality quality,
   });
 }

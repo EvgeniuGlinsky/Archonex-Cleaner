@@ -14,10 +14,12 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/optimize_quality_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/run_notice.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
@@ -42,6 +44,7 @@ MediaCandidate fakeCandidate({
   MediaContainer? container,
   MediaContainer? target,
   OptimizeVerdict verdict = OptimizeVerdict.worthIt,
+  OptimizeQuality preset = OptimizeQuality.fallback,
   int width = 4000,
   int height = 3000,
   DateTime? modifiedAt,
@@ -70,6 +73,7 @@ MediaCandidate fakeCandidate({
                     : MediaContainer.mp4),
             estimatedBytes: estimatedBytes,
             targetCodec: kind == MediaKind.video ? VideoCodec.hevc : null,
+            preset: preset,
           )
         : OptimizationPlan.skip(verdict),
   );
@@ -102,6 +106,11 @@ class FakeMediaScanRepo implements MediaScanRepo {
 
   int scanCount = 0;
   Set<MediaKind>? lastRequestedKinds;
+
+  /// Which preset the walk was started under. The estimates depend on it, so a
+  /// bloc that forgot to pass the user's choice would produce a plausible list
+  /// measured against the wrong one.
+  OptimizeQuality? lastRequestedQuality;
   bool wasCancelled = false;
 
   /// Empty where the access reaches no folder the user filled, which is the
@@ -119,8 +128,10 @@ class FakeMediaScanRepo implements MediaScanRepo {
   Future<MediaScanJob> scan({
     required Set<MediaKind> kinds,
     required StorageAccess access,
+    required OptimizeQuality quality,
   }) async {
     scanCount++;
+    lastRequestedQuality = quality;
     lastRequestedKinds = kinds;
 
     return FakeMediaScanJob(
@@ -433,5 +444,41 @@ class FakeRunNotice implements RunNotice {
   Future<void> dispose() async {
     disposeCount++;
     await _stopRequests.close();
+  }
+}
+
+/// The quality preference, in memory.
+///
+/// Hand-written like everything else here. It exists so a bloc test can assert
+/// that a preset the user chose last week is in force before the first walk,
+/// which is otherwise only observable through a platform channel.
+class FakeOptimizeQualityRepo implements OptimizeQualityRepo {
+  FakeOptimizeQualityRepo({this.stored});
+
+  /// What an earlier run left behind. `null` is a first run.
+  OptimizeQuality? stored;
+
+  OptimizeQuality _selected = OptimizeQuality.fallback;
+
+  int restoreCount = 0;
+
+  @override
+  OptimizeQuality get selected => _selected;
+
+  @override
+  void select(OptimizeQuality quality) {
+    _selected = quality;
+    stored = quality;
+  }
+
+  @override
+  Future<void> restore() async {
+    restoreCount++;
+
+    final OptimizeQuality? stored = this.stored;
+
+    if (stored != null) {
+      _selected = stored;
+    }
   }
 }

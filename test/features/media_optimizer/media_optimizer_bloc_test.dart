@@ -11,6 +11,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
@@ -34,12 +35,14 @@ void main() {
   late FakeMediaOptimizeRepo optimizeRepo;
   late FakeStorageAccessRepo accessRepo;
   late FakeDeviceStorageRepo storageRepo;
+  late FakeOptimizeQualityRepo qualityRepo;
 
   setUp(() {
     scanRepo = FakeMediaScanRepo();
     optimizeRepo = FakeMediaOptimizeRepo();
     accessRepo = FakeStorageAccessRepo();
     storageRepo = FakeDeviceStorageRepo();
+    qualityRepo = FakeOptimizeQualityRepo();
   });
 
   MediaOptimizerBloc build() {
@@ -62,6 +65,7 @@ void main() {
         support: () => bloc.state.support,
       ),
       getDeviceStorage: GetDeviceStorageUseCase(storageRepo),
+      quality: qualityRepo,
     );
 
     return bloc;
@@ -187,6 +191,54 @@ void main() {
 
       expect(bloc.state.isOptimizing, isTrue);
       expect(bloc.state.groups, isNotEmpty);
+      await bloc.close();
+    });
+  });
+
+  group('the quality preset', () {
+    setUp(() {
+      scanRepo.updates = <MediaScanUpdate>[
+        MediaFound(<MediaCandidate>[fakeCandidate()]),
+      ];
+    });
+
+    test('the one chosen on an earlier run is in force before the first walk',
+        () async {
+      qualityRepo.stored = OptimizeQuality.maximum;
+
+      final MediaOptimizerBloc bloc = await scanned();
+
+      expect(bloc.state.quality, OptimizeQuality.maximum);
+      expect(scanRepo.lastRequestedQuality, OptimizeQuality.maximum);
+      await bloc.close();
+    });
+
+    test('changing it re-measures without walking again', () async {
+      final MediaOptimizerBloc bloc = await scanned();
+      final int scans = scanRepo.scanCount;
+
+      bloc.add(const OptimizeQualityChanged(OptimizeQuality.maximum));
+      await settle();
+
+      expect(bloc.state.quality, OptimizeQuality.maximum);
+      expect(scanRepo.scanCount, scans, reason: 'the disk was walked again');
+      expect(qualityRepo.stored, OptimizeQuality.maximum);
+      await bloc.close();
+    });
+
+    test('and is refused outright while a run is going', () async {
+      // The files in flight were planned under the old preset and the encoder
+      // has already been told the old target.
+      optimizeRepo.holdOpen = true;
+
+      final MediaOptimizerBloc bloc = await scanned();
+      bloc.add(const OptimizeRequested());
+      await settle();
+
+      bloc.add(const OptimizeQualityChanged(OptimizeQuality.maximum));
+      await settle();
+
+      expect(bloc.state.quality, OptimizeQuality.balanced);
       await bloc.close();
     });
   });

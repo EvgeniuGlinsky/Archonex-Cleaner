@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
 /// Everything the optimiser screen can be asked to do, in one bundle.
 ///
@@ -14,6 +15,7 @@ class MediaOptimizerCallbacks {
     required this.onScanCancelled,
     required this.onOptimizePressed,
     required this.onOptimizeCancelled,
+    required this.onQualityChanged,
     required this.onGroupToggled,
     required this.onCandidateToggled,
     required this.onGrantAccessPressed,
@@ -26,6 +28,7 @@ class MediaOptimizerCallbacks {
   final VoidCallback onScanCancelled;
   final VoidCallback onOptimizePressed;
   final VoidCallback onOptimizeCancelled;
+  final ValueChanged<OptimizeQuality> onQualityChanged;
   final ValueChanged<MediaKind> onGroupToggled;
   final ValueChanged<ToggledCandidate> onCandidateToggled;
   final VoidCallback onGrantAccessPressed;

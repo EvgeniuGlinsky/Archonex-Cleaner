@@ -35,12 +35,14 @@ void main() {
   late FakeMediaOptimizeRepo optimizeRepo;
   late FakeStorageAccessRepo accessRepo;
   late FakeDeviceStorageRepo storageRepo;
+  late FakeOptimizeQualityRepo qualityRepo;
 
   setUp(() {
     scanRepo = FakeMediaScanRepo();
     optimizeRepo = FakeMediaOptimizeRepo();
     accessRepo = FakeStorageAccessRepo();
     storageRepo = FakeDeviceStorageRepo();
+    qualityRepo = FakeOptimizeQualityRepo();
   });
 
   /// Tall enough that both tiles, the ring and the bottom slot are all laid
@@ -97,6 +99,7 @@ void main() {
                 support: () => bloc.state.support,
               ),
               getDeviceStorage: GetDeviceStorageUseCase(storageRepo),
+              quality: qualityRepo,
             );
 
             return bloc..add(const MediaOptimizerStarted());

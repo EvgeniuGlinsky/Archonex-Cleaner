@@ -4,17 +4,13 @@ import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 /// to aim at when it is.
 ///
 /// Every one of them is a product decision rather than a technical constant,
-/// which is why they are here and not scattered through `SavingsEstimator`. The
-/// two that matter most are [minimumGainFraction] and the per-codec efficiency
-/// figures on `VideoCodec`: together they are the difference between a tool
-/// that frees forty per cent of a camera roll and a tool that spends twenty
-/// minutes of battery to free three per cent.
+/// which is why they are here and not scattered through `SavingsEstimator`.
 ///
-/// The bytes-per-pixel figures are measured rather than derived. There is no
-/// formula that turns a quality setting into a file size — it depends entirely
-/// on how much detail the picture holds — so these are the sizes typical camera
-/// output actually lands at, and the estimator is honest that they are
-/// estimates. The real figure is reported after the run, from the disk.
+/// What is *not* here any more is the half-dozen that move together when the
+/// user picks how hard to press: the targets, the JPEG quality and the two
+/// gain thresholds are `OptimizeQuality`'s now. The split is the useful one —
+/// everything left in this class is a number the app decided on the user's
+/// behalf, and everything over there is a number the user decides.
 class AppOptimizerPolicy {
   const AppOptimizerPolicy._();
 
@@ -29,57 +25,23 @@ class AppOptimizerPolicy {
 
   /// Smallest photo worth re-encoding.
   ///
-  /// Below a megabyte the best case frees a few hundred kilobytes and costs a
-  /// full decode and encode. A camera roll has thousands of these and the sum
-  /// of the savings is still less than one video.
-  static const int minimumPhotoBytes = 1 * AppByteUnits.megabyte;
+  /// Half a megabyte. Below it the best case frees a couple of hundred
+  /// kilobytes and costs a full decode and encode; a camera roll holds
+  /// thousands of them and the sum is still less than one video. It was a whole
+  /// megabyte, which on a modern phone excluded most of what a messenger saves
+  /// and every screenshot — categories that are individually small and, on a
+  /// full device, collectively not.
+  static const int minimumPhotoBytes = AppByteUnits.megabyte ~/ 2;
 
   /// Smallest video worth re-encoding.
   ///
-  /// Higher than the photo floor by a lot, because the cost is different in
-  /// kind: a photo is a second of CPU and a video is minutes of it, with the
-  /// phone getting hot and the battery going down. Sixteen megabytes is roughly
-  /// a fifteen-second 1080p clip.
-  static const int minimumVideoBytes = 16 * AppByteUnits.megabyte;
-
-  /// How much smaller the estimate has to be before a file is offered.
-  ///
-  /// A fifth. Below that the user is being asked to re-encode their photograph
-  /// library for a rounding error, and the honest answer is that the file is
-  /// already about as small as it goes. This is also why changing the container
-  /// alone is never offered: MKV to MP4 moves the same video stream into a
-  /// different box and frees well under one per cent.
-  static const double minimumGainFraction = 0.20;
-
-  /// And how much smaller in absolute terms.
-  ///
-  /// Both must hold. Twenty per cent of a two-megabyte photo is four hundred
-  /// kilobytes, which is a real fraction of nothing.
-  static const int minimumGainBytes = 1 * AppByteUnits.megabyte;
-
-  /// JPEG quality the re-encode aims at.
-  ///
-  /// High enough that the difference is not visible on a phone screen at any
-  /// zoom a person actually uses, low enough to halve a camera JPEG. The brief
-  /// allowed up to a tenth of the quality; this spends rather less than that
-  /// and takes most of the size anyway, because the top of the quality scale is
-  /// where the bytes are and the detail is not.
-  static const int photoQuality = 88;
-
-  /// What a photograph re-encoded at [photoQuality] weighs per pixel.
-  ///
-  /// Deliberately on the pessimistic side. An estimate that is too low makes
-  /// the app promise savings it will not deliver, and the number on the screen
-  /// before the run is the one the user decides on.
-  ///
-  /// Camera content at this quality is usually quoted at 1.0–1.5 bits per
-  /// pixel, which is 0.125–0.19 bytes. This sits above the top of that range
-  /// because grain defeats the transform and a real sensor produces grain:
-  /// `integration_test/optimize_probe_test.dart` re-encodes a picture with some
-  /// on it and prints the estimate as a percentage of what actually came out.
-  /// It was set from that figure and is worth re-reading whenever
-  /// [photoQuality] moves.
-  static const double photoTargetBytesPerPixel = 0.22;
+  /// Higher than the photo floor, because the cost is different in kind: a
+  /// photo is a second of CPU and a video is minutes of it, with the phone
+  /// getting hot and the battery going down. Eight megabytes is roughly a
+  /// seven-second 1080p clip, and it was sixteen — which quietly excluded the
+  /// entire contents of a messenger's video folder, where the files are short
+  /// and there are hundreds of them.
+  static const int minimumVideoBytes = 8 * AppByteUnits.megabyte;
 
   /// Above this, a lossily-compressed photo has room in it.
   ///
@@ -97,13 +59,6 @@ class AppOptimizerPolicy {
   /// ringing around every letter of text while saving very little.
   static const double pngPhotographicBytesPerPixel = 1.0;
 
-  /// Bits per pixel per frame the video re-encode aims at.
-  ///
-  /// HEVC at roughly this is where camera footage stops improving visibly. See
-  /// `VideoCodec.efficientBitsPerPixelPerFrame` for what each source codec is
-  /// measured against.
-  static const double targetBitsPerPixelPerFrame = 0.06;
-
   /// How far above its codec's efficient figure a video may sit and still be
   /// left alone.
   ///
@@ -119,15 +74,6 @@ class AppOptimizerPolicy {
   /// where a loss is heard rather than seen. 128 kbit/s is what phones record
   /// AAC at; the estimate only has to be close.
   static const int audioBitsPerSecond = 128000;
-
-  /// The x265 constant-rate factor used on the desktops.
-  ///
-  /// Lower is better and larger. 24 is a little tighter than the commonly cited
-  /// 28 default, chosen because this app rewrites the user's originals and has
-  /// no undo: the cost of being one notch too conservative is some unclaimed
-  /// megabytes, and the cost of being one notch too aggressive is somebody's
-  /// holiday footage.
-  static const int videoCrf = 24;
 
   /// How much smaller the output must actually be before it replaces the input.
   ///
@@ -158,27 +104,25 @@ class AppOptimizerPolicy {
   /// A camera roll of more than this is real, and the ones past the limit are
   /// still there for the next run. It bounds what the app holds in memory while
   /// the user decides, and the scan says it stopped early rather than implying
-  /// the folder is accounted for.
-  static const int maxItemsPerRoot = 2000;
+  /// the folder is accounted for. Raised from two thousand along with the size
+  /// floors: the roots now include the folders messengers write into, where the
+  /// files are small and there are a great many of them.
+  static const int maxItemsPerRoot = 5000;
 
   /// How deep a walk may descend from a media root.
   ///
-  /// Shallower than the cleaner's twelve: these roots are the user's own
+  /// Still shallower than the cleaner's twelve: these roots are the user's own
   /// folders, which people nest by year and event and not by hashed prefix.
-  static const int maxScanDepth = 6;
+  /// Eight rather than six because `Android/media` is itself three deep before
+  /// an application's own folders begin.
+  static const int maxScanDepth = 8;
 
   /// Prefix of the file an encode writes before it has earned the real name.
   ///
   /// Dotted so it is hidden on the platforms that hide dotfiles, and distinctive
   /// so a run interrupted by a crash can find and remove what the last one left
   /// behind. Nothing matching it is ever offered as a candidate.
-  ///
-  /// Named for the publisher rather than the product, alongside the application
-  /// id and the transcoder's channel names. These two strings are written onto
-  /// the user's disk, so renaming them with the product would strand the
-  /// leavings of a crash the previous version never got to sweep — a file the
-  /// user owns, left under a suffix nothing recognises any more.
-  static const String workingPrefix = '.archonex-working-';
+  static const String workingPrefix = '.storage-cleaner-working-';
 
   /// What the original is renamed to for the moment between the replacement
   /// being verified and the original being dropped.
@@ -186,5 +130,23 @@ class AppOptimizerPolicy {
   /// The rename-rename-delete exists because replacing a file by renaming over
   /// it throws on Windows, and because the alternative — delete then rename —
   /// has a window where neither file exists.
-  static const String supersededSuffix = '.archonex-old';
+  static const String supersededSuffix = '.storage-cleaner-old';
+
+  /// The two names the app wrote under its working title. Read, never written.
+  ///
+  /// These are the only strings this app leaves on the user's disk under a name
+  /// of its own, which is what separates them from the application id and the
+  /// channel names renamed alongside them: those describe a build, and these
+  /// describe a file that is already there. A run killed inside the swap left a
+  /// `.archonex-old` beside the original — the user's photograph, under a name
+  /// only the sweeper knows — and a sweeper that stopped recognising it would
+  /// strand that file rather than put it back.
+  ///
+  /// Removable once no build old enough to have written them can still be
+  /// installed anywhere. `AppOptimizerPolicy` is the one place to delete from,
+  /// and `IoMediaOptimizeRepo` and `MediaRule` are the two that read them.
+  static const String legacyWorkingPrefix = '.archonex-working-';
+
+  /// The superseded suffix of the same generation. See [legacyWorkingPrefix].
+  static const String legacySupersededSuffix = '.archonex-old';
 }

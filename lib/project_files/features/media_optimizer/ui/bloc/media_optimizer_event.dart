@@ -25,6 +25,22 @@ final class MediaOptimizerResumed extends MediaOptimizerEvent {
   const MediaOptimizerResumed();
 }
 
+/// The user moved the quality switch.
+///
+/// Everything already found is re-measured against the new preset rather than
+/// walked again: the header of every file is already in hand, which is what
+/// `MediaCandidate.probe` is kept for. A run in flight is not disturbed — the
+/// files it is partway through were planned under the old setting and the
+/// encoder has already been told.
+final class OptimizeQualityChanged extends MediaOptimizerEvent {
+  const OptimizeQualityChanged(this.quality);
+
+  final OptimizeQuality quality;
+
+  @override
+  List<Object?> get props => <Object?>[quality];
+}
+
 final class MediaScanRequested extends MediaOptimizerEvent {
   const MediaScanRequested();
 }

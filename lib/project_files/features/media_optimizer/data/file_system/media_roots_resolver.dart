@@ -31,7 +31,8 @@ class MediaRootsResolver {
     final List<String> granted = List<String>.unmodifiable(access.grantedRoots);
 
     return switch (_platform) {
-      TargetPlatform.android => _android(support.path, granted),
+      TargetPlatform.android =>
+        _android(support.path, granted, await _secondaryVolumes()),
       TargetPlatform.windows => _windows(support.path, granted),
       TargetPlatform.macOS => _macOS(support.path, granted),
       TargetPlatform.linux => _linux(support.path, granted),
@@ -50,7 +51,11 @@ class MediaRootsResolver {
   /// that answers it — `getExternalStorageDirectory` — is deprecated, returns
   /// the app's own scoped directory on modern Android, and would point every
   /// rule at a folder holding nothing the user put there.
-  static MediaRoots _android(String support, List<String> granted) {
+  static MediaRoots _android(
+    String support,
+    List<String> granted,
+    List<String> secondaryVolumes,
+  ) {
     const String external = '/storage/emulated/0';
 
     return MediaRoots(
@@ -61,8 +66,50 @@ class MediaRootsResolver {
       videos: p.posix.join(external, 'Movies'),
       downloads: p.posix.join(external, 'Download'),
       screenshots: p.posix.join(external, 'Pictures', 'Screenshots'),
+      appMedia: p.posix.join(external, 'Android', 'media'),
+      secondaryVolumes: secondaryVolumes,
       grantedFolders: granted,
     );
+  }
+
+  /// The shared root of every mounted volume that is not the primary one.
+  ///
+  /// `getExternalStorageDirectories()` answers this app's own folder on each —
+  /// `/storage/XXXX-XXXX/Android/data/<package>/files` — and the shared root is
+  /// everything before `/Android/`, the same derivation `CleanerRootsResolver`
+  /// makes for the primary volume. The primary is dropped: it is already
+  /// covered by name, and walking it twice would measure the camera roll twice.
+  ///
+  /// A card with nothing on it costs a directory listing and produces no rules
+  /// worth keeping, which is cheaper than asking the user whether they have one.
+  Future<List<String>> _secondaryVolumes() async {
+    if (_platform != TargetPlatform.android) {
+      return const <String>[];
+    }
+
+    final List<Directory>? volumes = await getExternalStorageDirectories();
+
+    if (volumes == null) {
+      return const <String>[];
+    }
+
+    final Set<String> roots = <String>{};
+
+    for (final Directory volume in volumes) {
+      final int marker = volume.path.indexOf('/Android/');
+
+      if (marker <= 0) {
+        continue;
+      }
+
+      final String root = volume.path.substring(0, marker);
+
+      if (root != '/storage/emulated/0') {
+        roots.add(root);
+      }
+    }
+
+    return List<String>.unmodifiable(roots);
   }
 
   static MediaRoots _windows(String support, List<String> granted) {

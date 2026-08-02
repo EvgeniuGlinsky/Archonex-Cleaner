@@ -87,7 +87,12 @@ class MediaTranscoder(
      * Flutter's method channels must be replied to from the main thread, and
      * an hour-long encode on it would freeze the application for an hour.
      */
-    fun transcode(input: String, output: String, result: MethodChannel.Result) {
+    fun transcode(
+        input: String,
+        output: String,
+        targetBitsPerPixelPerFrame: Double,
+        result: MethodChannel.Result,
+    ) {
         worker.execute {
             // Reset here rather than in the calling thread. A `cancel()` that
             // arrives between the method call and the worker picking the job up
@@ -96,7 +101,7 @@ class MediaTranscoder(
             cancelled.set(false)
 
             try {
-                run(input, output)
+                run(input, output, targetBitsPerPixelPerFrame)
                 main.post { result.success(null) }
             } catch (error: Throwable) {
                 // The partial output is deleted here rather than left for the
@@ -110,7 +115,7 @@ class MediaTranscoder(
         }
     }
 
-    private fun run(input: String, output: String) {
+    private fun run(input: String, output: String, bitsPerPixelPerFrame: Double) {
         val extractor = MediaExtractor()
         extractor.setDataSource(input)
 
@@ -135,7 +140,10 @@ class MediaTranscoder(
 
         try {
             val targetFormat = MediaFormat.createVideoFormat(HEVC, width, height).apply {
-                setInteger(MediaFormat.KEY_BIT_RATE, targetBitRate(sourceFormat, width, height))
+                setInteger(
+                    MediaFormat.KEY_BIT_RATE,
+                    targetBitRate(sourceFormat, width, height, bitsPerPixelPerFrame),
+                )
                 setInteger(MediaFormat.KEY_FRAME_RATE, sourceFormat.frameRateOrDefault())
                 setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, KEYFRAME_SECONDS)
                 setInteger(
@@ -327,9 +335,14 @@ class MediaTranscoder(
      * the round trip in `integration_test/optimize_probe_test.dart`, which is
      * the only place either can be verified anyway.
      */
-    private fun targetBitRate(source: MediaFormat, width: Int, height: Int): Int {
+    private fun targetBitRate(
+        source: MediaFormat,
+        width: Int,
+        height: Int,
+        bitsPerPixelPerFrame: Double,
+    ): Int {
         val frameRate = source.frameRateOrDefault()
-        val target = (TARGET_BITS_PER_PIXEL_PER_FRAME * width * height * frameRate).toInt()
+        val target = (bitsPerPixelPerFrame * width * height * frameRate).toInt()
 
         return target.coerceAtLeast(MINIMUM_BIT_RATE)
     }
@@ -358,14 +371,27 @@ class MediaTranscoder(
         return null
     }
 
-    private companion object {
+    // Not private any more: `DEFAULT_BITS_PER_PIXEL_PER_FRAME` is what the
+    // channel below substitutes when Dart omits the target, so the channel has
+    // to be able to read it.
+    companion object {
         const val HEVC = MediaFormat.MIMETYPE_VIDEO_HEVC
         const val TIMEOUT_US = 10_000L
         const val COPY_BUFFER_BYTES = 1 shl 20
         const val KEYFRAME_SECONDS = 2
         const val DEFAULT_FRAME_RATE = 30
         const val PROGRESS_STEP = 0.01
-        const val TARGET_BITS_PER_PIXEL_PER_FRAME = 0.06
+        /**
+         * What to aim at when Dart does not say.
+         *
+         * It used to be the only answer, restated here and in
+         * `AppOptimizerPolicy` with an integration test comparing the two. The
+         * user picks it now — see `OptimizeQuality` — so it arrives with the
+         * call, and this is what a caller that omits it gets. Kept equal to the
+         * balanced preset so that the fallback is the default rather than a
+         * third setting nobody chose.
+         */
+        const val DEFAULT_BITS_PER_PIXEL_PER_FRAME = 0.05
         const val MINIMUM_BIT_RATE = 200_000
     }
 }
@@ -400,11 +426,13 @@ class MediaTranscoderChannel(
                 "transcode" -> {
                     val input = call.argument<String>("input")
                     val output = call.argument<String>("output")
+                    val target = call.argument<Double>("targetBitsPerPixelPerFrame")
+                        ?: MediaTranscoder.DEFAULT_BITS_PER_PIXEL_PER_FRAME
 
                     if (input == null || output == null) {
                         result.error("bad_arguments", "input and output are required", null)
                     } else {
-                        transcoder.transcode(input, output, result)
+                        transcoder.transcode(input, output, target, result)
                     }
                 }
 

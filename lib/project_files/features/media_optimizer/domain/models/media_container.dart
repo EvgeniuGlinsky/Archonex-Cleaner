@@ -53,7 +53,12 @@ enum MediaContainer {
   ),
   mp4(
     kind: MediaKind.video,
-    extensions: <String>['.mp4', '.m4v'],
+    // `.3gp` and `.3g2` are ISO base media files with a different brand in the
+    // `ftyp` box, so `IsoBmffProbe` reads them without knowing they are here.
+    // They are what a messenger's older recordings and a good many voice-note
+    // videos still are, and they are usually H.263 or MPEG-4 Part 2 — the two
+    // worst rows in `VideoCodec`, and so the two with the most to gain.
+    extensions: <String>['.mp4', '.m4v', '.3gp', '.3g2'],
     canonicalExtension: '.mp4',
   ),
   quickTime(

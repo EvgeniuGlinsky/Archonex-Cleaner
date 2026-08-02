@@ -17,7 +17,7 @@ void main() {
   final DateTime now = DateTime.utc(2026, 8, 1, 12);
 
   const MediaRoots roots = MediaRoots(
-    appSupport: '/home/sam/.local/share/com.archonex.cleaner',
+    appSupport: '/home/sam/.local/share/io.github.evgeniuglinsky.storagecleaner',
     home: '/home/sam',
     pictures: '/home/sam/Pictures',
     videos: '/home/sam/Videos',

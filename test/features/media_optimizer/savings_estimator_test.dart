@@ -6,6 +6,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/rule
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
@@ -65,7 +66,7 @@ void main() {
 
       expect(plan.verdict, OptimizeVerdict.worthIt);
       expect(plan.targetContainer, MediaContainer.jpeg);
-      expect(plan.quality, AppOptimizerPolicy.photoQuality);
+      expect(plan.preset, OptimizeQuality.fallback);
       // Roughly a third of the original, which is the claim the feature makes
       // about camera JPEGs.
       expect(plan.estimatedBytes, lessThan(size ~/ 2));
@@ -145,7 +146,7 @@ void main() {
           photo(container: MediaContainer.jpeg, width: 640, height: 480);
       final int size = (probe.pixelCount * 0.9).round();
 
-      expect(size, lessThan(AppOptimizerPolicy.minimumGainBytes * 2));
+      expect(size, lessThan(OptimizeQuality.fallback.minimumGainBytes * 2));
       expect(
         SavingsEstimator.plan(probe: probe, sizeInBytes: size).verdict,
         OptimizeVerdict.alreadyEfficient,
@@ -294,7 +295,7 @@ void main() {
       );
 
       final int videoOnly =
-          videoBytesAt(probe, AppOptimizerPolicy.targetBitsPerPixelPerFrame);
+          videoBytesAt(probe, OptimizeQuality.fallback.targetBitsPerPixelPerFrame);
       final int audio =
           AppOptimizerPolicy.audioBitsPerSecond * 3600 ~/ 8;
 
@@ -313,6 +314,73 @@ void main() {
             .verdict,
         SavingsEstimator.plan(probe: uhd, sizeInBytes: videoBytesAt(uhd, 0.15))
             .verdict,
+      );
+    });
+  });
+
+  group('the preset', () {
+    test('a tighter one estimates a smaller video', () {
+      final MediaProbe probe = video(seconds: 300);
+      final int size = videoBytesAt(probe, 0.15);
+
+      final int gentle = SavingsEstimator.plan(
+        probe: probe,
+        sizeInBytes: size,
+        quality: OptimizeQuality.gentle,
+      ).estimatedBytes!;
+      final int balanced = SavingsEstimator.plan(
+        probe: probe,
+        sizeInBytes: size,
+        quality: OptimizeQuality.balanced,
+      ).estimatedBytes!;
+      final int maximum = SavingsEstimator.plan(
+        probe: probe,
+        sizeInBytes: size,
+        quality: OptimizeQuality.maximum,
+      ).estimatedBytes!;
+
+      expect(gentle, greaterThan(balanced));
+      expect(balanced, greaterThan(maximum));
+    });
+
+    test('and offers a file the gentler one leaves alone', () {
+      // The point of the switch. A video sitting just inside the gentle
+      // threshold is a file the user is told nothing can be done about, and
+      // pressing harder is the honest answer to "but my disk is full".
+      final MediaProbe probe = video(seconds: 300);
+      final int size = videoBytesAt(probe, 0.088);
+
+      expect(
+        SavingsEstimator.plan(
+          probe: probe,
+          sizeInBytes: size,
+          quality: OptimizeQuality.gentle,
+        ).isWorthIt,
+        isFalse,
+      );
+      expect(
+        SavingsEstimator.plan(
+          probe: probe,
+          sizeInBytes: size,
+          quality: OptimizeQuality.maximum,
+        ).isWorthIt,
+        isTrue,
+      );
+    });
+
+    test('rides along on the plan, so the encoder knows what it was', () {
+      // Three encoders need three different numbers out of it — a JPEG
+      // quality, an x265 CRF and a bitrate target — so the choice travels
+      // rather than any one of them.
+      final MediaProbe probe = video(seconds: 300);
+
+      expect(
+        SavingsEstimator.plan(
+          probe: probe,
+          sizeInBytes: videoBytesAt(probe, 0.15),
+          quality: OptimizeQuality.maximum,
+        ).preset,
+        OptimizeQuality.maximum,
       );
     });
   });

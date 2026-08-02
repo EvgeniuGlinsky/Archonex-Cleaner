@@ -10,6 +10,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widget
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_group_tile.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/media_optimizer_callbacks.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/optimize_result_card.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/quality_selector.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
 
 /// State and callbacks in, one column out. No `flutter_bloc`, no `go_router`.
@@ -48,6 +49,17 @@ class MediaOptimizerBody extends StatelessWidget {
         ],
         if (state.hasBlockedKind) ...<Widget>[
           const EncoderNotice(),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+        // Above the groups, because it is what the numbers in them are measured
+        // against — and hidden where the platform can encode nothing at all,
+        // which is the one case where the answer changes nothing.
+        if (state.isSupported) ...<Widget>[
+          QualitySelector(
+            quality: state.quality,
+            isEnabled: !state.isOptimizing,
+            onChanged: callbacks.onQualityChanged,
+          ),
           const SizedBox(height: AppSpacing.lg),
         ],
         if (state.report != null) ...<Widget>[

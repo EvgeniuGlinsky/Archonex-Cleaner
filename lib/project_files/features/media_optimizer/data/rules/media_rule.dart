@@ -41,11 +41,19 @@ class MediaRule {
   bool matchesFile(String fileName) {
     // A working file from a run that crashed part way. Never a candidate: it is
     // half an encode, and the next run sweeps it away rather than measuring it.
-    if (fileName.startsWith(AppOptimizerPolicy.workingPrefix)) {
+    //
+    // The name the app wrote under its working title is refused as well, and
+    // that is the load-bearing half of these four checks:
+    // `.archonex-working-holiday.jpg` ends in `.jpg` and would sail through the
+    // extension filter below, where a superseded original never does. The older
+    // suffix is named anyway, so the pair reads as a pair.
+    if (fileName.startsWith(AppOptimizerPolicy.workingPrefix) ||
+        fileName.startsWith(AppOptimizerPolicy.legacyWorkingPrefix)) {
       return false;
     }
 
-    if (fileName.endsWith(AppOptimizerPolicy.supersededSuffix)) {
+    if (fileName.endsWith(AppOptimizerPolicy.supersededSuffix) ||
+        fileName.endsWith(AppOptimizerPolicy.legacySupersededSuffix)) {
       return false;
     }
 

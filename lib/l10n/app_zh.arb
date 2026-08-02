@@ -353,6 +353,14 @@
   },
   "runNoticeStopLabel": "停止",
 
+  "qualityTitle": "压缩强度",
+  "qualityGentle": "轻度",
+  "qualityBalanced": "均衡",
+  "qualityMaximum": "最大",
+  "qualityGentleHint": "并排比较也看不出差别，释放的空间约为「最大」的一半。",
+  "qualityBalancedHint": "在手机屏幕上看不出差别，建议保持这一档。",
+  "qualityMaximumHint": "仔细看能看出差别，但文件小得多。适合空间告急时使用。",
+
   "failureMediaScanCancelled": "已停止查找。",
   "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
   "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",

@@ -7,6 +7,7 @@ import 'package:storage_cleaner/project_files/features/device_storage/data/platf
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/run_notice_platform.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/prefs_optimize_quality_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
@@ -14,6 +15,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/optimize_quality_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/run_notice.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/bloc/media_optimizer_bloc.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/ui/widgets/run_notice_listener.dart';
@@ -66,6 +68,12 @@ class _MediaOptimizerScopeState extends State<MediaOptimizerScope> {
   final MediaOptimizeRepo _optimizeRepo = createMediaOptimizeRepo();
   final RunNotice _notice = createRunNotice();
 
+  // Not in `storage_cleaner_app.dart` beside the language, although it is the
+  // same kind of thing. Nothing outside this feature asks what it says, and a
+  // scope that already lives as long as the app is a shorter way to say "as
+  // long as the app" than a provider two files away.
+  final OptimizeQualityRepo _quality = PrefsOptimizeQualityRepo();
+
   @override
   void dispose() {
     unawaited(_notice.dispose());
@@ -103,6 +111,7 @@ class _MediaOptimizerScopeState extends State<MediaOptimizerScope> {
             support: () => bloc.state.support,
           ),
           getDeviceStorage: GetDeviceStorageUseCase(createDeviceStorageRepo()),
+          quality: _quality,
         );
 
         return bloc..add(const MediaOptimizerStarted());

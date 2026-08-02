@@ -12,6 +12,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
 
@@ -79,7 +80,7 @@ void main() {
       plan: OptimizationPlan.reencode(
         targetContainer: target,
         estimatedBytes: sizeInBytes ~/ 3,
-        quality: AppOptimizerPolicy.photoQuality,
+        preset: OptimizeQuality.fallback,
       ),
     );
   }
@@ -406,6 +407,37 @@ void main() {
 
       expect(stranded.existsSync(), isTrue);
       expect(await taken.length(), 1200000);
+    });
+
+    test('the leavings of a build under the old name are swept too', () async {
+      // The two names changed with the rename; what is lying in the folder did
+      // not. A sweeper that only knew the current pair would walk past both —
+      // and the superseded one is the user's file, stranded under a name
+      // nothing recognises any more.
+      final File stranded = File(
+        p.join(
+          workspace.path,
+          'b.jpg${AppOptimizerPolicy.legacySupersededSuffix}',
+        ),
+      );
+      await stranded.writeAsBytes(Uint8List(7777));
+
+      final File halfEncoded = File(
+        p.join(workspace.path, '${AppOptimizerPolicy.legacyWorkingPrefix}c.jpg'),
+      );
+      await halfEncoded.writeAsBytes(Uint8List(1000));
+
+      final File original = await writeJpeg('a.jpg', sizeInBytes: 9000000);
+
+      await run(
+        repoWith(FakeMediaEncoder(outputBytes: 3000000)),
+        <MediaCandidate>[candidateFor(original, sizeInBytes: 9000000)],
+      );
+
+      // `b.jpg`, not `b.jpg.archonex-o`: the suffix trimmed is the one that
+      // matched, so the file comes back under the name the user gave it.
+      expect(_names(workspace), <String>['a.jpg', 'b.jpg']);
+      expect(await File(p.join(workspace.path, 'b.jpg')).length(), 7777);
     });
   });
 

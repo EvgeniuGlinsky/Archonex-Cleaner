@@ -16,7 +16,7 @@ import 'package:storage_cleaner/project_files/features/storage_access/domain/mod
 /// allowlist.
 void main() {
   const MediaRoots androidRoots = MediaRoots(
-    appSupport: '/data/user/0/com.archonex.cleaner/files',
+    appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
     externalStorage: '/storage/emulated/0',
     camera: '/storage/emulated/0/DCIM',
     pictures: '/storage/emulated/0/Pictures',
@@ -26,7 +26,7 @@ void main() {
   );
 
   const MediaRoots windowsRoots = MediaRoots(
-    appSupport: r'C:\Users\sam\AppData\Roaming\com.archonex.cleaner',
+    appSupport: r'C:\Users\sam\AppData\Roaming\io.github.evgeniuglinsky.storagecleaner',
     home: r'C:\Users\sam',
     pictures: r'C:\Users\sam\Pictures',
     videos: r'C:\Users\sam\Videos',
@@ -34,7 +34,7 @@ void main() {
   );
 
   const MediaRoots linuxRoots = MediaRoots(
-    appSupport: '/home/sam/.local/share/com.archonex.cleaner',
+    appSupport: '/home/sam/.local/share/io.github.evgeniuglinsky.storagecleaner',
     home: '/home/sam',
     pictures: '/home/sam/Pictures',
     videos: '/home/sam/Videos',
@@ -147,7 +147,7 @@ void main() {
 
     test('a picked folder is walked, and the platform folders are not', () {
       const MediaRoots picked = MediaRoots(
-        appSupport: '/data/user/0/com.archonex.cleaner/files',
+        appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
         externalStorage: '/storage/emulated/0',
         camera: '/storage/emulated/0/DCIM',
         grantedFolders: <String>['/storage/emulated/0/Trips'],
@@ -244,6 +244,15 @@ void main() {
     test('a working file left by a crashed run is never a candidate', () {
       // It is half an encode. The next run sweeps it away rather than
       // measuring it, offering it, and re-encoding a fragment.
+      expect(rule.matchesFile('.storage-cleaner-working-holiday.jpg'), isFalse);
+      expect(rule.matchesFile('holiday.jpg.storage-cleaner-old'), isFalse);
+    });
+
+    test('and so is one left under the name the app used to write', () {
+      // A crash under the old build put these here, and the current one walks
+      // the same folder. The working name is the half that matters: it ends in
+      // `.jpg`, so without this it would be measured, offered, and re-encoded
+      // from a fragment.
       expect(rule.matchesFile('.archonex-working-holiday.jpg'), isFalse);
       expect(rule.matchesFile('holiday.jpg.archonex-old'), isFalse);
     });

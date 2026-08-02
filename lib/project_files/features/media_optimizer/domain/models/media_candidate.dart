@@ -69,6 +69,22 @@ final class MediaCandidate extends Equatable {
     return target != null && target != probe.container;
   }
 
+  /// The same file, measured again against a different preset.
+  ///
+  /// The only field that ever changes after the walk, which is why there is no
+  /// general `copyWith` here: everything else is what the disk said, and a
+  /// candidate whose size or path could be edited would be a candidate that
+  /// could disagree with the file it names. Re-planning needs no second walk
+  /// because [probe] is kept — that is the other thing it is for.
+  MediaCandidate withPlan(OptimizationPlan plan) => MediaCandidate(
+        path: path,
+        name: name,
+        sizeInBytes: sizeInBytes,
+        modifiedAt: modifiedAt,
+        probe: probe,
+        plan: plan,
+      );
+
   @override
   List<Object?> get props =>
       <Object?>[path, name, sizeInBytes, modifiedAt, probe, plan];

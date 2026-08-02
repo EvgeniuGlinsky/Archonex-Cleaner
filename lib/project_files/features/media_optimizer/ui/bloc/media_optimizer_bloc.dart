@@ -10,6 +10,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/optimize_media_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/replan_for_quality_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
@@ -19,8 +20,10 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_job.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_report.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_update.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/optimize_quality_repo.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/get_storage_access_use_case.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/open_access_settings_use_case.dart';
@@ -43,6 +46,8 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     required ScanForMediaUseCase scanForMedia,
     required OptimizeMediaUseCase optimizeMedia,
     required GetDeviceStorageUseCase getDeviceStorage,
+    required OptimizeQualityRepo quality,
+    ReplanForQualityUseCase replan = const ReplanForQualityUseCase(),
   })  : _getAvailability = getAvailability,
         _getSupport = getSupport,
         _getKinds = getKinds,
@@ -53,7 +58,9 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
         _scanForMedia = scanForMedia,
         _optimizeMedia = optimizeMedia,
         _getDeviceStorage = getDeviceStorage,
-        super(const MediaOptimizerState()) {
+        _quality = quality,
+        _replan = replan,
+        super(MediaOptimizerState(quality: quality.selected)) {
     on<MediaOptimizerStarted>(_onStarted, transformer: restartable());
     // Dropped rather than queued: stepping in and out of the screen twice in a
     // second wants one re-read, not two behind each other.
@@ -70,6 +77,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
       transformer: droppable(),
     );
 
+    on<OptimizeQualityChanged>(_onQualityChanged, transformer: sequential());
     on<MediaScanCancelled>(_onScanCancelled, transformer: sequential());
     on<OptimizeCancelled>(_onOptimizeCancelled, transformer: sequential());
     on<MediaGroupToggled>(_onGroupToggled, transformer: sequential());
@@ -88,6 +96,8 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
   final ScanForMediaUseCase _scanForMedia;
   final OptimizeMediaUseCase _optimizeMedia;
   final GetDeviceStorageUseCase _getDeviceStorage;
+  final OptimizeQualityRepo _quality;
+  final ReplanForQualityUseCase _replan;
 
   MediaScanJob? _activeScan;
   OptimizeJob? _activeRun;
@@ -119,9 +129,20 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
       return;
     }
 
+    // The stored preset before anything is measured against it: an estimate
+    // produced under the default and then re-labelled would be a number the
+    // user watched change for no reason they could see.
+    await _quality.restore();
+
     // Before the access, because it is the answer that decides whether the
     // screen offers a button at all and it does not depend on the other.
-    emit(state.copyWith(isSupported: true, support: await _getSupport()));
+    emit(
+      state.copyWith(
+        isSupported: true,
+        support: await _getSupport(),
+        quality: _quality.selected,
+      ),
+    );
 
     await _refreshAccess(emit, await _getAccess());
     await _refreshStorage(emit);
@@ -236,7 +257,11 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     final MediaScanJob job;
 
     try {
-      job = await _scanForMedia(kinds: kinds, access: state.access);
+      job = await _scanForMedia(
+        kinds: kinds,
+        access: state.access,
+        quality: state.quality,
+      );
     } on OptimizeFailure catch (failure) {
       emit(state.copyWith(failure: failure));
 
@@ -327,6 +352,31 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
               : group,
         )
         .toList(growable: false);
+  }
+
+  /// Re-measures what is already on the screen, without walking anything.
+  ///
+  /// Refused outright while a run is going. The files it is partway through
+  /// were planned under the old preset and the encoder was told the old target;
+  /// changing the list underneath it would leave the report describing one
+  /// thing and the disk holding another.
+  Future<void> _onQualityChanged(
+    OptimizeQualityChanged event,
+    Emitter<MediaOptimizerState> emit,
+  ) async {
+    if (state.isOptimizing || event.quality == state.quality) {
+      return;
+    }
+
+    _quality.select(event.quality);
+
+    emit(
+      state.copyWith(
+        quality: event.quality,
+        groups: _replan(groups: state.groups, quality: event.quality),
+        clearFailure: true,
+      ),
+    );
   }
 
   Future<void> _onScanCancelled(

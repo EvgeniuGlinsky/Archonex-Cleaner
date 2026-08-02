@@ -22,6 +22,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_job.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_scan_update.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_failure.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/domain/models/storage_access.dart';
 
 /// The real walker, on `dart:io`.
@@ -75,6 +76,7 @@ class IoMediaScanRepo implements MediaScanRepo {
   Future<MediaScanJob> scan({
     required Set<MediaKind> kinds,
     required StorageAccess access,
+    required OptimizeQuality quality,
   }) async {
     final MediaRoots roots = await _roots(access);
 
@@ -86,6 +88,7 @@ class IoMediaScanRepo implements MediaScanRepo {
       ),
       probeReader: _probeReader,
       kinds: kinds,
+      quality: quality,
       context: p.Context(
         style: _platform == TargetPlatform.windows ? p.Style.windows : p.Style.posix,
       ),
@@ -125,11 +128,13 @@ class _IoMediaScanJob implements MediaScanJob {
     required OptimizeGuard guard,
     required MediaProbeReader probeReader,
     required Set<MediaKind> kinds,
+    required OptimizeQuality quality,
     required p.Context context,
   })  : _rules = rules,
         _guard = guard,
         _probeReader = probeReader,
         _kinds = kinds,
+        _quality = quality,
         _context = context {
     _controller = StreamController<MediaScanUpdate>(onListen: _start);
   }
@@ -138,6 +143,7 @@ class _IoMediaScanJob implements MediaScanJob {
   final OptimizeGuard _guard;
   final MediaProbeReader _probeReader;
   final Set<MediaKind> _kinds;
+  final OptimizeQuality _quality;
   final p.Context _context;
 
   late final StreamController<MediaScanUpdate> _controller;
@@ -345,7 +351,11 @@ class _IoMediaScanJob implements MediaScanJob {
         sizeInBytes: stat.size,
         modifiedAt: stat.modified,
         probe: probe,
-        plan: SavingsEstimator.plan(probe: probe, sizeInBytes: stat.size),
+        plan: SavingsEstimator.plan(
+          probe: probe,
+          sizeInBytes: stat.size,
+          quality: _quality,
+        ),
       );
     } finally {
       // A camera roll is thousands of files, and a handle left behind per file

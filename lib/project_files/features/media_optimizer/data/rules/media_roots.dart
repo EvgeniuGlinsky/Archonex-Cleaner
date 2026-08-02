@@ -28,6 +28,8 @@ final class MediaRoots extends Equatable {
     this.camera,
     this.screenshots,
     this.externalStorage,
+    this.appMedia,
+    this.secondaryVolumes = const <String>[],
     this.grantedFolders = const <String>[],
   });
 
@@ -63,6 +65,24 @@ final class MediaRoots extends Equatable {
   /// Android's shared storage root, `/storage/emulated/0`.
   final String? externalStorage;
 
+  /// Android's `Android/media`, where the messengers live.
+  ///
+  /// Scoped storage moved them there: since Android 11 an app that wants its
+  /// media visible to the gallery writes under `Android/media/<package>`
+  /// instead of a folder of its own at the top level, so `WhatsApp/Media` and
+  /// `Telegram/Telegram Video` are here rather than beside `DCIM`. It is
+  /// readable with all-files access, unlike its neighbour `Android/data`, and
+  /// on a phone that has had a messenger on it for a few years it is very often
+  /// larger than the camera roll.
+  final String? appMedia;
+
+  /// The shared roots of any other mounted volume — an SD card, in practice.
+  ///
+  /// Empty on every platform but Android, and on most Android phones. Where
+  /// there is one it is usually where the large files went, which is the whole
+  /// reason somebody fitted it.
+  final List<String> secondaryVolumes;
+
   /// Folders the user handed over one at a time through the picker.
   final List<String> grantedFolders;
 
@@ -76,6 +96,8 @@ final class MediaRoots extends Equatable {
         camera,
         screenshots,
         externalStorage,
+        appMedia,
+        secondaryVolumes,
         grantedFolders,
       ];
 }

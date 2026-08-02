@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
 /// Re-encodes a video by running whatever `ffmpeg` is on the path.
 ///
@@ -152,7 +152,7 @@ class FfmpegVideoEncoder implements MediaEncoder {
       // tracks or a subtitle track must not come back with one of them missing.
       '-map', '0',
       '-c:v', 'libx265',
-      '-crf', '${AppOptimizerPolicy.videoCrf}',
+      '-crf', '${_presetFor(candidate).videoCrf}',
       '-preset', 'medium',
       // The tag Apple's players insist on before they will open HEVC. Without
       // it the file is valid and QuickTime refuses it.
@@ -173,4 +173,10 @@ class FfmpegVideoEncoder implements MediaEncoder {
       outputPath,
     ];
   }
+
+  /// The preset the plan was made at, falling back to the shipped one for the
+  /// reason the image encoders give.
+  static OptimizeQuality _presetFor(MediaCandidate candidate) =>
+      candidate.plan.preset ?? OptimizeQuality.fallback;
+
 }

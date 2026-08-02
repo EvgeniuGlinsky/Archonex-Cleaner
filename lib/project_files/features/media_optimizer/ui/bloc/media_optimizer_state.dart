@@ -16,6 +16,7 @@ final class MediaOptimizerState extends Equatable {
     this.access = const StorageAccess.open(),
     this.support = const EncoderSupport(photos: true, videos: true),
     this.groups = const <MediaGroup>[],
+    this.quality = OptimizeQuality.fallback,
     this.scanningLocation,
     this.progress,
     this.report,
@@ -35,6 +36,14 @@ final class MediaOptimizerState extends Equatable {
   final EncoderSupport support;
 
   final List<MediaGroup> groups;
+
+  /// How hard the user has asked the optimiser to press.
+  ///
+  /// Held here rather than read from the repository wherever it is needed,
+  /// because every estimate on the screen is measured against it: a widget that
+  /// went and asked separately could draw a saving from one preset beside a
+  /// button offering another.
+  final OptimizeQuality quality;
 
   /// The folder the walk is in, for the line under the bar.
   final String? scanningLocation;
@@ -174,6 +183,7 @@ final class MediaOptimizerState extends Equatable {
     StorageAccess? access,
     EncoderSupport? support,
     List<MediaGroup>? groups,
+    OptimizeQuality? quality,
     String? scanningLocation,
     OptimizeProgress? progress,
     OptimizeReport? report,
@@ -191,6 +201,7 @@ final class MediaOptimizerState extends Equatable {
       access: access ?? this.access,
       support: support ?? this.support,
       groups: groups ?? this.groups,
+      quality: quality ?? this.quality,
       scanningLocation: clearScanningLocation
           ? null
           : scanningLocation ?? this.scanningLocation,
@@ -208,6 +219,7 @@ final class MediaOptimizerState extends Equatable {
         access,
         support,
         groups,
+        quality,
         scanningLocation,
         progress,
         report,

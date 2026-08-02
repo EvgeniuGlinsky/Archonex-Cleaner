@@ -353,6 +353,14 @@
   },
   "runNoticeStopLabel": "Stop",
 
+  "qualityTitle": "How hard to press",
+  "qualityGentle": "Gentle",
+  "qualityBalanced": "Balanced",
+  "qualityMaximum": "Maximum",
+  "qualityGentleHint": "Not visible even side by side. Frees about half of what Maximum would.",
+  "qualityBalancedHint": "The difference is not visible on a phone. This is the one to leave it on.",
+  "qualityMaximumHint": "Visible if you look for it, and much smaller. For a full disk.",
+
   "failureMediaScanCancelled": "Stopped looking.",
   "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
   "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",

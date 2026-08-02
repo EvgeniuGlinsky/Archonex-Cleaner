@@ -3,6 +3,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/domain/mo
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_kind.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_probe.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimization_plan.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_verdict.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/video_codec.dart';
 
@@ -62,23 +63,33 @@ class SavingsEstimator {
   /// [sizeInBytes] is the file on disk; [probe] is what its header said. A
   /// probe that did not come back complete is refused here rather than guessed
   /// at — see `MediaProbe.isComplete`.
+  ///
+  /// [quality] defaults to the shipped one. The default is here so that the
+  /// twenty-odd tests about the *rule* — is a screenshot left alone, is an
+  /// unknown codec refused — can be read without a preset in every line; the
+  /// one production caller passes it, and a test asserts that it does.
   static OptimizationPlan plan({
     required MediaProbe probe,
     required int sizeInBytes,
+    OptimizeQuality quality = OptimizeQuality.fallback,
   }) {
     if (!probe.isComplete || sizeInBytes <= 0) {
       return const OptimizationPlan.skip(OptimizeVerdict.unreadable);
     }
 
     return switch (probe.kind) {
-      MediaKind.photo => _photo(probe, sizeInBytes),
-      MediaKind.video => _video(probe, sizeInBytes),
+      MediaKind.photo => _photo(probe, sizeInBytes, quality),
+      MediaKind.video => _video(probe, sizeInBytes, quality),
     };
   }
 
   // ---------------------------------------------------------------- photos --
 
-  static OptimizationPlan _photo(MediaProbe probe, int sizeInBytes) {
+  static OptimizationPlan _photo(
+    MediaProbe probe,
+    int sizeInBytes,
+    OptimizeQuality quality,
+  ) {
     final double bytesPerPixel = sizeInBytes / probe.pixelCount;
 
     return switch (probe.container) {
@@ -87,22 +98,29 @@ class SavingsEstimator {
       // maximum.
       MediaContainer.jpeg =>
         bytesPerPixel > AppOptimizerPolicy.photoWorthwhileBytesPerPixel
-            ? _asJpeg(probe, sizeInBytes)
+            ? _asJpeg(probe, sizeInBytes, quality)
             : const OptimizationPlan.skip(OptimizeVerdict.alreadyEfficient),
 
       // Lossless, so the size follows the detail, and the detail is what says
       // whether this is a photograph or a screenshot.
       MediaContainer.png =>
         bytesPerPixel > AppOptimizerPolicy.pngPhotographicBytesPerPixel
-            ? _asJpeg(probe, sizeInBytes)
+            ? _asJpeg(probe, sizeInBytes, quality)
             : const OptimizationPlan.skip(OptimizeVerdict.alreadyEfficient),
 
       // Barely compressed at all: three or four bytes per pixel, straight out
       // of a scanner or an old editor. Always a large win.
-      MediaContainer.bmp || MediaContainer.tiff => _asJpeg(probe, sizeInBytes),
+      MediaContainer.bmp ||
+      MediaContainer.tiff =>
+        _asJpeg(probe, sizeInBytes, quality),
 
       // Already the efficient answer, or animation this tool has no business
       // flattening.
+      //
+      // HEIF stays on this list at every preset, and that is not a gap waiting
+      // to be filled. Turning a HEIC into a JPEG usually produces a *larger*
+      // file at worse quality: the format is a decade newer and roughly twice
+      // as efficient, so the honest answer is that the phone already did this.
       MediaContainer.heif ||
       MediaContainer.webp ||
       MediaContainer.gif =>
@@ -114,24 +132,36 @@ class SavingsEstimator {
     };
   }
 
-  static OptimizationPlan _asJpeg(MediaProbe probe, int sizeInBytes) {
+  static OptimizationPlan _asJpeg(
+    MediaProbe probe,
+    int sizeInBytes,
+    OptimizeQuality quality,
+  ) {
     final int estimated =
-        (probe.pixelCount * AppOptimizerPolicy.photoTargetBytesPerPixel).round();
+        (probe.pixelCount * quality.photoTargetBytesPerPixel).round();
 
-    if (!_isWorthIt(sizeInBytes: sizeInBytes, estimatedBytes: estimated)) {
+    if (!_isWorthIt(
+      sizeInBytes: sizeInBytes,
+      estimatedBytes: estimated,
+      quality: quality,
+    )) {
       return const OptimizationPlan.skip(OptimizeVerdict.alreadyEfficient);
     }
 
     return OptimizationPlan.reencode(
       targetContainer: MediaContainer.jpeg,
       estimatedBytes: estimated,
-      quality: AppOptimizerPolicy.photoQuality,
+      preset: quality,
     );
   }
 
   // ---------------------------------------------------------------- videos --
 
-  static OptimizationPlan _video(MediaProbe probe, int sizeInBytes) {
+  static OptimizationPlan _video(
+    MediaProbe probe,
+    int sizeInBytes,
+    OptimizeQuality quality,
+  ) {
     final VideoCodec codec = probe.codec ?? VideoCodec.unknown;
     final double? efficient = codec.efficientBitsPerPixelPerFrame;
 
@@ -153,9 +183,17 @@ class SavingsEstimator {
       return const OptimizationPlan.skip(OptimizeVerdict.alreadyEfficient);
     }
 
-    final int estimated = _estimatedVideoBytes(pixelRate: pixelRate, seconds: seconds);
+    final int estimated = _estimatedVideoBytes(
+      pixelRate: pixelRate,
+      seconds: seconds,
+      quality: quality,
+    );
 
-    if (!_isWorthIt(sizeInBytes: sizeInBytes, estimatedBytes: estimated)) {
+    if (!_isWorthIt(
+      sizeInBytes: sizeInBytes,
+      estimatedBytes: estimated,
+      quality: quality,
+    )) {
       return const OptimizationPlan.skip(OptimizeVerdict.alreadyEfficient);
     }
 
@@ -167,6 +205,7 @@ class SavingsEstimator {
       targetContainer: MediaContainer.mp4,
       targetCodec: VideoCodec.hevc,
       estimatedBytes: estimated,
+      preset: quality,
     );
   }
 
@@ -183,9 +222,10 @@ class SavingsEstimator {
   static int _estimatedVideoBytes({
     required double pixelRate,
     required double seconds,
+    required OptimizeQuality quality,
   }) {
     final double videoBits =
-        AppOptimizerPolicy.targetBitsPerPixelPerFrame * pixelRate * seconds;
+        quality.targetBitsPerPixelPerFrame * pixelRate * seconds;
     final double audioBits = AppOptimizerPolicy.audioBitsPerSecond * seconds;
 
     return ((videoBits + audioBits) / 8).round();
@@ -201,6 +241,7 @@ class SavingsEstimator {
   static bool _isWorthIt({
     required int sizeInBytes,
     required int estimatedBytes,
+    required OptimizeQuality quality,
   }) {
     if (estimatedBytes >= sizeInBytes) {
       return false;
@@ -208,7 +249,7 @@ class SavingsEstimator {
 
     final int saving = sizeInBytes - estimatedBytes;
 
-    return saving >= AppOptimizerPolicy.minimumGainBytes &&
-        saving / sizeInBytes >= AppOptimizerPolicy.minimumGainFraction;
+    return saving >= quality.minimumGainBytes &&
+        saving / sizeInBytes >= quality.minimumGainFraction;
   }
 }

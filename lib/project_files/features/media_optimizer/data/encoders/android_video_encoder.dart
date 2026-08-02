@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
 /// Re-encodes a video through Android's own media stack.
 ///
@@ -33,8 +34,10 @@ class AndroidVideoEncoder implements MediaEncoder {
   })  : _channel = channel ?? const MethodChannel(_channelName),
         _events = events ?? const EventChannel(_eventsName);
 
-  static const String _channelName = 'com.archonex.cleaner/transcoder';
-  static const String _eventsName = 'com.archonex.cleaner/transcoder/progress';
+  static const String _channelName =
+      'io.github.evgeniuglinsky.storagecleaner/transcoder';
+  static const String _eventsName =
+      'io.github.evgeniuglinsky.storagecleaner/transcoder/progress';
 
   final MethodChannel _channel;
   final EventChannel _events;
@@ -101,6 +104,15 @@ class AndroidVideoEncoder implements MediaEncoder {
       <String, Object>{
         'input': candidate.path,
         'output': outputPath,
+        // The one number that crosses this channel rather than being restated
+        // on both sides, and the Native channels section of the skill says why
+        // that is unusual: while there was a single target, having Kotlin hold
+        // its own copy and an integration test compare them was cheaper than
+        // passing it. It is the user's choice now, so it has to be passed. The
+        // Kotlin constant survives as what to use when the argument is absent.
+        'targetBitsPerPixelPerFrame':
+            (candidate.plan.preset ?? OptimizeQuality.fallback)
+                .targetBitsPerPixelPerFrame,
       },
     ).catchError((Object error, StackTrace stackTrace) {
       // Put onto the stream rather than left on the future, because the future

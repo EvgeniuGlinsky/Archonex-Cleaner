@@ -420,8 +420,15 @@ class _IoOptimizeJob implements OptimizeJob {
   ///
   /// Step 4 is the only place two names for the same content exist, and a
   /// process that dies inside it is the one case the ladder cannot clean up
-  /// after itself. A `.archonex-old` left behind is the user's file, so it is
-  /// restored rather than deleted; a working file is half an encode and goes.
+  /// after itself. A superseded original left behind is the user's file, so it
+  /// is restored rather than deleted; a working file is half an encode and goes.
+  ///
+  /// Both generations of the two names are recognised — see
+  /// `AppOptimizerPolicy.legacyWorkingPrefix` — because what is lying in the
+  /// folder was written by whichever build crashed, not by this one. The
+  /// original is recovered by trimming the suffix that actually matched:
+  /// trimming the current one off a name ending in the older one would put the
+  /// file back under a mangled name, which is worse than leaving it be.
   ///
   /// Only the directories this run will touch, not the whole disk: a sweep
   /// wider than the work is a second walk nobody asked for.
@@ -440,12 +447,19 @@ class _IoOptimizeJob implements OptimizeJob {
 
           final String name = p.basename(entity.path);
 
-          if (name.startsWith(AppOptimizerPolicy.workingPrefix)) {
+          if (name.startsWith(AppOptimizerPolicy.workingPrefix) ||
+              name.startsWith(AppOptimizerPolicy.legacyWorkingPrefix)) {
             await _deleteQuietly(entity.path);
-          } else if (name.endsWith(AppOptimizerPolicy.supersededSuffix)) {
+
+            continue;
+          }
+
+          final String? suffix = _supersededSuffixOf(name);
+
+          if (suffix != null) {
             final String original = entity.path.substring(
               0,
-              entity.path.length - AppOptimizerPolicy.supersededSuffix.length,
+              entity.path.length - suffix.length,
             );
 
             await _restoreQuietly(entity.path, original);
@@ -457,6 +471,19 @@ class _IoOptimizeJob implements OptimizeJob {
         continue;
       }
     }
+  }
+
+  /// Which of the two superseded suffixes a leftover carries, if either.
+  static String? _supersededSuffixOf(String name) {
+    if (name.endsWith(AppOptimizerPolicy.supersededSuffix)) {
+      return AppOptimizerPolicy.supersededSuffix;
+    }
+
+    if (name.endsWith(AppOptimizerPolicy.legacySupersededSuffix)) {
+      return AppOptimizerPolicy.legacySupersededSuffix;
+    }
+
+    return null;
   }
 
   /// So a gallery does not put every optimised photograph at the top as though

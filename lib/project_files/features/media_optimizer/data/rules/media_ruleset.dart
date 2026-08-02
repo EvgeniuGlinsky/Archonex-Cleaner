@@ -73,6 +73,20 @@ class MediaRuleset {
   }
 
   /// The camera roll first, because it is where the space went.
+  ///
+  /// `Android/media` is on the list and is not an afterthought: scoped storage
+  /// moved every messenger's photographs and videos under it, and on a phone
+  /// that has had one installed for a couple of years it is routinely larger
+  /// than `DCIM`. It sits after the folders the user thinks of as theirs,
+  /// because the list is read in order and the camera roll is what they came
+  /// for.
+  ///
+  /// A second volume goes on last and whole, rather than as four named
+  /// subfolders. A card is fitted precisely to hold the large files, and what
+  /// somebody calls the folder they put them in is not something a table can
+  /// know. `AppOptimizerPolicy.maxItemsPerRoot` is what bounds the walk, and
+  /// `OffLimitsPaths` is what keeps it out of the application directories it
+  /// will pass on the way.
   static List<MediaRule> _android(MediaRoots roots) {
     return <MediaRule>[
       if (roots.camera != null) MediaRule(root: roots.camera!, label: 'DCIM'),
@@ -81,6 +95,10 @@ class MediaRuleset {
         MediaRule(root: roots.pictures!, label: 'Pictures'),
       if (roots.downloads != null)
         MediaRule(root: roots.downloads!, label: 'Download'),
+      if (roots.appMedia != null)
+        MediaRule(root: roots.appMedia!, label: 'Android/media'),
+      for (final String volume in roots.secondaryVolumes)
+        MediaRule(root: volume, label: _lastSegment(volume)),
     ];
   }
 

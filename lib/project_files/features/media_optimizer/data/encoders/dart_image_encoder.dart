@@ -4,9 +4,9 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
 
-import 'package:storage_cleaner/core/constants/app_optimizer_policy.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
 /// Re-encodes a photograph in pure Dart, on the three platforms with no native
 /// encoder wired up.
@@ -53,7 +53,7 @@ class DartImageEncoder implements MediaEncoder {
     }
 
     final Uint8List? encoded = await Isolate.run(
-      () => _reencode(source, candidate.plan.quality ?? AppOptimizerPolicy.photoQuality),
+      () => _reencode(source, _qualityFor(candidate)),
     );
 
     if (encoded == null) {
@@ -89,4 +89,14 @@ class DartImageEncoder implements MediaEncoder {
 
     return img.encodeJpg(decoded, quality: quality);
   }
+
+  /// The JPEG quality the plan was made at.
+  ///
+  /// A refusal has no preset, and a refusal should never reach an encoder — but
+  /// throwing here would turn a wiring mistake into a lost file in the middle of
+  /// a ladder that is careful not to lose one. The shipped default is the safe
+  /// answer, and the run's verify step catches an output that is no smaller.
+  static int _qualityFor(MediaCandidate candidate) =>
+      (candidate.plan.preset ?? OptimizeQuality.fallback).photoQuality;
+
 }
