@@ -12,6 +12,7 @@ extension AppToolUi on AppTool {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return switch (this) {
+      AppTool.insights => l10n.toolInsightsTitle,
       AppTool.cleaner => l10n.toolCleanerTitle,
       AppTool.optimizer => l10n.toolOptimizerTitle,
     };
@@ -21,12 +22,14 @@ extension AppToolUi on AppTool {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return switch (this) {
+      AppTool.insights => l10n.toolInsightsSubtitle,
       AppTool.cleaner => l10n.toolCleanerSubtitle,
       AppTool.optimizer => l10n.toolOptimizerSubtitle,
     };
   }
 
   IconData get icon => switch (this) {
+        AppTool.insights => Icons.donut_large_rounded,
         AppTool.cleaner => Icons.cleaning_services_rounded,
         AppTool.optimizer => Icons.compress_rounded,
       };

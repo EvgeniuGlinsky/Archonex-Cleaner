@@ -8,10 +8,11 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/ui/media_
 import 'package:storage_cleaner/project_files/features/quarantine/ui/quarantine_page.dart';
 import 'package:storage_cleaner/project_files/features/splash/ui/splash_page.dart';
 import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/storage_cleaner_view.dart';
+import 'package:storage_cleaner/project_files/features/storage_insights/ui/storage_insights_page.dart';
 
 /// Builds the application router.
 ///
-/// Five routes and no shell. Both tools are pushed from the home screen and
+/// Six routes and no shell. Both tools are pushed from the home screen and
 /// sit beside each other rather than nesting, because they are two ways into
 /// the same storage and neither is inside the other; the quarantine is the one
 /// child, under the cleaner that fills it.
@@ -37,6 +38,11 @@ class AppRouter {
           path: AppRoute.home.path,
           name: AppRoute.home.routeName,
           pageBuilder: _fade(const HomePage()),
+        ),
+        GoRoute(
+          path: AppRoute.storageInsights.path,
+          name: AppRoute.storageInsights.routeName,
+          pageBuilder: _fade(const StorageInsightsPage()),
         ),
         GoRoute(
           path: AppRoute.storageCleaner.path,

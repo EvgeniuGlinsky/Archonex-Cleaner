@@ -361,6 +361,54 @@
   "qualityBalancedHint": "The difference is not visible on a phone. This is the one to leave it on.",
   "qualityMaximumHint": "Visible if you look for it, and much smaller. For a full disk.",
 
+  "toolInsightsTitle": "See what is taking up space",
+  "toolInsightsSubtitle": "Add up the photos, videos and everything else on this device.",
+
+  "insightsTitle": "Where the space went",
+  "insightsSubtitle": "Add up what is on this device, by kind. Nothing is deleted or changed.",
+  "insightsMeasureLabel": "Measure",
+  "insightsRemeasureLabel": "Measure again",
+  "insightsMeasuringLabel": "Adding it up\u2026",
+  "insightsIdleTitle": "Nothing measured yet",
+  "insightsIdleBody": "It reads the size of every file and opens none of them.",
+  "insightsEmptyTitle": "Nothing found",
+  "insightsEmptyBody": "There is nothing on this device the app is allowed to see.",
+  "insightsUnsupportedTitle": "Not on this platform",
+  "insightsUnsupportedBody": "There is no storage this app can measure here.",
+  "insightsMeasuredSummary": "{count} counted \u00b7 {size}",
+  "@insightsMeasuredSummary": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "insightsTruncatedNotice": "Stopped after {count} files. The chart is close, not exact.",
+  "@insightsTruncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insightsSystemNote": "Apps keep their own data where no app can read it. Whatever is used and could not be counted is shown as system.",
+  "insightsSharePercent": "{percent}%",
+  "@insightsSharePercent": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+
+  "slicePhotos": "Photos",
+  "sliceVideos": "Videos",
+  "sliceAudio": "Audio",
+  "sliceDocuments": "Documents",
+  "sliceArchives": "Archives and installers",
+  "sliceOther": "Other files",
+  "sliceSystem": "System and apps",
+  "sliceFree": "Free",
+
+  "failureInsightsCancelled": "Stopped counting.",
+  "failureInsightsUnsupported": "There is no storage this app can measure here.",
+  "failureInsightsScan": "The count could not finish. Nothing was changed.",
+
   "failureMediaScanCancelled": "Stopped looking.",
   "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
   "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",

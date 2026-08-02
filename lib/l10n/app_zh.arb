@@ -361,6 +361,54 @@
   "qualityBalancedHint": "在手机屏幕上看不出差别，建议保持这一档。",
   "qualityMaximumHint": "仔细看能看出差别，但文件小得多。适合空间告急时使用。",
 
+  "toolInsightsTitle": "看看空间被谁占了",
+  "toolInsightsSubtitle": "统计设备上的照片、视频和其他文件。",
+
+  "insightsTitle": "空间去哪了",
+  "insightsSubtitle": "按类型统计设备上的文件。不删除也不修改任何东西。",
+  "insightsMeasureLabel": "开始统计",
+  "insightsRemeasureLabel": "重新统计",
+  "insightsMeasuringLabel": "正在统计\u2026",
+  "insightsIdleTitle": "尚未统计",
+  "insightsIdleBody": "只读取每个文件的大小，不会打开任何文件。",
+  "insightsEmptyTitle": "什么也没找到",
+  "insightsEmptyBody": "设备上没有本应用有权查看的内容。",
+  "insightsUnsupportedTitle": "此平台不支持",
+  "insightsUnsupportedBody": "这里没有本应用可以统计的存储空间。",
+  "insightsMeasuredSummary": "{count} \u00b7 {size}",
+  "@insightsMeasuredSummary": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "insightsTruncatedNotice": "统计到 {count} 个文件后停止。图表接近实际，但并不精确。",
+  "@insightsTruncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insightsSystemNote": "应用把自己的数据放在任何应用都读不到的地方。已占用但无法统计的部分显示为系统。",
+  "insightsSharePercent": "{percent}%",
+  "@insightsSharePercent": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+
+  "slicePhotos": "照片",
+  "sliceVideos": "视频",
+  "sliceAudio": "音频",
+  "sliceDocuments": "文档",
+  "sliceArchives": "压缩包与安装包",
+  "sliceOther": "其他文件",
+  "sliceSystem": "系统与应用",
+  "sliceFree": "可用",
+
+  "failureInsightsCancelled": "已停止统计。",
+  "failureInsightsUnsupported": "这里没有本应用可以统计的存储空间。",
+  "failureInsightsScan": "统计未能完成。没有任何改动。",
+
   "failureMediaScanCancelled": "已停止查找。",
   "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
   "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",

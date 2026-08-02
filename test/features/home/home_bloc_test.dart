@@ -70,7 +70,10 @@ void main() {
     final HomeBloc bloc = build();
 
     expect(bloc.state.tools, AppTool.values);
-    expect(bloc.state.tools.first, AppTool.cleaner);
+    // The order is the order somebody would use them in, and the first only
+    // looks: "where did it go" comes before either way of doing something
+    // about it.
+    expect(bloc.state.tools.first, AppTool.insights);
 
     bloc.close();
   });

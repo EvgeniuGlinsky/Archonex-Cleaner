@@ -8,6 +8,10 @@ enum AppRoute {
   /// Where the app lands and comes back to. The tools are pushed from here.
   home(path: '/home'),
 
+  /// The read-only third. A sibling of the two tools rather than a child of
+  /// either: it describes the whole disk, and both of them act on part of it.
+  storageInsights(path: '/insights'),
+
   storageCleaner(path: '/cleaner'),
 
   /// The second tool. A sibling of [storageCleaner] rather than a child: they

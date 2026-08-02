@@ -56,6 +56,8 @@ class HomeView extends StatelessWidget {
     final HomeBloc bloc = context.read<HomeBloc>();
 
     await switch (tool) {
+      AppTool.insights =>
+        context.pushNamed<void>(AppRoute.storageInsights.routeName),
       AppTool.cleaner =>
         context.pushNamed<void>(AppRoute.storageCleaner.routeName),
       AppTool.optimizer =>

@@ -361,6 +361,54 @@
   "qualityBalancedHint": "На экране телефона разницы не видно. На этом и стоит остановиться.",
   "qualityMaximumHint": "Разницу заметно, если приглядеться, зато файлы намного меньше. Для забитой памяти.",
 
+  "toolInsightsTitle": "Посмотреть, что занимает место",
+  "toolInsightsSubtitle": "Посчитаем фото, видео и всё остальное на устройстве.",
+
+  "insightsTitle": "Куда ушло место",
+  "insightsSubtitle": "Посчитаем, что лежит на устройстве, по видам. Ничего не удаляем и не меняем.",
+  "insightsMeasureLabel": "Посчитать",
+  "insightsRemeasureLabel": "Посчитать заново",
+  "insightsMeasuringLabel": "Считаем\u2026",
+  "insightsIdleTitle": "Пока ничего не посчитано",
+  "insightsIdleBody": "Читаем только размер каждого файла и ни один не открываем.",
+  "insightsEmptyTitle": "Ничего не нашлось",
+  "insightsEmptyBody": "На устройстве нет ничего, что приложению разрешено видеть.",
+  "insightsUnsupportedTitle": "Не на этой платформе",
+  "insightsUnsupportedBody": "Здесь нет хранилища, которое приложение может посчитать.",
+  "insightsMeasuredSummary": "{count} \u00b7 {size}",
+  "@insightsMeasuredSummary": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "size": { "type": "String" }
+    }
+  },
+  "insightsTruncatedNotice": "Остановились на {count} файлах. Диаграмма близка к правде, но не точна.",
+  "@insightsTruncatedNotice": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "insightsSystemNote": "Приложения держат свои данные там, куда не заглянуть ни одному приложению. Всё занятое, что не удалось посчитать, показано как системное.",
+  "insightsSharePercent": "{percent}%",
+  "@insightsSharePercent": {
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
+  },
+
+  "slicePhotos": "Фото",
+  "sliceVideos": "Видео",
+  "sliceAudio": "Аудио",
+  "sliceDocuments": "Документы",
+  "sliceArchives": "Архивы и установщики",
+  "sliceOther": "Прочие файлы",
+  "sliceSystem": "Система и приложения",
+  "sliceFree": "Свободно",
+
+  "failureInsightsCancelled": "Остановили подсчёт.",
+  "failureInsightsUnsupported": "Здесь нет хранилища, которое приложение может посчитать.",
+  "failureInsightsScan": "Подсчёт не завершился. Ничего не изменилось.",
+
   "failureMediaScanCancelled": "Поиск остановлен.",
   "failureOptimizeUnsupported": "На этой платформе нет фото и видео, до которых приложение может дотянуться.",
   "failureNoVideoEncoder": "На этой машине нет кодировщика видео. Установите FFmpeg и попробуйте снова.",

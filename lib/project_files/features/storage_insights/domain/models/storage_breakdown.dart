@@ -67,13 +67,20 @@ final class StorageBreakdown extends Equatable {
   /// is which one is biggest and a fixed order makes that a reading exercise.
   /// The derived pair stay at the end regardless: they are the frame the rest
   /// sits in, not competitors in the same list.
+  ///
+  /// Empty until something has been counted, and that is not the same as the
+  /// list of measured rows being empty with the frame still drawn. Before a
+  /// measurement the frame alone would be one enormous row reading "system and
+  /// apps" over the whole used disk — a confident claim about content nothing
+  /// has looked at yet, which is exactly the lie the system slice exists to
+  /// avoid telling.
   List<StorageSlice> get slices {
     final List<StorageSlice> ordered = measured
         .where((slice) => slice.bytes > 0)
         .toList(growable: true)
       ..sort((a, b) => b.bytes.compareTo(a.bytes));
 
-    if (storage == null) {
+    if (storage == null || ordered.isEmpty) {
       return List<StorageSlice>.unmodifiable(ordered);
     }
 
