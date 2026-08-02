@@ -12,10 +12,11 @@ import 'package:storage_cleaner/core/constants/app_spacing.dart';
 /// arithmetic of that was unkind: status bar and `AppBar` take 80, this padding
 /// took another 24, and a Russian title with its three-line subtitle took 130
 /// more — leaving about 250 for the scrolling half, which is two collapsed
-/// tiles. Worse, the list clipped flush against the header with no shadow or
-/// divider between them, because `AppBarTheme` deliberately has no
-/// `scrolledUnderElevation`; a card sliding up simply got cut in half at a line
-/// nothing explained, which reads as passing *under* the title.
+/// tiles. Worse, the list clipped flush against the header, and a card sliding
+/// up simply got cut in half at a line nothing explained, which reads as
+/// passing *under* the title. The `AppBar` above this now raises itself once
+/// something is behind it, so the one line content is still cut at is a line
+/// the bar's own shadow accounts for.
 ///
 /// [bottom] stays pinned, and that difference is deliberate. It holds the one
 /// thing the screen exists to let the user press, and a primary action that
@@ -31,10 +32,13 @@ class AppScreenLayout extends StatelessWidget {
 
   /// Inset on all four edges of both the scrolling half and the pinned one.
   ///
-  /// [AppSpacing.lg] rather than `xl`: at 24 a tile on a 360 dp phone was left
+  /// [AppSpacing.md] rather than `xl`: at 24 a tile on a 360 dp phone was left
   /// 312 dp to fit a checkbox, an icon, a name and two figures into, and it did
-  /// not. The 16 dp this gives back is a third of what made the tiles fit.
-  static const double _inset = AppSpacing.lg;
+  /// not. Each step down since has gone straight into the category name, which
+  /// is the one thing on these screens with nowhere else to go — the cards
+  /// carry their own padding, so the gap to the window edge is the only inset
+  /// counted twice. Below 12 the cards stop reading as cards.
+  static const double _inset = AppSpacing.md;
 
   final Widget header;
   final Widget body;

@@ -48,7 +48,13 @@ class MediaCandidateRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (isActionable)
+            // Compact and shrink-wrapped, like the two group tiles above it.
+            // Left at its defaults this was 48 across against their 32, so the
+            // rows inside a group indented further than the group's own name
+            // and the file names lost 16 dp for nothing.
             Checkbox(
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               value: !isExcluded,
               onChanged: canEdit ? (_) => onToggled() : null,
             )
@@ -105,7 +111,8 @@ class MediaCandidateRow extends StatelessWidget {
     );
   }
 
-  /// What a `Checkbox` occupies, so an unactionable row indents to match one.
-  static const double _placeholderWidth = 48;
+  /// What a compact `Checkbox` occupies, so an unactionable row indents to
+  /// match one.
+  static const double _placeholderWidth = 32;
   static const double _iconSize = 18;
 }

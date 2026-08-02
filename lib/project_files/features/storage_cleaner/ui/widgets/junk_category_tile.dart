@@ -27,10 +27,10 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/mapper
 /// was the only thing anyone ever saw.
 ///
 /// It still switches, and the switch still matters, because the trap underneath
-/// it is real. A 360 dp screen leaves this tile 328, the row padding takes 24,
-/// the checkbox 32, its gap 8 and the expansion arrow 24: 240 reaches the mark,
-/// the text and the figures. The mark and its gap take 36 and a figure may ask
-/// for [_figureWidth], which leaves the name 112 — enough. Below that the
+/// it is real. A 360 dp screen leaves this tile 336, the row padding takes 16,
+/// the checkbox 32, its gap 8 and the expansion arrow 24: 256 reaches the mark,
+/// the text and the figures. The mark and its gap take 32 and a figure may ask
+/// for [_figureWidth], which leaves the name 132 — enough. Below that the
 /// figures drop under the text instead, because a `Flexible` beside a child
 /// that cannot shrink is given whatever is left over and nothing is a legal
 /// amount: there is no overflow to report, so the console stays silent and only
@@ -60,12 +60,19 @@ class JunkCategoryTile extends StatelessWidget {
   /// somebody spot a file they recognise, and nobody reads past two hundred.
   static const int _maxVisibleItems = 200;
 
-  static const double _iconSize = 18;
-  static const double _markSize = 28;
+  static const double _iconSize = 16;
+  static const double _markSize = 24;
 
   /// Width a figure may take from the line it shares. "465.1 GB" at
   /// `titleMedium` is about 72 on a device, so this has a little room in it and
   /// no more: every point of it comes out of the category name.
+  ///
+  /// It survived the tiles being tightened, and had to. It is a cap rather than
+  /// a reservation — a `_Figure` takes its own width — so the only thing
+  /// lowering it changes is [_fitsBeside], and 72 puts that threshold below
+  /// what a 320 dp phone has. Every width a phone actually comes in would then
+  /// take the wide branch, the narrow one would be unreachable, and the test
+  /// that covers it would go on passing while covering nothing.
   static const double _figureWidth = 84;
 
   /// What the category name needs before a figure may sit beside it. Two words
@@ -85,17 +92,20 @@ class JunkCategoryTile extends StatelessWidget {
 
     return Card(
       child: ExpansionTile(
+        // The same radius `cardTheme` gives the `Card` around this. Restated
+        // because the two are drawn separately and a mismatch shows: the card
+        // clips at its radius, the tile paints its ink at this one.
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
-        // The gap between the checkbox and the title, and the width reserved
-        // for the checkbox itself, come from `listTileTheme` in `AppTheme` —
-        // `ExpansionTile` takes neither directly, and the `ListTile` it builds
-        // reads them from there.
-        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        // The gap between the checkbox and the title, the width reserved for
+        // the checkbox itself, and the height floor of the row all come from
+        // `listTileTheme` in `AppTheme` — `ExpansionTile` takes none of them
+        // directly, and the `ListTile` it builds reads them from there.
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         // The checkbox goes in `leading`, not `trailing`: `ExpansionTile.trailing`
         // replaces the rotating arrow, and a row that opens with no affordance
         // saying so is a row nobody opens.
@@ -107,9 +117,10 @@ class JunkCategoryTile extends StatelessWidget {
           tristate: true,
           onChanged: canEdit ? (_) => onToggled() : null,
         ),
-        // Four either side, on top of the four `ListTile` insists on. Eight is
-        // what keeps a two-line name off the card's own edge; the sixteen this
-        // had before was half the height the tile did not need.
+        // Four either side, and now the only four: `listTileTheme` sets
+        // `minVerticalPadding` to zero so that this is the whole of it rather
+        // than half of it. Eight is what keeps a two-line name off the card's
+        // own edge, and 40 of text inside 48 of row is what is left.
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
           child: LayoutBuilder(

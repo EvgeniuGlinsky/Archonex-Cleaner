@@ -40,11 +40,12 @@ class MediaGroupTile extends StatelessWidget {
   /// long is slow to build and useless to read.
   static const int _maxVisibleRows = 200;
 
-  static const double _markSize = 28;
-  static const double _iconSize = 18;
+  static const double _markSize = 24;
+  static const double _iconSize = 16;
 
   /// Width a figure may take from the line it shares. "−4.8 GB" is the widest
-  /// either of them gets.
+  /// either of them gets, and `JunkCategoryTile._figureWidth` carries the rest
+  /// of why it stayed at this number while everything around it shrank.
   static const double _figureWidth = 84;
 
   /// What the name needs before a figure may sit beside it.
@@ -67,14 +68,15 @@ class MediaGroupTile extends StatelessWidget {
     return Card(
       child: ExpansionTile(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         collapsedShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.lg),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
-        // The leading width and the gap after it come from `listTileTheme` in
-        // `AppTheme`, for the reason `JunkCategoryTile` gives.
-        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        // The leading width, the gap after it and the height floor come from
+        // `listTileTheme` in `AppTheme`, and the radius is restated from
+        // `cardTheme` — both for the reasons `JunkCategoryTile` gives.
+        tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         // In `leading`, because `trailing` replaces the rotating arrow and a row
         // that opens with nothing saying so is a row nobody opens. Absent
         // entirely where the group turned up nothing that can be acted on:
