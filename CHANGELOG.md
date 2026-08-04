@@ -7,6 +7,36 @@ this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.1] — 2026-08-05
+
+No change to the app. 1.1.0 was tagged but never published: the release
+workflow builds five platforms and attaches them in one job, and the Windows
+build stopped compiling, so four finished artefacts were thrown away with the
+runner and the releases page stayed empty. This is that release, with the build
+fixed.
+
+### Fixed
+
+- **The Windows build against a current Visual Studio.** The
+  `permission_handler_windows` plugin compiles with `/std:c++20` and `/await`
+  both, and `/await` is the legacy coroutine switch — it hides
+  `__cpp_lib_coroutine`, the macro C++/WinRT branches on to reach `<coroutine>`
+  rather than `<experimental/coroutine>`. MSVC 14.51 turned that header into a
+  hard error, so the plugin now stops the build on any machine with a current
+  toolchain. The flag is dropped from the target in `windows/CMakeLists.txt`,
+  where it can be reached — the plugin itself lives in the pub cache and arrives
+  on a runner unmodified — rather than silenced with a define that would keep
+  the build on a header Microsoft has said it will remove.
+
+### Changed
+
+- **The downloads come first, and are downloads.** The README listed seven
+  filenames as plain text below the pitch. They are the first thing on the page
+  now, and each one links straight to its file.
+- The repository slug is corrected wherever it appeared as `storage-cleaner`;
+  the repository is `Storage-Cleaner`. The prose links survived on a redirect,
+  the Actions badges did not.
+
 ## [1.1.0] — 2026-08-04
 
 First published release.
@@ -126,5 +156,6 @@ First release.
   the device even in principle. No analytics, no crash reporting, no accounts,
   no advertising. See [PRIVACY.md](PRIVACY.md).
 
-[Unreleased]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.0
