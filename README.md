@@ -1,9 +1,42 @@
 # Storage Cleaner
 
-[![CI](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/ci.yml)
-[![Release](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/release.yml/badge.svg)](https://github.com/EvgeniuGlinsky/storage-cleaner/actions/workflows/release.yml)
+[![CI](https://github.com/EvgeniuGlinsky/Storage-Cleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/EvgeniuGlinsky/Storage-Cleaner/actions/workflows/ci.yml)
+[![Release](https://github.com/EvgeniuGlinsky/Storage-Cleaner/actions/workflows/release.yml/badge.svg)](https://github.com/EvgeniuGlinsky/Storage-Cleaner/actions/workflows/release.yml)
 [![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Android%20%7C%20Linux%20%7C%20macOS-6c757d)](#platform-support)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+
+## Download
+
+Every file below downloads directly — the link is the file, not a page about it.
+
+| Platform | File |
+| --- | --- |
+| Android, most phones since 2016 | [`storage-cleaner-1.1.0-android-arm64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-arm64.apk) |
+| Android, older 32-bit devices | [`storage-cleaner-1.1.0-android-arm32.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-arm32.apk) |
+| Android, emulators and x86 tablets | [`storage-cleaner-1.1.0-android-x86_64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-x86_64.apk) |
+| Android, if unsure | [`storage-cleaner-1.1.0-android-universal.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-universal.apk) |
+| Windows 10 and 11, 64-bit | [`storage-cleaner-1.1.0-windows-x64.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-windows-x64.zip) |
+| macOS 10.15 and later, Apple silicon and Intel | [`storage-cleaner-1.1.0-macos-universal.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-macos-universal.zip) |
+| Linux, 64-bit | [`storage-cleaner-1.1.0-linux-x64.tar.gz`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-linux-x64.tar.gz) |
+
+Windows and Linux need no installer: unpack the archive anywhere and run
+`storage_cleaner.exe`, or `storage_cleaner` on Linux. Everything the app needs
+sits beside it in the same folder.
+
+The links point at [1.1.0](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.0)
+by name rather than at `latest`, because the version is part of every filename —
+[the releases page](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases)
+is where a later one will be. Each release also carries `SHA256SUMS.txt`; check
+a download with `sha256sum -c`.
+
+The desktop builds are unsigned — code signing certificates cost money this
+project does not take. Windows will show a SmartScreen prompt, and macOS will
+say the app is *damaged*, which is what Gatekeeper says about anything without a
+Developer ID. It is not damaged; clear the flag once:
+
+```
+xattr -dr com.apple.quarantine "/Applications/Storage Cleaner.app"
+```
 
 Two tools for one problem. **Clean up** finds the temporary files your device
 left behind and deletes them, with a way back. **Optimise** finds the photos and
@@ -16,30 +49,6 @@ build at all, which you can check for yourself before installing:
 
 ```
 aapt2 dump permissions storage-cleaner-1.1.0-android-arm64.apk
-```
-
-## Download
-
-| Platform | File |
-| --- | --- |
-| Android, most phones since 2016 | `storage-cleaner-1.1.0-android-arm64.apk` |
-| Android, older 32-bit devices | `storage-cleaner-1.1.0-android-arm32.apk` |
-| Android, emulators and x86 tablets | `storage-cleaner-1.1.0-android-x86_64.apk` |
-| Android, if unsure | `storage-cleaner-1.1.0-android-universal.apk` |
-| Windows 10 and 11, 64-bit | `storage-cleaner-1.1.0-windows-x64.zip` |
-| macOS 10.15 and later, Apple silicon and Intel | `storage-cleaner-1.1.0-macos-universal.zip` |
-| Linux, 64-bit | `storage-cleaner-1.1.0-linux-x64.tar.gz` |
-
-From the [releases page](https://github.com/EvgeniuGlinsky/storage-cleaner/releases).
-Every release carries `SHA256SUMS.txt`; check a download with `sha256sum -c`.
-
-The desktop builds are unsigned — code signing certificates cost money this
-project does not take. Windows will show a SmartScreen prompt, and macOS will
-say the app is *damaged*, which is what Gatekeeper says about anything without a
-Developer ID. It is not damaged; clear the flag once:
-
-```
-xattr -dr com.apple.quarantine "/Applications/Storage Cleaner.app"
 ```
 
 ## What it is

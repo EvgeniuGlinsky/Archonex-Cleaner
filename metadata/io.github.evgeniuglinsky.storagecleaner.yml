@@ -26,14 +26,14 @@ Categories:
 License: Apache-2.0
 
 AuthorName: Evgeny Glynskyi
-SourceCode: https://github.com/EvgeniuGlinsky/storage-cleaner
-IssueTracker: https://github.com/EvgeniuGlinsky/storage-cleaner/issues
-Changelog: https://github.com/EvgeniuGlinsky/storage-cleaner/blob/main/CHANGELOG.md
+SourceCode: https://github.com/EvgeniuGlinsky/Storage-Cleaner
+IssueTracker: https://github.com/EvgeniuGlinsky/Storage-Cleaner/issues
+Changelog: https://github.com/EvgeniuGlinsky/Storage-Cleaner/blob/main/CHANGELOG.md
 
 AutoName: Storage Cleaner
 
 RepoType: git
-Repo: https://github.com/EvgeniuGlinsky/storage-cleaner.git
+Repo: https://github.com/EvgeniuGlinsky/Storage-Cleaner.git
 
 Builds:
   - versionName: 1.1.0

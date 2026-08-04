@@ -90,7 +90,7 @@ this document is the history of the project. Anything material is also noted in
 ## Verifying any of this
 
 The app is open source under the Apache License 2.0. The source is at
-<https://github.com/EvgeniuGlinsky/storage-cleaner> and the releases are built
+<https://github.com/EvgeniuGlinsky/Storage-Cleaner> and the releases are built
 in public by a GitHub Actions workflow you can read in `.github/workflows/`.
 
 You do not have to take this document's word for anything in it.
@@ -98,4 +98,4 @@ You do not have to take this document's word for anything in it.
 ## Contact
 
 Open an issue at
-<https://github.com/EvgeniuGlinsky/storage-cleaner/issues>.
+<https://github.com/EvgeniuGlinsky/Storage-Cleaner/issues>.

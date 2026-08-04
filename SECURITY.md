@@ -6,7 +6,7 @@ somebody their photographs, so security reports are read with that in mind.
 ## Reporting a vulnerability
 
 Use GitHub's private reporting: **Security → Report a vulnerability** on
-<https://github.com/EvgeniuGlinsky/storage-cleaner>. It reaches the maintainer
+<https://github.com/EvgeniuGlinsky/Storage-Cleaner>. It reaches the maintainer
 without the report becoming public first.
 
 Please do not open a public issue for anything in the categories below.

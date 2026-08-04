@@ -57,6 +57,33 @@ add_subdirectory("runner")
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# `permission_handler_windows` compiles with /std:c++20 and /await both. /await
+# is the legacy coroutine switch, and it hides `__cpp_lib_coroutine` — the macro
+# `winrt/base.h` branches on to reach <coroutine> rather than the deprecated
+# <experimental/coroutine>. MSVC 14.51 turned that header into a hard error
+# (STL1011), so the plugin stops the build on any runner with a current Visual
+# Studio, over a flag that was redundant beside /std:c++20 the whole time.
+#
+# Stripped here rather than in the plugin, which lives in the pub cache and
+# arrives unmodified on a runner; and stripped rather than silenced with
+# _SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS, which would keep
+# compiling a header Microsoft has said it will remove — and would have to go
+# into APPLY_STANDARD_SETTINGS, which the template above asks not to be touched
+# precisely because every plugin inherits it. Dropping /await puts the plugin on
+# <coroutine>, where it has to end up regardless.
+#
+# Guarded on the target existing, so dropping the dependency cannot break the
+# build with an error about a plugin that is no longer there.
+if(TARGET permission_handler_windows_plugin)
+  get_target_property(PERMISSION_HANDLER_OPTIONS
+    permission_handler_windows_plugin COMPILE_OPTIONS)
+  if(PERMISSION_HANDLER_OPTIONS)
+    list(REMOVE_ITEM PERMISSION_HANDLER_OPTIONS "/await")
+    set_target_properties(permission_handler_windows_plugin PROPERTIES
+      COMPILE_OPTIONS "${PERMISSION_HANDLER_OPTIONS}")
+  endif()
+endif()
+
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can
