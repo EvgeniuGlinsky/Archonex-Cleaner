@@ -38,11 +38,20 @@ not in a chat window, not in a note beside the project.
 Create `android/key.properties` — untracked, and the build reads it if present:
 
 ```properties
-storeFile=/absolute/path/to/storage-cleaner-upload.jks
+storeFile=C:/Users/you/storage-cleaner-upload.jks
 storePassword=…
 keyAlias=upload
 keyPassword=…
 ```
+
+Two things about `storeFile`. A **relative** path is resolved against
+`android/`, the directory holding `key.properties` — which is where the release
+workflow puts the keystore it decodes. An absolute one is taken as written.
+
+And on Windows, write it with **forward slashes** or doubled backslashes. This
+is a Java properties file, where `\` starts an escape sequence: `C:\Users\…`
+silently becomes `C:Users…` and the build reports a keystore missing from a path
+you never typed.
 
 Without this file the release build falls back to the debug key. That is
 deliberate: a fresh clone still builds, and a debug-signed release is something

@@ -52,7 +52,16 @@ android {
     signingConfigs {
         if (hasKeystore) {
             create("release") {
-                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                // `rootProject.file`, not `file`. This block belongs to the
+                // `:app` module, so a bare `file()` resolves a relative path
+                // against `android/app/` — while `key.properties` itself sits in
+                // `android/`, and both the release workflow and anyone following
+                // `docs/RELEASING.md` write a path meaning "beside this file".
+                // The mismatch costs nothing until the day it matters, and then
+                // it is `Error: Missing keystore` against a path nobody wrote,
+                // on a tag that has already been pushed. An absolute path is
+                // returned unchanged either way.
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
                 storePassword = keystoreProperties.getProperty("storePassword")
                 keyAlias = keystoreProperties.getProperty("keyAlias")
                 keyPassword = keystoreProperties.getProperty("keyPassword")
