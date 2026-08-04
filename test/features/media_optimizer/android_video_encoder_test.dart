@@ -48,7 +48,7 @@ void main() {
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
-        const MethodChannel('io.github.evgeniuglinsky.storagecleaner/transcoder'),
+        const MethodChannel('com.archonex.storagecleaner/transcoder'),
         (call) async {
           calls.add(call);
 
@@ -64,7 +64,7 @@ void main() {
     tearDown(() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(
-        const MethodChannel('io.github.evgeniuglinsky.storagecleaner/transcoder'),
+        const MethodChannel('com.archonex.storagecleaner/transcoder'),
         null,
       );
     });

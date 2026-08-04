@@ -26,9 +26,9 @@ class AndroidRunNotice implements RunNotice {
         _askToNotify = askToNotify ?? _requestNotificationPermission;
 
   static const String _channelName =
-      'io.github.evgeniuglinsky.storagecleaner/run_notice';
+      'com.archonex.storagecleaner/run_notice';
   static const String _actionsName =
-      'io.github.evgeniuglinsky.storagecleaner/run_notice/actions';
+      'com.archonex.storagecleaner/run_notice/actions';
 
   final MethodChannel _channel;
   final EventChannel _actions;

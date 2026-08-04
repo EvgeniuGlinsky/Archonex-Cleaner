@@ -13,7 +13,7 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/rule
 /// either would be invisible from inside the other.
 void main() {
   const MediaRoots windowsRoots = MediaRoots(
-    appSupport: r'C:\Users\sam\AppData\Roaming\io.github.evgeniuglinsky.storagecleaner',
+    appSupport: r'C:\Users\sam\AppData\Roaming\com.archonex.storagecleaner',
     home: r'C:\Users\sam',
     pictures: r'C:\Users\sam\Pictures',
     videos: r'C:\Users\sam\Videos',
@@ -21,7 +21,7 @@ void main() {
   );
 
   const MediaRoots linuxRoots = MediaRoots(
-    appSupport: '/home/sam/.local/share/io.github.evgeniuglinsky.storagecleaner',
+    appSupport: '/home/sam/.local/share/com.archonex.storagecleaner',
     home: '/home/sam',
     pictures: '/home/sam/Pictures',
     videos: '/home/sam/Videos',
@@ -29,7 +29,7 @@ void main() {
   );
 
   const MediaRoots macRoots = MediaRoots(
-    appSupport: '/Users/sam/Library/Application Support/io.github.evgeniuglinsky.storagecleaner',
+    appSupport: '/Users/sam/Library/Application Support/com.archonex.storagecleaner',
     home: '/Users/sam',
     pictures: '/Users/sam/Pictures',
     videos: '/Users/sam/Movies',
@@ -37,7 +37,7 @@ void main() {
   );
 
   const MediaRoots androidRoots = MediaRoots(
-    appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
+    appSupport: '/data/user/0/com.archonex.storagecleaner/files',
     externalStorage: '/storage/emulated/0',
     camera: '/storage/emulated/0/DCIM',
     pictures: '/storage/emulated/0/Pictures',

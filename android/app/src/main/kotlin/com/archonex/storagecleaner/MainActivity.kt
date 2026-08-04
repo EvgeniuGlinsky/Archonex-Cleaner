@@ -1,4 +1,4 @@
-package io.github.evgeniuglinsky.storagecleaner
+package com.archonex.storagecleaner
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

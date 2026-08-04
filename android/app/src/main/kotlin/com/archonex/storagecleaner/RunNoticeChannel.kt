@@ -1,4 +1,4 @@
-package io.github.evgeniuglinsky.storagecleaner
+package com.archonex.storagecleaner
 
 import android.content.Context
 import android.content.Intent
@@ -93,7 +93,7 @@ class RunNoticeChannel(
     }
 
     private companion object {
-        const val NAMESPACE = "io.github.evgeniuglinsky.storagecleaner"
+        const val NAMESPACE = "com.archonex.storagecleaner"
         const val HIDE = RunNoticeService.ACTION_HIDE
         const val STOP = "stop"
     }
