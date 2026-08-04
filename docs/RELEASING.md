@@ -83,18 +83,18 @@ be published and the fallback would produce one nobody can install over.
 4. Tag and push:
 
    ```bash
-   git tag v1.0.0
+   git tag v1.1.0
    git push origin main --tags
    ```
 
-The tag must match `pubspec.yaml` — `v1.0.0` against `version: 1.0.0+1`. The
+The tag must match `pubspec.yaml` — `v1.1.0` against `version: 1.1.0+2`. The
 workflow checks this first and stops before building anything if they disagree,
 which is almost always a tag pushed before the bump was committed.
 
 To undo a tag pushed too early, delete it locally and remotely, then re-tag:
 
 ```bash
-git tag -d v1.0.0 && git push origin :refs/tags/v1.0.0
+git tag -d v1.1.0 && git push origin :refs/tags/v1.1.0
 ```
 
 Deleting the tag does not delete a release that was already created. Delete that

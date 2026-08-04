@@ -15,26 +15,32 @@ No ads, no accounts, no tracking — and no network permission in the release
 build at all, which you can check for yourself before installing:
 
 ```
-aapt2 dump permissions storage-cleaner-1.0.0-android-arm64.apk
+aapt2 dump permissions storage-cleaner-1.1.0-android-arm64.apk
 ```
 
 ## Download
 
 | Platform | File |
 | --- | --- |
-| Android, most phones since 2016 | `storage-cleaner-1.0.0-android-arm64.apk` |
-| Android, older 32-bit devices | `storage-cleaner-1.0.0-android-arm32.apk` |
-| Android, emulators and x86 tablets | `storage-cleaner-1.0.0-android-x86_64.apk` |
-| Android, if unsure | `storage-cleaner-1.0.0-android-universal.apk` |
-| Windows 10 and 11, 64-bit | `storage-cleaner-1.0.0-windows-x64.zip` |
-| Linux, 64-bit | `storage-cleaner-1.0.0-linux-x64.tar.gz` |
+| Android, most phones since 2016 | `storage-cleaner-1.1.0-android-arm64.apk` |
+| Android, older 32-bit devices | `storage-cleaner-1.1.0-android-arm32.apk` |
+| Android, emulators and x86 tablets | `storage-cleaner-1.1.0-android-x86_64.apk` |
+| Android, if unsure | `storage-cleaner-1.1.0-android-universal.apk` |
+| Windows 10 and 11, 64-bit | `storage-cleaner-1.1.0-windows-x64.zip` |
+| macOS 10.15 and later, Apple silicon and Intel | `storage-cleaner-1.1.0-macos-universal.zip` |
+| Linux, 64-bit | `storage-cleaner-1.1.0-linux-x64.tar.gz` |
 
 From the [releases page](https://github.com/EvgeniuGlinsky/storage-cleaner/releases).
 Every release carries `SHA256SUMS.txt`; check a download with `sha256sum -c`.
 
 The desktop builds are unsigned — code signing certificates cost money this
-project does not take — so Windows will show a SmartScreen prompt. macOS is
-built from source for now; see [Getting started](#getting-started).
+project does not take. Windows will show a SmartScreen prompt, and macOS will
+say the app is *damaged*, which is what Gatekeeper says about anything without a
+Developer ID. It is not damaged; clear the flag once:
+
+```
+xattr -dr com.apple.quarantine "/Applications/Storage Cleaner.app"
+```
 
 ## What it is
 
@@ -57,15 +63,16 @@ that spends twenty minutes of battery to free three per cent — see
 
 ## Status
 
-Both tools are implemented end to end, and there are 362 tests. Version 1.0.0 is
-tagged and built by [`release.yml`](.github/workflows/release.yml) — see
-[CHANGELOG.md](CHANGELOG.md) for what is in it.
+All three tools are implemented end to end, and there are 436 tests. Version
+1.1.0 is tagged and built by [`release.yml`](.github/workflows/release.yml) —
+see [CHANGELOG.md](CHANGELOG.md) for what is in it.
 
 The cleaner has nine categories, five platform rule tables and the quarantine
 with restore. The optimiser has four header parsers, four encoders, and a
 replace ladder that has never lost a file in any of the branches
-`io_media_optimize_repo_test.dart` drives through it. A home screen lists the
-two and draws how full the disk actually is.
+`io_media_optimize_repo_test.dart` drives through it. The third tool measures
+the disk by kind of file and answers "where did it all go" without touching
+anything. A home screen lists all three and draws how full the disk actually is.
 
 The app opens in the device's own language and never asks. The picker is a
 dialog behind the globe in the corner, for the case the device is wrong about
@@ -255,7 +262,7 @@ quietly replaced.
 | Platform | Photos | Videos |
 | --- | --- | --- |
 | **Android** | the platform codec, hardware-assisted | `MediaCodec` → HEVC, written for this app |
-| **Windows** | pure Dart, in an isolate | whatever `ffmpeg` is on the `PATH` — and there may be none |
+| **Windows** | pure Dart, in an isolate | `ffmpeg`, from the `PATH` or fetched by the app |
 | **Linux** | same | same |
 | **macOS** | same | same |
 | **iOS** | — | — |
@@ -270,10 +277,19 @@ track.
 
 Whether a machine can encode is **asked**, not assumed from the platform. A
 Windows box can walk the whole disk, work out that six gigabytes of video would
-come back, and have no `ffmpeg`; the screen then finds the videos, reports what
-they would save, and says it cannot do it. Silently omitting them would report a
+come back, and have no `ffmpeg`. Silently omitting the videos would report a
 device with nothing to optimise, which is the same lie as a cleaner reporting an
-empty sandbox as a clean phone.
+empty sandbox as a clean phone — so the screen lists them, says what they would
+save, and offers to fetch the encoder that would do it.
+
+That fetch is a download the app performs and then *executes*, which is worth
+the care it gets. What arrives is checked against a digest the publisher
+published — written down beside a pinned link, or read from a `.sha256` URL
+where the link moves — then unpacked into a working folder beside its
+destination, moved into place as one file, and run once to prove it runs. It is
+downloaded rather than bundled because a hundred megabytes shipped to every copy
+of an app about freeing disk space is the wrong trade, and because bundling an
+encoder is *distribution*, with the licence obligations that carries.
 
 ## The quarantine
 
@@ -323,7 +339,7 @@ answer in two places:
 
 | Platform | Optimiser |
 | --- | --- |
-| **Windows**, **Linux**, **macOS** | Photos always. Videos where `ffmpeg` is on the `PATH`, which the app checks rather than assumes |
+| **Windows**, **Linux**, **macOS** | Photos always. Videos where there is an `ffmpeg` — on the `PATH`, or fetched by the app when there is not |
 | **Android** | Both, with all-files access. Without it, only folders handed over through the picker — an app's own container holds no photographs you took |
 | **iOS** | Nothing. The photo library is behind an API that hands out copies rather than paths, and there is no permission that changes it |
 | **Web** | Nothing |
@@ -384,7 +400,7 @@ of adding them, and a test checks they were declared *and* dropped.
 
 | Idea | Notes |
 | --- | --- |
-| **A bundled video encoder** | The one real gap. On Windows and Linux the videos are found, measured and then not touched unless `ffmpeg` happens to be installed, which most people's machines are not. Bundling one means a hundred megabytes in an app whose purpose is freeing disk space, and shipping H.264 and HEVC encoders, which is a licensing question this project has no answer to yet |
+| **A desktop encoder without a download** | The gap is narrower than it was — a desktop with no `ffmpeg` is now offered one, and the app verifies it against its publisher's digest before running it. What is left is the first run on a metered connection, and the machines that have no network at all. Bundling is still the wrong answer: a hundred megabytes charged to every copy of an app about freeing disk space, including the ones that never open a video, and a download turned into distribution with the licence obligations that carries |
 | **An iOS story** | Currently none, and honestly so. PhotoKit can replace an asset's rendition, which is a completely different API from anything here and the only route that exists |
 | **HEIF and AVIF output** | Another 30% over JPEG for photographs. Needs a native encoder on every platform, and the desktops have none |
 | Duplicate finder | Deliberately last. Hashing a terabyte to find two copies of a photo is a lot of disk for an answer that is usually "no", and doing it cheaply means a size-then-partial-hash-then-full-hash ladder |
