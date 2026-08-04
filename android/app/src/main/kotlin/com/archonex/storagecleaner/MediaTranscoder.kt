@@ -1,4 +1,4 @@
-package io.github.evgeniuglinsky.storagecleaner
+package com.archonex.storagecleaner
 
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
@@ -411,11 +411,11 @@ class MediaTranscoderChannel(
 
     private val methods = MethodChannel(
         messenger,
-        "io.github.evgeniuglinsky.storagecleaner/transcoder",
+        "com.archonex.storagecleaner/transcoder",
     )
     private val progress = EventChannel(
         messenger,
-        "io.github.evgeniuglinsky.storagecleaner/transcoder/progress",
+        "com.archonex.storagecleaner/transcoder/progress",
     )
 
     init {

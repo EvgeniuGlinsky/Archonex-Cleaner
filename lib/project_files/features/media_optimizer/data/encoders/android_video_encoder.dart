@@ -35,9 +35,9 @@ class AndroidVideoEncoder implements MediaEncoder {
         _events = events ?? const EventChannel(_eventsName);
 
   static const String _channelName =
-      'io.github.evgeniuglinsky.storagecleaner/transcoder';
+      'com.archonex.storagecleaner/transcoder';
   static const String _eventsName =
-      'io.github.evgeniuglinsky.storagecleaner/transcoder/progress';
+      'com.archonex.storagecleaner/transcoder/progress';
 
   final MethodChannel _channel;
   final EventChannel _events;

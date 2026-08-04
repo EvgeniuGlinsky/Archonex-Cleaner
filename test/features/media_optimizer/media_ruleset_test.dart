@@ -16,7 +16,7 @@ import 'package:storage_cleaner/project_files/features/storage_access/domain/mod
 /// allowlist.
 void main() {
   const MediaRoots androidRoots = MediaRoots(
-    appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
+    appSupport: '/data/user/0/com.archonex.storagecleaner/files',
     externalStorage: '/storage/emulated/0',
     camera: '/storage/emulated/0/DCIM',
     pictures: '/storage/emulated/0/Pictures',
@@ -26,7 +26,7 @@ void main() {
   );
 
   const MediaRoots windowsRoots = MediaRoots(
-    appSupport: r'C:\Users\sam\AppData\Roaming\io.github.evgeniuglinsky.storagecleaner',
+    appSupport: r'C:\Users\sam\AppData\Roaming\com.archonex.storagecleaner',
     home: r'C:\Users\sam',
     pictures: r'C:\Users\sam\Pictures',
     videos: r'C:\Users\sam\Videos',
@@ -34,7 +34,7 @@ void main() {
   );
 
   const MediaRoots linuxRoots = MediaRoots(
-    appSupport: '/home/sam/.local/share/io.github.evgeniuglinsky.storagecleaner',
+    appSupport: '/home/sam/.local/share/com.archonex.storagecleaner',
     home: '/home/sam',
     pictures: '/home/sam/Pictures',
     videos: '/home/sam/Videos',
@@ -147,7 +147,7 @@ void main() {
 
     test('a picked folder is walked, and the platform folders are not', () {
       const MediaRoots picked = MediaRoots(
-        appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
+        appSupport: '/data/user/0/com.archonex.storagecleaner/files',
         externalStorage: '/storage/emulated/0',
         camera: '/storage/emulated/0/DCIM',
         grantedFolders: <String>['/storage/emulated/0/Trips'],

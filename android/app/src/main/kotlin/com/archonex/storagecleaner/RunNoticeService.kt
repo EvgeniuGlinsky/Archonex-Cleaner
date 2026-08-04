@@ -1,4 +1,4 @@
-package io.github.evgeniuglinsky.storagecleaner
+package com.archonex.storagecleaner
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -199,9 +199,9 @@ class RunNoticeService : Service() {
     }
 
     companion object {
-        const val ACTION_SHOW = "io.github.evgeniuglinsky.storagecleaner.RUN_NOTICE_SHOW"
-        const val ACTION_HIDE = "io.github.evgeniuglinsky.storagecleaner.RUN_NOTICE_HIDE"
-        const val ACTION_CANCEL = "io.github.evgeniuglinsky.storagecleaner.RUN_NOTICE_CANCEL"
+        const val ACTION_SHOW = "com.archonex.storagecleaner.RUN_NOTICE_SHOW"
+        const val ACTION_HIDE = "com.archonex.storagecleaner.RUN_NOTICE_HIDE"
+        const val ACTION_CANCEL = "com.archonex.storagecleaner.RUN_NOTICE_CANCEL"
 
         const val EXTRA_CHANNEL_NAME = "channelName"
         const val EXTRA_TITLE = "title"

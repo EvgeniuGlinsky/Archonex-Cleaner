@@ -7,6 +7,30 @@ this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.2] — 2026-08-05
+
+### Changed
+
+- **The application id is now `com.archonex.storagecleaner`**, replacing
+  `io.github.evgeniuglinsky.storagecleaner`. It is the identifier the app will
+  carry on Google Play, and it cannot be changed after the first upload — so it
+  is settled here, before that upload, rather than lived with afterwards. The
+  new one sits under the same domain as the rest of the Archonex applications
+  instead of borrowing a GitHub username.
+
+  Everything the id names moves with it: the Kotlin package, the ProGuard keep
+  rules, the Linux `APPLICATION_ID`, the macOS and iOS bundle identifiers, the
+  F-Droid metadata file, and the four platform channel names — those last are
+  the ones with a sharp edge, because a name that agrees on the Dart side and
+  not on the Kotlin side compiles perfectly and fails at runtime with a missing
+  plugin. `android_video_encoder_test.dart` drives the real channel name and is
+  what catches it.
+
+  For anyone who installed 1.1.1: Android identifies an app by this string, so
+  1.1.2 arrives as a separate application rather than as an update. Remove the
+  old one by hand. Nothing is carried across, which for this app is a
+  quarantine that has not expired — restore anything worth keeping first.
+
 ## [1.1.1] — 2026-08-05
 
 No change to the app. 1.1.0 was tagged but never published: the release
@@ -156,6 +180,7 @@ First release.
   the device even in principle. No analytics, no crash reporting, no accounts,
   no advertising. See [PRIVACY.md](PRIVACY.md).
 
-[Unreleased]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.0

@@ -24,7 +24,7 @@ if (hasKeystore) {
 }
 
 android {
-    namespace = "io.github.evgeniuglinsky.storagecleaner"
+    namespace = "com.archonex.storagecleaner"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -38,7 +38,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "io.github.evgeniuglinsky.storagecleaner"
+        applicationId = "com.archonex.storagecleaner"
         // `MANAGE_EXTERNAL_STORAGE` and the settings screen that grants it both
         // arrived in Android 11 (API 30). Below that the app falls back to the
         // legacy storage permissions declared in the manifest, which is why

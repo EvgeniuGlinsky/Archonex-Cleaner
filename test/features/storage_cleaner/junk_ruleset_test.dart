@@ -12,7 +12,7 @@ import 'package:storage_cleaner/project_files/features/storage_cleaner/domain/mo
 void main() {
   const CleanerRoots windowsRoots = CleanerRoots(
     appCache: r'C:\Users\tester\AppData\Local\Temp\storage_cleaner',
-    appSupport: r'C:\Users\tester\AppData\Roaming\io.github.evgeniuglinsky.storagecleaner',
+    appSupport: r'C:\Users\tester\AppData\Roaming\com.archonex.storagecleaner',
     home: r'C:\Users\tester',
     systemTemp: r'C:\Users\tester\AppData\Local\Temp',
     localAppData: r'C:\Users\tester\AppData\Local',
@@ -27,8 +27,8 @@ void main() {
   );
 
   const CleanerRoots androidRoots = CleanerRoots(
-    appCache: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/cache',
-    appSupport: '/data/user/0/io.github.evgeniuglinsky.storagecleaner/files',
+    appCache: '/data/user/0/com.archonex.storagecleaner/cache',
+    appSupport: '/data/user/0/com.archonex.storagecleaner/files',
     externalAppCaches: <String>['/storage/emulated/0/Android/data/x/cache'],
     externalStorage: '/storage/emulated/0',
   );
