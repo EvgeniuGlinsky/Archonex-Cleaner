@@ -11,19 +11,19 @@ Every file below downloads directly — the link is the file, not a page about i
 
 | Platform | File |
 | --- | --- |
-| Android, most phones since 2016 | [`storage-cleaner-1.1.0-android-arm64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-arm64.apk) |
-| Android, older 32-bit devices | [`storage-cleaner-1.1.0-android-arm32.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-arm32.apk) |
-| Android, emulators and x86 tablets | [`storage-cleaner-1.1.0-android-x86_64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-x86_64.apk) |
-| Android, if unsure | [`storage-cleaner-1.1.0-android-universal.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-android-universal.apk) |
-| Windows 10 and 11, 64-bit | [`storage-cleaner-1.1.0-windows-x64.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-windows-x64.zip) |
-| macOS 10.15 and later, Apple silicon and Intel | [`storage-cleaner-1.1.0-macos-universal.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-macos-universal.zip) |
-| Linux, 64-bit | [`storage-cleaner-1.1.0-linux-x64.tar.gz`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.0/storage-cleaner-1.1.0-linux-x64.tar.gz) |
+| Android, most phones since 2016 | [`storage-cleaner-1.1.1-android-arm64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-android-arm64.apk) |
+| Android, older 32-bit devices | [`storage-cleaner-1.1.1-android-arm32.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-android-arm32.apk) |
+| Android, emulators and x86 tablets | [`storage-cleaner-1.1.1-android-x86_64.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-android-x86_64.apk) |
+| Android, if unsure | [`storage-cleaner-1.1.1-android-universal.apk`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-android-universal.apk) |
+| Windows 10 and 11, 64-bit | [`storage-cleaner-1.1.1-windows-x64.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-windows-x64.zip) |
+| macOS 10.15 and later, Apple silicon and Intel | [`storage-cleaner-1.1.1-macos-universal.zip`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-macos-universal.zip) |
+| Linux, 64-bit | [`storage-cleaner-1.1.1-linux-x64.tar.gz`](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/download/v1.1.1/storage-cleaner-1.1.1-linux-x64.tar.gz) |
 
 Windows and Linux need no installer: unpack the archive anywhere and run
 `storage_cleaner.exe`, or `storage_cleaner` on Linux. Everything the app needs
 sits beside it in the same folder.
 
-The links point at [1.1.0](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.0)
+The links point at [1.1.1](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.1)
 by name rather than at `latest`, because the version is part of every filename —
 [the releases page](https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases)
 is where a later one will be. Each release also carries `SHA256SUMS.txt`; check
@@ -48,7 +48,7 @@ No ads, no accounts, no tracking — and no network permission in the release
 build at all, which you can check for yourself before installing:
 
 ```
-aapt2 dump permissions storage-cleaner-1.1.0-android-arm64.apk
+aapt2 dump permissions storage-cleaner-1.1.1-android-arm64.apk
 ```
 
 ## What it is
@@ -73,7 +73,7 @@ that spends twenty minutes of battery to free three per cent — see
 ## Status
 
 All three tools are implemented end to end, and there are 436 tests. Version
-1.1.0 is tagged and built by [`release.yml`](.github/workflows/release.yml) —
+1.1.1 is tagged and built by [`release.yml`](.github/workflows/release.yml) —
 see [CHANGELOG.md](CHANGELOG.md) for what is in it.
 
 The cleaner has nine categories, five platform rule tables and the quarantine
