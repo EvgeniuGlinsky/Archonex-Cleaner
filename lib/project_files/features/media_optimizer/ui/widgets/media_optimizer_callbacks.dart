@@ -21,6 +21,8 @@ class MediaOptimizerCallbacks {
     required this.onGrantAccessPressed,
     required this.onAddFolderPressed,
     required this.onOpenSettingsPressed,
+    required this.onFetchEncoderPressed,
+    required this.onFetchEncoderCancelled,
     required this.onResultDismissed,
   });
 
@@ -36,6 +38,11 @@ class MediaOptimizerCallbacks {
 
   /// Offered in place of grant once the system has stopped showing the sheet.
   final VoidCallback onOpenSettingsPressed;
+
+  /// Downloads the video encoder. Only the desktops ever draw the button behind
+  /// this — see `EncoderNotice`.
+  final VoidCallback onFetchEncoderPressed;
+  final VoidCallback onFetchEncoderCancelled;
   final VoidCallback onResultDismissed;
 }
 

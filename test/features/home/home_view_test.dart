@@ -66,6 +66,12 @@ void main() {
           ),
         ),
         GoRoute(
+          path: AppRoute.storageInsights.path,
+          name: AppRoute.storageInsights.routeName,
+          builder: (context, state) =>
+              const Scaffold(body: Text('insights screen')),
+        ),
+        GoRoute(
           path: AppRoute.storageCleaner.path,
           name: AppRoute.storageCleaner.routeName,
           builder: (context, state) =>
@@ -108,8 +114,23 @@ void main() {
 
     // The product is two tools, and a screen showing one of them teaches the
     // user that it is one.
-    expect(find.text('Clean up storage'), findsOneWidget);
-    expect(find.text('Optimise files'), findsOneWidget);
+    expect(find.text('Free up space'), findsOneWidget);
+    expect(find.text('Make files smaller'), findsOneWidget);
+  });
+
+  testWidgets('a card is named after the screen it opens', (tester) async {
+    // There were two phrasings per tool — "Clean up storage" leading to a screen
+    // headed "Free up space" — so the name the user pressed was not the name
+    // they arrived at, in three languages. `AppToolUi.title` now reads the
+    // screen titles, and this is what would notice a second set coming back.
+    await pump(tester);
+
+    expect(find.text('Where the space went'), findsOneWidget);
+
+    await tester.tap(find.text('Where the space went'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('insights screen'), findsOneWidget);
   });
 
   testWidgets('both tools open, and neither carries a badge any more',
@@ -121,7 +142,7 @@ void main() {
 
     expect(find.text('Soon'), findsNothing);
 
-    await tester.tap(find.text('Optimise files'));
+    await tester.tap(find.text('Make files smaller'));
     await tester.pumpAndSettle();
 
     expect(find.text('optimizer screen'), findsOneWidget);
@@ -131,7 +152,7 @@ void main() {
       (tester) async {
     await pump(tester);
 
-    await tester.tap(find.text('Optimise files'));
+    await tester.tap(find.text('Make files smaller'));
     await tester.pumpAndSettle();
 
     final int readsBeforeBack = storageRepo.readCount;
@@ -147,7 +168,7 @@ void main() {
       (tester) async {
     await pump(tester);
 
-    await tester.tap(find.text('Clean up storage'));
+    await tester.tap(find.text('Free up space'));
     await tester.pumpAndSettle();
 
     expect(find.text('cleaner screen'), findsOneWidget);
@@ -159,7 +180,7 @@ void main() {
     tester.state<NavigatorState>(find.byType(Navigator).last).pop();
     await tester.pumpAndSettle();
 
-    expect(find.text('Clean up storage'), findsOneWidget);
+    expect(find.text('Free up space'), findsOneWidget);
     expect(storageRepo.readCount, greaterThan(readsBeforeBack));
   });
 
@@ -180,14 +201,15 @@ void main() {
     await pump(tester);
 
     expect(find.byType(StorageRing), findsNothing);
-    expect(find.text('Clean up storage'), findsOneWidget);
+    expect(find.text('Free up space'), findsOneWidget);
   });
 
   testWidgets('a long tool name still lays out on a narrow phone',
       (tester) async {
-    // "Оптимизировать" is one word, and the widest thing either card has to
-    // fit. The badge that used to share this line is gone, and the guard is
-    // not: the icon beside the title cannot shrink either, and
+    // "Освободить" is the longest single word any card has to fit now that the
+    // cards are named after their screens — it was "Оптимизировать", which is
+    // four letters wider and is what taught this test its number. The guard
+    // outlives the word: the icon beside the title cannot shrink either, and
     // `JunkCategoryTile` carries the full story of the bug both are written
     // around.
     await pump(tester, surface: narrow, device: const Locale('ru'));
@@ -196,7 +218,7 @@ void main() {
     // every glyph a square, so text wraps sooner here than on a device. A title
     // drawn one letter per row would be several hundred.
     expect(
-      tester.getSize(find.text('Оптимизировать файлы')).height,
+      tester.getSize(find.text('Освободить место')).height,
       lessThan(3 * 28.0 + 2),
     );
     expect(tester.takeException(), isNull);
@@ -215,7 +237,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // No continue button: the screen behind the dialog is already in Russian.
-    expect(find.text('Очистить память'), findsOneWidget);
+    expect(find.text('Освободить место'), findsOneWidget);
     expect(languageStorage.stored, isNotNull);
   });
 }

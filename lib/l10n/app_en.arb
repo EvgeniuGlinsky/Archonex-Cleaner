@@ -8,10 +8,8 @@
   "languageButtonTooltip": "Language",
 
   "homeSubtitle": "Choose what to do with your device's storage.",
-  "toolCleanerTitle": "Clean up storage",
   "toolCleanerSubtitle": "Find the temporary files, caches and leftovers your device kept, and delete them.",
-  "toolOptimizerTitle": "Optimise files",
-  "toolOptimizerSubtitle": "Re-encode large photos and videos so they take less room. Same picture, same size on screen, smaller on disk.",
+  "toolOptimizerSubtitle": "Re-encode large photos and videos so they take less room and look the same.",
   "toolComingSoonBadge": "Soon",
 
   "storageUsedOf": "used of {size}",
@@ -277,7 +275,19 @@
   "verdictUnsupportedFormat": "already in an efficient format",
 
   "encoderMissingTitle": "Some of these cannot be re-encoded here",
-  "encoderMissingBody": "Videos need FFmpeg, and this machine has none on its path. Install it and open this screen again; the photos can go ahead either way.",
+  "encoderMissingBody": "This device has no video encoder the app can use. The photos can go ahead either way.",
+  "encoderSetupTitle": "Videos need one more piece",
+  "encoderSetupBody": "The app can fetch the video encoder for you — about {size}, once. The photos can go ahead either way.",
+  "@encoderSetupBody": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "encoderSetupLabel": "Get it now",
+  "encoderFetchingTitle": "Getting the video encoder",
+  "encoderFetchingBody": "Once only, and only here.",
 
   "optimizerIdleTitle": "Nothing looked at yet",
   "optimizerIdleBody": "This reads the headers of your photos and videos to work out which are bigger than they need to be. Nothing is changed until you say so.",
@@ -361,7 +371,6 @@
   "qualityBalancedHint": "The difference is not visible on a phone. This is the one to leave it on.",
   "qualityMaximumHint": "Visible if you look for it, and much smaller. For a full disk.",
 
-  "toolInsightsTitle": "See what is taking up space",
   "toolInsightsSubtitle": "Add up the photos, videos and everything else on this device.",
 
   "insightsTitle": "Where the space went",
@@ -369,6 +378,7 @@
   "insightsMeasureLabel": "Measure",
   "insightsRemeasureLabel": "Measure again",
   "insightsMeasuringLabel": "Adding it up\u2026",
+  "insightsCountedCaption": "counted",
   "insightsIdleTitle": "Nothing measured yet",
   "insightsIdleBody": "It reads the size of every file and opens none of them.",
   "insightsEmptyTitle": "Nothing found",
@@ -404,8 +414,11 @@
 
   "failureMediaScanCancelled": "Stopped looking.",
   "failureOptimizeUnsupported": "There are no photos or videos this app can reach on this platform.",
-  "failureNoVideoEncoder": "There is no video encoder on this machine. Install FFmpeg and try again.",
+  "failureNoVideoEncoder": "There is no video encoder on this machine yet.",
   "failureNoPhotoEncoder": "There is no photo encoder on this machine.",
   "failureMediaScan": "The search could not finish. Nothing was changed.",
-  "failureOptimizeRun": "The run stopped partway. The files it had already rewritten cannot be put back — scan again to see what is left."
+  "failureOptimizeRun": "The run stopped partway. The files it had already rewritten cannot be put back — scan again to see what is left.",
+  "failureEncoderFetch": "The video encoder could not be fetched. Nothing was installed.",
+  "failureEncoderContents": "What arrived did not match what was published, so it was discarded. Nothing was installed.",
+  "failureEncoderFetchCancelled": "Stopped fetching."
 }

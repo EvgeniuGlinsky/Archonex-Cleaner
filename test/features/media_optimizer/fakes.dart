@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/encoder_supply_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_supply_job.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_container.dart';
@@ -445,6 +448,142 @@ class FakeRunNotice implements RunNotice {
     disposeCount++;
     await _stopRequests.close();
   }
+}
+
+/// Where the video encoder comes from, without a network.
+///
+/// The `domain/` contract, faked, which is the rule — the real
+/// `FfmpegSupplyRepo` downloads a hundred megabytes from a publisher and is the
+/// one thing in this feature no test may touch.
+///
+/// [installsEncoder] is what makes the interesting assertion possible: the bloc
+/// re-asks `MediaOptimizeRepo.support()` after a fetch and must react to the new
+/// answer, so a successful fetch here flips the *other* fake's support. That
+/// wiring is exactly what the screen depends on and nothing else states.
+class FakeEncoderSupplyRepo implements EncoderSupplyRepo {
+  FakeEncoderSupplyRepo({
+    this.isSupported = true,
+    this.isInstalledNow = false,
+    this.downloadBytes = 45 * AppByteUnits.megabyte,
+    this.failure,
+    this.holdOpen = false,
+    this.installsEncoder,
+  });
+
+  @override
+  bool isSupported;
+
+  bool isInstalledNow;
+
+  @override
+  int downloadBytes;
+
+  /// Ends the stream with this instead of closing it.
+  Object? failure;
+
+  /// Leaves the download running, so a test can see the panel mid-fetch and
+  /// cancel it.
+  bool holdOpen;
+
+  /// Run just before the stream closes, for a fake that has to make the encoder
+  /// actually appear.
+  void Function()? installsEncoder;
+
+  int fetchCount = 0;
+  bool wasCancelled = false;
+
+  @override
+  Future<bool> get isInstalled async => isInstalledNow;
+
+  @override
+  EncoderSupplyJob fetch() {
+    fetchCount++;
+
+    return FakeEncoderSupplyJob(
+      failure: failure,
+      holdOpen: holdOpen,
+      onInstalled: () {
+        isInstalledNow = true;
+        installsEncoder?.call();
+      },
+      onCancel: () => wasCancelled = true,
+    );
+  }
+}
+
+class FakeEncoderSupplyJob implements EncoderSupplyJob {
+  FakeEncoderSupplyJob({
+    Object? failure,
+    bool holdOpen = false,
+    void Function()? onInstalled,
+    void Function()? onCancel,
+  })  : _failure = failure,
+        _holdOpen = holdOpen,
+        _onInstalled = onInstalled,
+        _onCancel = onCancel {
+    _controller = StreamController<double>(onListen: _start);
+  }
+
+  final Object? _failure;
+  final bool _holdOpen;
+  final void Function()? _onInstalled;
+  final void Function()? _onCancel;
+
+  late final StreamController<double> _controller;
+
+  @override
+  Stream<double> get progress => _controller.stream;
+
+  @override
+  Future<void> cancel() async {
+    _onCancel?.call();
+
+    if (_controller.isClosed) {
+      return;
+    }
+
+    _controller.addError(const _FetchCancelled());
+    await _controller.close();
+  }
+
+  Future<void> _start() async {
+    for (final double fraction in <double>[0.25, 0.75]) {
+      await Future<void>.delayed(Duration.zero);
+
+      if (_controller.isClosed) {
+        return;
+      }
+
+      _controller.add(fraction);
+    }
+
+    await Future<void>.delayed(Duration.zero);
+
+    if (_controller.isClosed) {
+      return;
+    }
+
+    if (_failure != null) {
+      _controller.addError(_failure);
+      await _controller.close();
+
+      return;
+    }
+
+    if (_holdOpen) {
+      return;
+    }
+
+    _onInstalled?.call();
+    _controller.add(1);
+    await _controller.close();
+  }
+}
+
+/// Stands in for `EncoderFetchCancelledFailure` without the fake importing it,
+/// the way `_Cancelled` does for the scan.
+class _FetchCancelled implements Exception {
+  const _FetchCancelled();
 }
 
 /// The quality preference, in memory.

@@ -89,6 +89,20 @@ final class OptimizerAccessSettingsRequested extends MediaOptimizerEvent {
   const OptimizerAccessSettingsRequested();
 }
 
+/// The user asked for the video encoder to be fetched.
+///
+/// Only ever raised where `FetchEncoderUseCase.isSupported` — the three desktops
+/// — and only where there is no video encoder yet. Both are on the state as
+/// `canFetchEncoder`, which is what draws the button.
+final class EncoderFetchRequested extends MediaOptimizerEvent {
+  const EncoderFetchRequested();
+}
+
+/// The user stopped the download. Whatever was written is deleted.
+final class EncoderFetchCancelled extends MediaOptimizerEvent {
+  const EncoderFetchCancelled();
+}
+
 final class OptimizerFailureDismissed extends MediaOptimizerEvent {
   const OptimizerFailureDismissed();
 }

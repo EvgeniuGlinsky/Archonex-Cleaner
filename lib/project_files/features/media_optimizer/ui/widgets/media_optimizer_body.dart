@@ -47,8 +47,14 @@ class MediaOptimizerBody extends StatelessWidget {
           _Ring(state: state),
           const SizedBox(height: AppSpacing.lg),
         ],
-        if (state.hasBlockedKind) ...<Widget>[
-          const EncoderNotice(),
+        if (state.hasEncoderNotice) ...<Widget>[
+          EncoderNotice(
+            canFetch: state.canFetchEncoder,
+            downloadBytes: state.encoderDownloadBytes,
+            fetchProgress: state.encoderFetchProgress,
+            onFetchPressed: callbacks.onFetchEncoderPressed,
+            onFetchCancelled: callbacks.onFetchEncoderCancelled,
+          ),
           const SizedBox(height: AppSpacing.lg),
         ],
         // Above the groups, because it is what the numbers in them are measured
@@ -83,7 +89,8 @@ class MediaOptimizerBody extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: MediaGroupTile(
               group: group,
-              canEdit: state.canEditSelection,
+              canEdit: state.canEditGroup(group.kind),
+              isVerdictKnown: state.isVerdictKnown,
               onToggled: () => callbacks.onGroupToggled(group.kind),
               onCandidateToggled: (path) => callbacks.onCandidateToggled(
                 ToggledCandidate(kind: group.kind, path: path),

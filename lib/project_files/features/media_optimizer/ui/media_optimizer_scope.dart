@@ -8,11 +8,13 @@ import 'package:storage_cleaner/project_files/features/device_storage/data/use_c
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/media_optimizer_platform.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/platform/run_notice_platform.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/prefs_optimize_quality_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/fetch_encoder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/optimize_media_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/encoder_supply_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/optimize_quality_repo.dart';
@@ -68,6 +70,11 @@ class _MediaOptimizerScopeState extends State<MediaOptimizerScope> {
   final MediaOptimizeRepo _optimizeRepo = createMediaOptimizeRepo();
   final RunNotice _notice = createRunNotice();
 
+  // A field for the same reason, and one more: a download in flight is held by
+  // its job, and a repository rebuilt under it on a language change would leave
+  // the running fetch with nobody able to cancel it.
+  final EncoderSupplyRepo _supplyRepo = createEncoderSupplyRepo();
+
   // Not in `storage_cleaner_app.dart` beside the language, although it is the
   // same kind of thing. Nothing outside this feature asks what it says, and a
   // scope that already lives as long as the app is a shorter way to say "as
@@ -96,6 +103,7 @@ class _MediaOptimizerScopeState extends State<MediaOptimizerScope> {
             optimizeRepo: optimizeRepo,
           ),
           getSupport: GetEncoderSupportUseCase(optimizeRepo),
+          fetchEncoder: FetchEncoderUseCase(_supplyRepo),
           getKinds: GetOptimizableKindsUseCase(scanRepo),
           getAccess: GetStorageAccessUseCase(accessRepo),
           requestAccess: RequestStorageAccessUseCase(accessRepo),

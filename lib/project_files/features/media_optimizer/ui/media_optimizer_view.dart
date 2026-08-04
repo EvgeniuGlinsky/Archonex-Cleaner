@@ -107,6 +107,9 @@ class _MediaOptimizerViewState extends State<MediaOptimizerView> {
       onAddFolderPressed: () => _add(context, const OptimizerFolderRequested()),
       onOpenSettingsPressed: () =>
           _add(context, const OptimizerAccessSettingsRequested()),
+      onFetchEncoderPressed: () => _add(context, const EncoderFetchRequested()),
+      onFetchEncoderCancelled: () =>
+          _add(context, const EncoderFetchCancelled()),
       onResultDismissed: () => _add(context, const OptimizerResultDismissed()),
     );
   }

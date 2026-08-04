@@ -38,6 +38,13 @@ class StorageInsightsView extends StatelessWidget {
                 title: l10n.insightsTitle,
                 subtitle: l10n.insightsSubtitle,
               ),
+              // Until something has been counted there is one sentence on this
+              // screen and most of a window under it. Filling the viewport is
+              // what lets the body centre that sentence in the space rather than
+              // tuck it beneath the ring — and it is only safe here, where the
+              // short state holds no tile that measures itself with a
+              // `LayoutBuilder`. See `AppScreenLayout.fillsViewport`.
+              fillsViewport: !state.hasBreakdown,
               body: StorageInsightsBody(state: state, callbacks: callbacks),
               bottom: StorageInsightsActions(
                 state: state,

@@ -91,6 +91,13 @@ dependencies:
   # `p.Context(style: …)` — not the ambient one.
   path: ^1.9.1
 
+  # SHA-256, and only for one thing: the video encoder this app downloads is a
+  # binary it then executes, so what arrived is compared against the digest its
+  # publisher published. `dart:convert` has no hash of any kind, and hand-rolling
+  # one to check something that is about to be run would be the wrong place to
+  # save a dependency. See `FfmpegSupplyRepo`.
+  crypto: ^3.0.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -5,8 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 import 'package:storage_cleaner/core/theme/app_theme.dart';
 import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
+import 'package:storage_cleaner/core/widgets/app_progress_indicator.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/fetch_encoder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
@@ -36,6 +38,7 @@ void main() {
   late FakeStorageAccessRepo accessRepo;
   late FakeDeviceStorageRepo storageRepo;
   late FakeOptimizeQualityRepo qualityRepo;
+  late FakeEncoderSupplyRepo supplyRepo;
 
   setUp(() {
     scanRepo = FakeMediaScanRepo();
@@ -43,6 +46,7 @@ void main() {
     accessRepo = FakeStorageAccessRepo();
     storageRepo = FakeDeviceStorageRepo();
     qualityRepo = FakeOptimizeQualityRepo();
+    supplyRepo = FakeEncoderSupplyRepo();
   });
 
   /// Tall enough that both tiles, the ring and the bottom slot are all laid
@@ -88,6 +92,7 @@ void main() {
                 optimizeRepo: optimizeRepo,
               ),
               getSupport: GetEncoderSupportUseCase(optimizeRepo),
+              fetchEncoder: FetchEncoderUseCase(supplyRepo),
               getKinds: GetOptimizableKindsUseCase(scanRepo),
               getAccess: GetStorageAccessUseCase(accessRepo),
               requestAccess: RequestStorageAccessUseCase(accessRepo),
@@ -221,6 +226,87 @@ void main() {
     expect(primaryButton(tester).onPressed, isNull);
   });
 
+  testWidgets('a kind can be turned off before the scan, and stays off',
+      (tester) async {
+    // The box was absent entirely until a walk had found something worthwhile,
+    // which is the right rule for a group that came back empty and the wrong one
+    // for a group nothing has looked at yet — and the two look identical on a
+    // `MediaGroup`. So this screen drew two boxless rows while the cleaner drew
+    // three ticked ones beside its own, on a bloc that toggles them perfectly
+    // well and carries the answer through the scan.
+    findsVideos();
+    await pump(tester);
+
+    expect(find.byType(Checkbox), findsNWidgets(2));
+
+    await tester.tap(find.byType(Checkbox).first);
+    await tester.pumpAndSettle();
+    await scan(tester);
+
+    // Off before the walk, off after it, and nothing offered to re-encode.
+    expect(find.text('Nothing selected'), findsOneWidget);
+    expect(primaryButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('a row can be unticked while the walk is still running',
+      (tester) async {
+    // What the exclusion model in `MediaGroup` exists for: a list still filling
+    // up must be editable, or the machinery is unreachable. `canEditSelection`
+    // read `!isBusy`, which shut the whole list for the length of a walk over a
+    // camera roll — the one stretch of time there is something to look at.
+    scanRepo.holdOpen = true;
+    findsVideos();
+    await pump(tester);
+
+    // Not `scan`: that settles, and a running walk draws an indeterminate bar
+    // that never does.
+    await tester.tap(find.text('Look for large files'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(find.text('Cancel'), findsOneWidget, reason: 'the walk is running');
+
+    final Checkbox box = tester.widget<Checkbox>(find.byType(Checkbox).first);
+
+    expect(box.onChanged, isNotNull);
+  });
+
+  testWidgets('no video encoder leaves the photographs alone to be optimised',
+      (tester) async {
+    // `canOptimize` wants an encoder for every ticked group, and every group
+    // arrived ticked — so a desktop with no `ffmpeg` and both kinds on disk had
+    // the button off for the photographs too. The kind that cannot be encoded
+    // now arrives unticked, with `EncoderNotice` saying why and its box refusing
+    // to be ticked back on.
+    optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: false);
+    scanRepo.updates = <MediaScanUpdate>[
+      MediaFound(<MediaCandidate>[
+        fakeCandidate(
+          path: '/dcim/VID_0001.mp4',
+          kind: MediaKind.video,
+          sizeInBytes: 900 * AppByteUnits.megabyte,
+          estimatedBytes: 400 * AppByteUnits.megabyte,
+        ),
+        fakeCandidate(
+          path: '/dcim/IMG_0001.jpg',
+          sizeInBytes: 9 * AppByteUnits.megabyte,
+          estimatedBytes: 3 * AppByteUnits.megabyte,
+        ),
+      ]),
+    ];
+
+    await pump(tester);
+    await scan(tester);
+
+    // The panel offers the fix rather than only naming the gap, because this is
+    // a desktop and the encoder is a download away.
+    expect(find.text('Videos need one more piece'), findsOneWidget);
+    // Six megabytes: the photograph. Not the 506 the two would come to.
+    expect(find.text('Save 6 MB'), findsOneWidget);
+    expect(primaryButton(tester).onPressed, isNotNull);
+  });
+
   testWidgets('the confirmation says the originals are replaced for good',
       (tester) async {
     // The cleaner can promise an undo because it moves files into a quarantine.
@@ -280,10 +366,48 @@ void main() {
     );
   });
 
-  testWidgets('a machine with no video encoder says so and offers no button',
+  testWidgets('a machine with no video encoder says so and offers no run',
       (tester) async {
     // Silently omitting these would report a device with nothing to optimise,
     // which is the same lie as a cleaner reporting an empty sandbox as clean.
+    // The instruction naming FFmpeg is gone — the panel offers to fetch it —
+    // but the run itself is still off until something can encode.
+    optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: false);
+    findsVideos();
+
+    await pump(tester);
+    await scan(tester);
+
+    expect(find.text('Videos need one more piece'), findsOneWidget);
+    expect(find.text('Get it now'), findsOneWidget);
+    expect(primaryButton(tester).onPressed, isNull);
+  });
+
+  testWidgets('a machine with no video encoder is offered one, with its size',
+      (tester) async {
+    // What this replaces: "Videos need FFmpeg, and this machine has none on its
+    // path. Install it and open this screen again." Every word of it true, and
+    // it hands the app's own job to the user in a vocabulary the rest of the app
+    // never uses.
+    optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: false);
+
+    await pump(tester);
+
+    expect(find.text('Videos need one more piece'), findsOneWidget);
+    expect(find.textContaining('about 45 MB'), findsOneWidget);
+    expect(find.text('Get it now'), findsOneWidget);
+    // And no instruction naming a tool.
+    expect(find.textContaining('FFmpeg'), findsNothing);
+    expect(find.textContaining('path'), findsNothing);
+  });
+
+  testWidgets('the offer is not made where nothing can be fetched',
+      (tester) async {
+    // A phone whose media stack has no HEVC encoder cannot be handed one, so the
+    // panel states the gap and offers no button.
+    supplyRepo.isSupported = false;
     optimizeRepo.encoderSupport =
         const EncoderSupport(photos: true, videos: false);
     findsVideos();
@@ -292,8 +416,51 @@ void main() {
     await scan(tester);
 
     expect(find.text('Some of these cannot be re-encoded here'), findsOneWidget);
-    expect(find.textContaining('FFmpeg'), findsOneWidget);
-    expect(primaryButton(tester).onPressed, isNull);
+    expect(find.text('Get it now'), findsNothing);
+  });
+
+  testWidgets('fetching shows a bar that can be stopped', (tester) async {
+    optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: false);
+    supplyRepo.holdOpen = true;
+
+    await pump(tester);
+    await tester.tap(find.text('Get it now'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(find.text('Getting the video encoder'), findsOneWidget);
+    expect(find.byType(AppProgressIndicator), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(supplyRepo.wasCancelled, isTrue);
+    // Back to the offer, with nothing said about a stop the user asked for.
+    expect(find.text('Get it now'), findsOneWidget);
+  });
+
+  testWidgets('once fetched, the video can be re-encoded', (tester) async {
+    optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: false);
+    supplyRepo.installsEncoder = () => optimizeRepo.encoderSupport =
+        const EncoderSupport(photos: true, videos: true);
+    findsVideos();
+
+    await pump(tester);
+    await scan(tester);
+
+    expect(primaryButton(tester).onPressed, isNull, reason: 'nothing to run');
+
+    await tester.tap(find.text('Get it now'));
+    await tester.pumpAndSettle();
+
+    // The panel is gone, the button names the saving, and nothing was rescanned.
+    expect(find.text('Videos need one more piece'), findsNothing);
+    expect(find.text('Save 500 MB'), findsOneWidget);
+    expect(primaryButton(tester).onPressed, isNotNull);
+    expect(scanRepo.scanCount, 1);
   });
 
   testWidgets('a narrowed Android offers the permission, not a bare refusal',

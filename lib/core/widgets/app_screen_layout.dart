@@ -27,6 +27,7 @@ class AppScreenLayout extends StatelessWidget {
     required this.header,
     required this.body,
     this.bottom,
+    this.fillsViewport = false,
     super.key,
   });
 
@@ -44,6 +45,18 @@ class AppScreenLayout extends StatelessWidget {
   final Widget body;
   final Widget? bottom;
 
+  /// Whether the scrolling half should be at least as tall as the window, so a
+  /// short [body] can spread into the space instead of leaving it blank.
+  ///
+  /// Off by default, and it has to be: filling the viewport means measuring the
+  /// content's intrinsic height, and the two category tiles lay their figures out
+  /// with a `LayoutBuilder`, which cannot be measured that way — it throws rather
+  /// than running its callback speculatively. So this is for screens whose short
+  /// state holds no tiles, which is the only state that has room to spare
+  /// anyway. `StorageInsightsView` turns it on until something has been counted,
+  /// and its body then takes the remainder with an `Expanded`.
+  final bool fillsViewport;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,21 +68,7 @@ class AppScreenLayout extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(
-                    _inset,
-                    AppSpacing.sm,
-                    _inset,
-                    _inset,
-                  ),
-                  children: <Widget>[
-                    header,
-                    const SizedBox(height: AppSpacing.lg),
-                    body,
-                  ],
-                ),
-              ),
+              Expanded(child: fillsViewport ? _filled() : _scrolled()),
               if (bottom != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -84,6 +83,47 @@ class AppScreenLayout extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  static const EdgeInsets _padding = EdgeInsets.fromLTRB(
+    _inset,
+    AppSpacing.sm,
+    _inset,
+    _inset,
+  );
+
+  /// The ordinary case: one list, measured by its contents.
+  Widget _scrolled() {
+    return ListView(
+      padding: _padding,
+      children: <Widget>[
+        header,
+        const SizedBox(height: AppSpacing.lg),
+        body,
+      ],
+    );
+  }
+
+  /// At least a windowful, so [body] can take what is left over.
+  Widget _filled() {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverPadding(
+          padding: _padding,
+          sliver: SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                header,
+                const SizedBox(height: AppSpacing.lg),
+                body,
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

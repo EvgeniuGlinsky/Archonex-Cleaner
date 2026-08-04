@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:storage_cleaner/core/constants/app_spacing.dart';
 import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
+import 'package:storage_cleaner/core/widgets/app_progress_indicator.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
-import 'package:storage_cleaner/project_files/features/storage_cleaner/ui/widgets/clean_progress_indicator.dart';
 import 'package:storage_cleaner/project_files/features/storage_insights/ui/bloc/storage_insights_bloc.dart';
 import 'package:storage_cleaner/project_files/features/storage_insights/ui/widgets/storage_insights_callbacks.dart';
 
@@ -31,7 +31,7 @@ class StorageInsightsActions extends StatelessWidget {
     if (state.isMeasuring) {
       return Column(
         children: <Widget>[
-          CleanProgressIndicator(
+          AppProgressIndicator(
             label: state.location ?? l10n.insightsMeasuringLabel,
           ),
           const SizedBox(height: AppSpacing.md),

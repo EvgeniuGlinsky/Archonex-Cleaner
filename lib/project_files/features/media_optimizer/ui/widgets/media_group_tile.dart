@@ -31,6 +31,7 @@ class MediaGroupTile extends StatelessWidget {
   const MediaGroupTile({
     required this.group,
     required this.canEdit,
+    required this.isVerdictKnown,
     required this.onToggled,
     required this.onCandidateToggled,
     super.key,
@@ -57,6 +58,13 @@ class MediaGroupTile extends StatelessWidget {
 
   final MediaGroup group;
   final bool canEdit;
+
+  /// Whether a walk has finished having a look at this group — see
+  /// `MediaOptimizerState.isVerdictKnown`. It is what tells "found nothing worth
+  /// doing" from "has not looked yet", which a `MediaGroup` cannot say for
+  /// itself.
+  final bool isVerdictKnown;
+
   final VoidCallback onToggled;
   final ValueChanged<String> onCandidateToggled;
 
@@ -79,9 +87,16 @@ class MediaGroupTile extends StatelessWidget {
         tilePadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
         // In `leading`, because `trailing` replaces the rotating arrow and a row
         // that opens with nothing saying so is a row nobody opens. Absent
-        // entirely where the group turned up nothing that can be acted on:
-        // an unticked box and a box that does nothing look identical.
-        leading: group.hasWorthwhile
+        // entirely where a walk has looked and turned up nothing that can be
+        // acted on: an unticked box and a box that does nothing look identical.
+        //
+        // Present before that walk, though, which it was not: an unscanned group
+        // has no worthwhile files either, and for a while that read as the same
+        // case. It left the two rows on this screen with no box at all while the
+        // cleaner drew three beside its own, on a screen whose bloc toggles them
+        // perfectly well and keeps the answer across the scan. The cleaner has
+        // the same story written into `StorageCleanerState.canEditSelection`.
+        leading: group.hasWorthwhile || !isVerdictKnown
             ? Checkbox(
                 visualDensity: VisualDensity.compact,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

@@ -18,12 +18,6 @@ final class HomeState extends Equatable {
 
   bool get hasStorage => storage != null;
 
-  /// Kept apart from [hasStorage]: a re-read after a cleanup already has a
-  /// snapshot to keep showing, so the ring stays on screen with the old figure
-  /// instead of blinking out and back.
-  bool get isLoadingFirstRead =>
-      status == HomeStatus.loading && storage == null;
-
   HomeState copyWith({
     HomeStatus? status,
     DeviceStorageSnapshot? storage,

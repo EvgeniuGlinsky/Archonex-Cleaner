@@ -49,7 +49,14 @@ class AppToolCard extends StatelessWidget {
           onTap: onPressed,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
+            // Aligned to the top rather than centred: the three subtitles run to
+            // two, three and four lines, and centring put each card's mark
+            // against a different line of its own text — beside the title on one
+            // and halfway down the sentence on the next. The mark and the chevron
+            // centre themselves on the title's line instead, which is the line
+            // they belong to.
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _Mark(icon: tool.icon, isEnabled: isEnabled),
                 const SizedBox(width: AppSpacing.lg),
@@ -75,9 +82,18 @@ class AppToolCard extends StatelessWidget {
                 ),
                 if (isEnabled) ...<Widget>[
                   const SizedBox(width: AppSpacing.md),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    color: theme.colorScheme.onSurfaceVariant,
+                  // On the mark's axis, not the card's: the two are the only
+                  // things in this row that are not text, and a chevron sitting
+                  // lower than the mark it points away from reads as a third
+                  // alignment nothing asked for.
+                  SizedBox(
+                    height: _markSize,
+                    child: Center(
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
                 ],
               ],

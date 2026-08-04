@@ -6,12 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
 import 'package:storage_cleaner/project_files/features/device_storage/domain/models/device_storage_snapshot.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/fetch_encoder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/optimize_media_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/replan_for_quality_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/scan_for_media_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_supply_job.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/encoder_support.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_group.dart';
@@ -38,6 +40,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
   MediaOptimizerBloc({
     required GetOptimizerAvailabilityUseCase getAvailability,
     required GetEncoderSupportUseCase getSupport,
+    required FetchEncoderUseCase fetchEncoder,
     required GetOptimizableKindsUseCase getKinds,
     required GetStorageAccessUseCase getAccess,
     required RequestStorageAccessUseCase requestAccess,
@@ -50,6 +53,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     ReplanForQualityUseCase replan = const ReplanForQualityUseCase(),
   })  : _getAvailability = getAvailability,
         _getSupport = getSupport,
+        _fetchEncoder = fetchEncoder,
         _getKinds = getKinds,
         _getAccess = getAccess,
         _requestAccess = requestAccess,
@@ -76,6 +80,10 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
       _onAccessSettingsRequested,
       transformer: droppable(),
     );
+    // Dropped like the rest: a second tap on a button that is already
+    // downloading must not start a second download into the same folder.
+    on<EncoderFetchRequested>(_onEncoderFetchRequested, transformer: droppable());
+    on<EncoderFetchCancelled>(_onEncoderFetchCancelled, transformer: sequential());
 
     on<OptimizeQualityChanged>(_onQualityChanged, transformer: sequential());
     on<MediaScanCancelled>(_onScanCancelled, transformer: sequential());
@@ -88,6 +96,7 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
 
   final GetOptimizerAvailabilityUseCase _getAvailability;
   final GetEncoderSupportUseCase _getSupport;
+  final FetchEncoderUseCase _fetchEncoder;
   final GetOptimizableKindsUseCase _getKinds;
   final GetStorageAccessUseCase _getAccess;
   final RequestStorageAccessUseCase _requestAccess;
@@ -101,6 +110,15 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
 
   MediaScanJob? _activeScan;
   OptimizeJob? _activeRun;
+  EncoderSupplyJob? _activeFetch;
+
+  /// Whether the download now ending was stopped from here.
+  ///
+  /// Held rather than read off the error, the way `FfmpegVideoEncoder` tells a
+  /// killed process from a crashed one: what ends a cancelled stream is up to
+  /// whichever repository is behind the contract, and "the user pressed stop" is
+  /// a fact this object already knows.
+  bool _isCancellingFetch = false;
 
   @override
   Future<void> close() async {
@@ -108,6 +126,9 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     // screen by minutes if nothing stops it, and a transcode by rather longer.
     await _activeScan?.cancel();
     await _activeRun?.cancel();
+    // And a download, which is the one of the three that costs somebody money if
+    // it keeps going on a phone tether nobody is watching.
+    await _activeFetch?.cancel();
 
     return super.close();
   }
@@ -141,6 +162,10 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
         isSupported: true,
         support: await _getSupport(),
         quality: _quality.selected,
+        // Platform facts, read once. Whether an encoder *is* missing changes;
+        // whether this platform could be handed one does not.
+        canBeGivenEncoder: _fetchEncoder.isSupported,
+        encoderDownloadBytes: _fetchEncoder.downloadBytes,
       ),
     );
 
@@ -232,7 +257,19 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
         status: MediaOptimizerStatus.idle,
         isSupported: true,
         access: access,
-        groups: kinds.map(MediaGroup.fresh).toList(growable: false),
+        // A kind with no encoder behind it arrives unticked: see
+        // `MediaGroup.fresh`. Only here, where the groups are built from
+        // scratch — `MediaOptimizerResumed` re-reads the encoders but leaves the
+        // ticks alone, because a box the user unticked and one this did are the
+        // same box afterwards.
+        groups: kinds
+            .map(
+              (kind) => MediaGroup.fresh(
+                kind,
+                isSelected: state.support.supports(kind),
+              ),
+            )
+            .toList(growable: false),
         clearScanningLocation: true,
         clearReport: true,
         clearFailure: true,
@@ -494,10 +531,112 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     await _activeRun?.cancel();
   }
 
+  /// Downloads a video encoder, then re-asks what this machine can encode.
+  ///
+  /// The re-ask is the point, and it is why nothing here is told the answer. The
+  /// encoder object caches only a *yes*, so asking again after a successful fetch
+  /// finds the new binary on its own — no wiring between the thing that downloads
+  /// and the thing that runs, and no cache to invalidate from the wrong layer.
+  ///
+  /// Groups already on screen keep their findings: a walk that measured video
+  /// measured it against the file, not against whether anything could re-encode
+  /// it. What does change is the tick — a kind that arrived unticked because
+  /// there was no encoder is ticked now that there is, which is what the user
+  /// pressed the button for.
+  Future<void> _onEncoderFetchRequested(
+    EncoderFetchRequested event,
+    Emitter<MediaOptimizerState> emit,
+  ) async {
+    if (!state.canFetchEncoder) {
+      return;
+    }
+
+    final EncoderSupplyJob job = _fetchEncoder();
+    _activeFetch = job;
+    _isCancellingFetch = false;
+
+    emit(state.copyWith(encoderFetchProgress: 0, clearFailure: true));
+
+    try {
+      await emit.forEach<double>(
+        job.progress,
+        onData: (fraction) => state.copyWith(encoderFetchProgress: fraction),
+        onError: (error, stackTrace) => state.copyWith(
+          // A stop the user asked for is not news to report back to them.
+          failure: _isCancellingFetch
+              ? null
+              : error is OptimizeFailure
+                  ? error
+                  : const EncoderFetchFailure(),
+          clearEncoderFetchProgress: true,
+        ),
+      );
+    } finally {
+      _activeFetch = null;
+    }
+
+    if (_isCancellingFetch) {
+      _isCancellingFetch = false;
+
+      return;
+    }
+
+    // The stream closing is the success. A failure has already emitted, and
+    // `support` unchanged then leaves the offer exactly where it was.
+    final EncoderSupport support = await _getSupport();
+
+    emit(
+      state.copyWith(
+        support: support,
+        groups: _ticking(state.groups, before: state.support, after: support),
+        clearEncoderFetchProgress: true,
+      ),
+    );
+  }
+
+  Future<void> _onEncoderFetchCancelled(
+    EncoderFetchCancelled event,
+    Emitter<MediaOptimizerState> emit,
+  ) async {
+    _isCancellingFetch = true;
+    await _activeFetch?.cancel();
+  }
+
+  /// Ticks the kinds that just became possible, and leaves every other choice
+  /// alone.
+  ///
+  /// The comparison is between the two answers, not against the tick. "Unticked
+  /// and now supported" would also describe photographs the user unticked by hand
+  /// a moment before pressing download — their box was live the whole time,
+  /// because only a *supported* kind can be unticked at all — and re-ticking
+  /// those would overrule the one choice the screen exists to offer. A kind that
+  /// went from unsupported to supported is the only one this app unticked itself,
+  /// so it is the only one it may put back.
+  static List<MediaGroup> _ticking(
+    List<MediaGroup> groups, {
+    required EncoderSupport before,
+    required EncoderSupport after,
+  }) {
+    return groups
+        .map(
+          (group) =>
+              !before.supports(group.kind) && after.supports(group.kind)
+                  ? group.copyWith(isSelected: true)
+                  : group,
+        )
+        .toList(growable: false);
+  }
+
   void _onGroupToggled(
     MediaGroupToggled event,
     Emitter<MediaOptimizerState> emit,
   ) {
+    // The same question the box asked before it drew itself enabled, asked again
+    // here so the contract holds however the event was assembled.
+    if (!state.canEditGroup(event.kind)) {
+      return;
+    }
+
     emit(
       state.copyWith(
         groups: state.groups
@@ -521,6 +660,10 @@ class MediaOptimizerBloc extends Bloc<MediaOptimizerEvent, MediaOptimizerState> 
     MediaCandidateToggled event,
     Emitter<MediaOptimizerState> emit,
   ) {
+    if (!state.canEditGroup(event.kind)) {
+      return;
+    }
+
     emit(
       state.copyWith(
         groups: state.groups

@@ -2,45 +2,76 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/ffmpeg_location.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/media_candidate.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/models/optimize_quality.dart';
 
-/// Re-encodes a video by running whatever `ffmpeg` is on the path.
+/// Re-encodes a video by running an `ffmpeg` — the user's, or the one this app
+/// fetched for them.
 ///
-/// Windows, Linux and macOS. A bundled binary was the obvious alternative and
-/// is the wrong one twice over: it would put a hundred megabytes of encoder
-/// into an application whose entire purpose is freeing disk space, and it would
-/// mean shipping H.264 and HEVC encoders, which is a licensing question this
-/// project has no answer to. Asking the machine what it already has costs
-/// nothing and is honest — [isAvailable] is false when there is nothing there,
-/// and the screen says so instead of offering a button that fails.
+/// Windows, Linux and macOS. Bundling the binary is still the wrong answer for
+/// the reasons it always was: a hundred megabytes of encoder inside an
+/// application whose purpose is freeing disk space, paid for by every copy
+/// including the ones that never open a video, and a GPL encoder *distributed*
+/// rather than downloaded. What changed is the other half of it. "There is
+/// nothing there, and the screen says so" left the user reading an instruction
+/// to install FFmpeg and put it on their path, which is the application asking
+/// somebody else to do its job — so `FfmpegSupplyRepo` fetches one on request and
+/// puts it in `FfmpegLocation`, and this looks in both places.
+///
+/// The path is searched first and the app's own copy second. A machine with
+/// `ffmpeg` already installed is a machine that downloads nothing, and a user who
+/// upgrades theirs gets the upgrade.
 ///
 /// The process is the isolation. An encoder is the one part of this app most
 /// likely to crash on a malformed file, and a crash in another process is an
 /// exit code rather than a dead app.
 class FfmpegVideoEncoder implements MediaEncoder {
-  FfmpegVideoEncoder({String executable = 'ffmpeg'}) : _executable = executable;
+  FfmpegVideoEncoder({String pathExecutable = 'ffmpeg'})
+      : _pathExecutable = pathExecutable;
 
-  final String _executable;
+  final String _pathExecutable;
 
   Process? _process;
   bool _isCancelling = false;
 
-  /// Cached after the first ask.
+  /// Cached, and only when the answer was yes.
   ///
-  /// The answer does not change while the app is open, and the question costs a
-  /// process launch. Asked once when the screen opens rather than per file,
-  /// which on a folder of two hundred videos would be two hundred launches.
-  Future<bool>? _availability;
+  /// An encoder that is there stays there, and the question costs a process
+  /// launch — asked once when the screen opens rather than per file, which on a
+  /// folder of two hundred videos would be two hundred launches. A *no* is not
+  /// cached, and that asymmetry is the whole mechanism behind the download
+  /// button: the screen re-asks after a fetch and gets the new answer, without
+  /// this object knowing that a fetch is a thing that exists.
+  String? _resolved;
 
   @override
-  Future<bool> get isAvailable => _availability ??= _probeAvailability();
+  Future<bool> get isAvailable async => await _resolve() != null;
 
-  Future<bool> _probeAvailability() async {
+  /// The first of the two candidates that runs, or `null`.
+  Future<String?> _resolve() async {
+    final String? cached = _resolved;
+
+    if (cached != null) {
+      return cached;
+    }
+
+    final String? installed = await FfmpegLocation.installed();
+
+    for (final String candidate in <String>[_pathExecutable, ?installed]) {
+      if (await _runs(candidate)) {
+        return _resolved = candidate;
+      }
+    }
+
+    return null;
+  }
+
+  static Future<bool> _runs(String executable) async {
     try {
       final ProcessResult result =
-          await Process.run(_executable, <String>['-version']);
+          await Process.run(executable, <String>['-version']);
 
       return result.exitCode == 0;
     } on ProcessException {
@@ -62,10 +93,24 @@ class FfmpegVideoEncoder implements MediaEncoder {
   }) async* {
     _isCancelling = false;
 
+    final String? executable = await _resolve();
+
+    if (executable == null) {
+      // Reachable only if the encoder went away between the screen asking and
+      // the run starting — an uninstall mid-session. Said the same way an
+      // unavailable encoder says it, so the ladder above deletes its working
+      // file and leaves the original alone.
+      throw ProcessException(
+        _pathExecutable,
+        const <String>[],
+        'no ffmpeg to run',
+      );
+    }
+
     final int? durationMs = candidate.probe.durationMs;
 
     final Process process = await Process.start(
-      _executable,
+      executable,
       _argumentsFor(candidate: candidate, outputPath: outputPath),
     );
 
@@ -103,7 +148,7 @@ class FfmpegVideoEncoder implements MediaEncoder {
     // already stopping and will delete the partial file.
     if (code != 0 && !_isCancelling) {
       throw ProcessException(
-        _executable,
+        executable,
         const <String>[],
         'ffmpeg exited with $code',
         code,

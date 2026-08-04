@@ -45,4 +45,28 @@ void main() {
     expect(AppTheme.dark().brightness, Brightness.dark);
     expect(AppColors.light.danger, isNot(AppColors.dark.danger));
   });
+
+  test('the app bar repaints itself once content is behind it', () {
+    // These screens keep their title in the scroll view, so the bar is the only
+    // thing marking where that view begins — and a 28 dp title sliced through at
+    // a line nothing draws reads as the list passing under the *title*. A shadow
+    // said it too quietly to see at this alpha, so the bar changes colour too.
+    for (final ThemeData theme in <ThemeData>[
+      AppTheme.light(),
+      AppTheme.dark(),
+    ]) {
+      final Color? background = theme.appBarTheme.backgroundColor;
+
+      expect(background, isNotNull);
+      expect(
+        WidgetStateProperty.resolveAs<Color?>(
+          background,
+          <WidgetState>{WidgetState.scrolledUnder},
+        ),
+        isNot(
+          WidgetStateProperty.resolveAs<Color?>(background, <WidgetState>{}),
+        ),
+      );
+    }
+  });
 }

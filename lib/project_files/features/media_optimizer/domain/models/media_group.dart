@@ -28,12 +28,18 @@ final class MediaGroup extends Equatable {
 
   /// A group as a fresh scan produces it, before the user has said anything.
   ///
-  /// Ticked. Unlike the cleaner, where three categories arrive off because they
-  /// are occasionally the only copy of something, nothing here is destroyed:
-  /// the picture stays, at the same resolution, in the same place.
-  const MediaGroup.fresh(this.kind)
+  /// Ticked by default. Unlike the cleaner, where three categories arrive off
+  /// because they are occasionally the only copy of something, nothing here is
+  /// destroyed: the picture stays, at the same resolution, in the same place.
+  ///
+  /// [isSelected] is passed as false for a kind this machine has no encoder for.
+  /// It has to be settable rather than always true, because `canOptimize` needs
+  /// an encoder for every ticked group: a desktop with no `ffmpeg` that found
+  /// both photographs and video had the video group ticked, which turned the
+  /// button off for the photographs as well — the one kind it could have
+  /// re-encoded.
+  const MediaGroup.fresh(this.kind, {this.isSelected = true})
       : candidates = const <MediaCandidate>[],
-        isSelected = true,
         excludedPaths = const <String>{},
         isTruncated = false;
 

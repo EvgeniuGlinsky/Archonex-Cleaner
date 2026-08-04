@@ -98,7 +98,6 @@ class QuarantineView extends StatelessWidget {
     return QuarantineCallbacks(
       onRestorePressed: (id) => _add(context, BatchRestoreRequested(id)),
       onPurgePressed: (id) => _add(context, BatchPurgeRequested(id)),
-      onPurgeAllPressed: () => _add(context, const PurgeAllRequested()),
     );
   }
 

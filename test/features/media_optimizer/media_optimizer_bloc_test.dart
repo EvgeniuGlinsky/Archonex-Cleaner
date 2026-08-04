@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/fetch_encoder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
@@ -36,6 +39,7 @@ void main() {
   late FakeStorageAccessRepo accessRepo;
   late FakeDeviceStorageRepo storageRepo;
   late FakeOptimizeQualityRepo qualityRepo;
+  late FakeEncoderSupplyRepo supplyRepo;
 
   setUp(() {
     scanRepo = FakeMediaScanRepo();
@@ -43,6 +47,7 @@ void main() {
     accessRepo = FakeStorageAccessRepo();
     storageRepo = FakeDeviceStorageRepo();
     qualityRepo = FakeOptimizeQualityRepo();
+    supplyRepo = FakeEncoderSupplyRepo();
   });
 
   MediaOptimizerBloc build() {
@@ -54,6 +59,7 @@ void main() {
         optimizeRepo: optimizeRepo,
       ),
       getSupport: GetEncoderSupportUseCase(optimizeRepo),
+      fetchEncoder: FetchEncoderUseCase(supplyRepo),
       getKinds: GetOptimizableKindsUseCase(scanRepo),
       getAccess: GetStorageAccessUseCase(accessRepo),
       requestAccess: RequestStorageAccessUseCase(accessRepo),
@@ -85,6 +91,36 @@ void main() {
     await settle();
 
     return bloc;
+  }
+
+  /// One video and one photograph, both worth re-encoding.
+  void findsBoth() {
+    scanRepo.updates = <MediaScanUpdate>[
+      MediaFound(<MediaCandidate>[
+        fakeCandidate(
+          path: '/a.mp4',
+          kind: MediaKind.video,
+          sizeInBytes: 900000000,
+          estimatedBytes: 400000000,
+        ),
+        fakeCandidate(
+          path: '/b.jpg',
+          sizeInBytes: 9000000,
+          estimatedBytes: 3000000,
+        ),
+      ]),
+    ];
+  }
+
+  /// Drains the event queue until [done], rather than counting `settle()`s.
+  ///
+  /// A fetch is several turns deep — the job's own stream, `emit.forEach`, and
+  /// then a re-ask of the encoders — and a test that guessed how many would pass
+  /// or fail on a refactor that changed the count by one.
+  Future<void> pumpUntil(bool Function() done, {int turns = 400}) async {
+    for (int turn = 0; turn < turns && !done(); turn++) {
+      await settle();
+    }
   }
 
   group('start', () {
@@ -436,22 +472,197 @@ void main() {
       await bloc.close();
     });
 
-    test('a kind with no encoder cannot be optimised even when ticked',
+    test('a kind with no encoder arrives unticked and holds nothing else back',
         () async {
-      // The button is off rather than failing when pressed.
+      // It used to arrive ticked, and `canOptimize` wants an encoder for every
+      // ticked group — so a desktop with no `ffmpeg` that found photographs
+      // *and* video had the button off for both, including the one kind it could
+      // have re-encoded. Unticking the video by hand was the only way through,
+      // on a screen that never said so.
       optimizeRepo.encoderSupport =
           const EncoderSupport(photos: true, videos: false);
 
       final MediaOptimizerBloc bloc = await withBoth();
 
-      expect(bloc.state.canOptimize, isFalse);
       expect(bloc.state.hasBlockedKind, isTrue);
+      expect(bloc.state.canOptimize, isTrue);
 
+      // And the figure the button names is the photographs alone, because the
+      // video is not going anywhere.
+      expect(
+        bloc.state.selectedCandidates.every((c) => c.path.endsWith('.jpg')),
+        isTrue,
+      );
+
+      // Ticking it back on is refused rather than obeyed: the box is drawn
+      // disabled for the same reason, and both ask `canEditGroup`.
       bloc.add(const MediaGroupToggled(MediaKind.video));
       await settle();
 
       expect(bloc.state.canOptimize, isTrue);
+      expect(
+        bloc.state.groups
+            .firstWhere((group) => group.kind == MediaKind.video)
+            .isSelected,
+        isFalse,
+      );
       await bloc.close();
+    });
+  });
+
+  group('fetching the encoder', () {
+    test('a desktop with no video encoder is offered one', () async {
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      expect(bloc.state.canFetchEncoder, isTrue);
+      expect(bloc.state.encoderDownloadBytes, greaterThan(0));
+      await bloc.close();
+    });
+
+    test('a machine that already encodes video is offered nothing', () async {
+      // Otherwise a user with `ffmpeg` on their path is invited to download a
+      // second copy of it.
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      expect(bloc.state.canFetchEncoder, isFalse);
+      await bloc.close();
+    });
+
+    test('a phone is offered nothing, because there is nothing to fetch',
+        () async {
+      supplyRepo.isSupported = false;
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      expect(bloc.state.canFetchEncoder, isFalse);
+      expect(bloc.state.hasBlockedKind, isTrue, reason: 'and it says so');
+      await bloc.close();
+    });
+
+    test('a fetch reports progress, then the screen can encode video',
+        () async {
+      // The whole mechanism in one test: the encoder object caches only a *yes*,
+      // so re-asking after the download finds the new binary — with no wiring
+      // between the thing that downloads and the thing that runs.
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+      supplyRepo.installsEncoder = () => optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: true);
+      findsBoth();
+
+      final MediaOptimizerBloc bloc = await scanned();
+      final List<double?> seen = <double?>[];
+      final StreamSubscription<MediaOptimizerState> watch = bloc.stream
+          .listen((state) => seen.add(state.encoderFetchProgress));
+
+      bloc.add(const EncoderFetchRequested());
+      await pumpUntil(() => !bloc.state.isFetchingEncoder && bloc.state.support.videos);
+
+      expect(supplyRepo.fetchCount, 1);
+      expect(seen.where((f) => f != null && f > 0), isNotEmpty);
+      expect(bloc.state.support.videos, isTrue);
+      expect(bloc.state.canFetchEncoder, isFalse);
+      expect(bloc.state.hasBlockedKind, isFalse);
+
+      // And the kind this app unticked itself is ticked again, which is what the
+      // button was pressed for.
+      expect(
+        bloc.state.groups
+            .firstWhere((group) => group.kind == MediaKind.video)
+            .isSelected,
+        isTrue,
+      );
+
+      await watch.cancel();
+      await bloc.close();
+    });
+
+    test('a fetch leaves a kind the user unticked by hand unticked', () async {
+      // "Unticked and now supported" also describes photographs the user just
+      // turned off, and re-ticking those would overrule the one choice the
+      // screen exists to offer.
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+      supplyRepo.installsEncoder = () => optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: true);
+      findsBoth();
+
+      final MediaOptimizerBloc bloc = await scanned();
+      bloc.add(const MediaGroupToggled(MediaKind.photo));
+      await settle();
+
+      bloc.add(const EncoderFetchRequested());
+      await pumpUntil(() => !bloc.state.isFetchingEncoder && bloc.state.support.videos);
+
+      expect(
+        bloc.state.groups
+            .firstWhere((group) => group.kind == MediaKind.photo)
+            .isSelected,
+        isFalse,
+      );
+      await bloc.close();
+    });
+
+    test('a failed fetch says so and offers the download again', () async {
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+      supplyRepo.failure = const EncoderFetchFailure();
+
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      bloc.add(const EncoderFetchRequested());
+      await pumpUntil(() => bloc.state.failure != null);
+
+      expect(bloc.state.failure, isA<EncoderFetchFailure>());
+      expect(bloc.state.isFetchingEncoder, isFalse);
+      expect(bloc.state.canFetchEncoder, isTrue);
+      await bloc.close();
+    });
+
+    test('a cancelled fetch is not news', () async {
+      // The user did it. A snack bar saying what they just asked for is noise.
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+      supplyRepo.holdOpen = true;
+
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      bloc.add(const EncoderFetchRequested());
+      await pumpUntil(() => bloc.state.isFetchingEncoder);
+
+      bloc.add(const EncoderFetchCancelled());
+      await pumpUntil(() => !bloc.state.isFetchingEncoder);
+
+      expect(supplyRepo.wasCancelled, isTrue);
+      expect(bloc.state.failure, isNull);
+      expect(bloc.state.canFetchEncoder, isTrue);
+      await bloc.close();
+    });
+
+    test('closing the bloc stops a download nobody is watching', () async {
+      optimizeRepo.encoderSupport =
+          const EncoderSupport(photos: true, videos: false);
+      supplyRepo.holdOpen = true;
+
+      final MediaOptimizerBloc bloc = build()..add(const MediaOptimizerStarted());
+      await settle();
+
+      bloc.add(const EncoderFetchRequested());
+      await pumpUntil(() => bloc.state.isFetchingEncoder);
+
+      await bloc.close();
+
+      expect(supplyRepo.wasCancelled, isTrue);
     });
   });
 

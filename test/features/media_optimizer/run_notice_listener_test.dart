@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:storage_cleaner/core/theme/app_theme.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/fetch_encoder_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_encoder_support_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizable_kinds_use_case.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/use_cases/get_optimizer_availability_use_case.dart';
@@ -69,6 +70,7 @@ void main() {
                 optimizeRepo: optimizeRepo,
               ),
               getSupport: GetEncoderSupportUseCase(optimizeRepo),
+              fetchEncoder: FetchEncoderUseCase(FakeEncoderSupplyRepo()),
               getKinds: GetOptimizableKindsUseCase(scanRepo),
               getAccess: GetStorageAccessUseCase(accessRepo),
               requestAccess: RequestStorageAccessUseCase(accessRepo),

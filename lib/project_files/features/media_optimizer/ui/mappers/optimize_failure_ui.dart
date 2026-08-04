@@ -30,6 +30,13 @@ extension OptimizeFailureUi on OptimizeFailure {
         },
       MediaScanFailure() => l10n.failureMediaScan,
       OptimizeRunFailure() => l10n.failureOptimizeRun,
+      EncoderFetchFailure() => l10n.failureEncoderFetch,
+      // Deliberately not "try again": what arrived did not match what was
+      // published, and this app was about to run it.
+      EncoderContentsFailure() => l10n.failureEncoderContents,
+      // Reachable only if something else raises it — the bloc swallows a
+      // cancelled fetch, because the user is the one who cancelled it.
+      EncoderFetchCancelledFailure() => l10n.failureEncoderFetchCancelled,
     };
   }
 }

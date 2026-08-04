@@ -48,13 +48,42 @@ final class OptimizeUnsupportedFailure extends OptimizeFailure {
 
 /// There is no encoder on this machine for that kind of file.
 ///
-/// A desktop without `ffmpeg` on the path, or a device whose media stack offers
+/// A desktop with no encoder fetched yet, or a device whose media stack offers
 /// no HEVC encoder. Carries the kind rather than a sentence, because the two
-/// cases need different instructions and the screen decides which.
+/// cases need different instructions and the screen decides which — and on the
+/// desktops one of those instructions is a button, see `EncoderSupplyRepo`.
 final class NoEncoderFailure extends OptimizeFailure {
   const NoEncoderFailure(this.kind);
 
   final MediaKind kind;
+}
+
+/// Fetching the video encoder did not finish.
+///
+/// The network, the publisher, or the disk: from the user's side these are one
+/// piece of news with one answer, which is to try again. Nothing is left behind
+/// — the partial download is deleted — so the offer to fetch simply comes back.
+final class EncoderFetchFailure extends OptimizeFailure {
+  const EncoderFetchFailure();
+}
+
+/// What arrived was not what was published.
+///
+/// Kept apart from [EncoderFetchFailure] because it is the one failure here that
+/// must not read as "try again": a checksum that does not match is a file this
+/// app is about to *execute*, and the honest sentence says it was discarded
+/// rather than inviting a retry loop against whatever is serving it.
+final class EncoderContentsFailure extends OptimizeFailure {
+  const EncoderContentsFailure();
+}
+
+/// The user stopped the download.
+///
+/// Ends the job's stream, the way `MediaScanCancelledFailure` ends a walk's and
+/// for the same reason: half an archive installs nothing, so there is no outcome
+/// owed to anybody. The screen swallows this one rather than showing it.
+final class EncoderFetchCancelledFailure extends OptimizeFailure {
+  const EncoderFetchCancelledFailure();
 }
 
 /// The walk itself broke in a way no single path explains.

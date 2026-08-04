@@ -4,6 +4,7 @@ import 'package:storage_cleaner/core/constants/app_insights_policy.dart';
 import 'package:storage_cleaner/core/constants/app_spacing.dart';
 import 'package:storage_cleaner/core/utils/file_size_formatter.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/ui/widgets/storage_access_notice.dart';
 import 'package:storage_cleaner/project_files/features/storage_insights/domain/models/storage_breakdown.dart';
 import 'package:storage_cleaner/project_files/features/storage_insights/domain/models/storage_slice.dart';
@@ -34,6 +35,36 @@ class StorageInsightsBody extends StatelessWidget {
     final StorageBreakdown breakdown = state.breakdown;
     final List<StorageSlice> slices = breakdown.slices;
 
+    // Takes the rest of the screen when there is nothing to list, so the one
+    // sentence on it sits in the middle of that space rather than tucked under
+    // the ring with the bottom half of the window blank. Only in that case: with
+    // rows to draw the column measures itself and scrolls, and an `Expanded`
+    // would cap it at one viewport. `AppScreenLayout` is what makes the height
+    // real either way.
+    if (slices.isEmpty) {
+      return Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            if (state.access.isNarrowed) ...<Widget>[
+              StorageAccessNotice(
+                access: state.access,
+                onGrantPressed: callbacks.onGrantAccessPressed,
+                onAddFolderPressed: callbacks.onAddFolderPressed,
+                onOpenSettingsPressed: callbacks.onOpenSettingsPressed,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            if (state.hasChart) ...<Widget>[
+              _Ring(state: state, breakdown: breakdown),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            Expanded(child: Center(child: _EmptyState(state: state))),
+          ],
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -50,48 +81,49 @@ class StorageInsightsBody extends StatelessWidget {
           _Ring(state: state, breakdown: breakdown),
           const SizedBox(height: AppSpacing.lg),
         ],
-        if (slices.isEmpty)
-          _EmptyState(state: state)
-        else ...<Widget>[
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  for (final StorageSlice slice in slices)
-                    StorageSliceRow(
-                      slice: slice,
-                      fraction: breakdown.fractionOf(slice.bytes),
-                    ),
-                ],
-              ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                for (final StorageSlice slice in slices)
+                  StorageSliceRow(
+                    slice: slice,
+                    fraction: breakdown.fractionOf(slice.bytes),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          // The one sentence that keeps the chart honest. Without it the
-          // "system" row reads as a claim about what is in it, rather than as
-          // an admission that nothing could look.
-          _Note(text: l10n.insightsSystemNote),
-          if (breakdown.isTruncated) ...<Widget>[
-            const SizedBox(height: AppSpacing.sm),
-            _Note(text: l10n.insightsTruncatedNotice(AppInsightsPolicy.maxFiles)),
-          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        // The one sentence that keeps the chart honest. Without it the
+        // "system" row reads as a claim about what is in it, rather than as
+        // an admission that nothing could look.
+        _Note(text: l10n.insightsSystemNote),
+        if (breakdown.isTruncated) ...<Widget>[
+          const SizedBox(height: AppSpacing.sm),
+          _Note(text: l10n.insightsTruncatedNotice(AppInsightsPolicy.maxFiles)),
         ],
       ],
     );
   }
 }
 
-/// The ring, saying two different things at two moments.
+/// The ring, saying two different things at two moments — and drawn by two
+/// different widgets to say them.
 ///
-/// Before and during a measurement it is the disk as the platform describes it,
-/// with whatever has been counted so far filling in. Afterwards it is the whole
-/// breakdown. The figure in the middle is the used space either way, because
-/// that is the number the screen exists to explain.
+/// Before anything has been counted there are no arcs to cut a ring into, so it
+/// is the plain `StorageRing` the home, cleaner and optimiser screens draw: the
+/// used share of the volume, as the platform describes it. Once a batch has
+/// landed it becomes the breakdown, every kind its own arc. The figure in the
+/// middle is the used space either way, because that is the number the screen
+/// exists to explain — and it is what made the two rings worth telling apart.
+/// A breakdown ring handed an empty segment list is a grey circle around that
+/// figure, which on three other screens is drawn filled in.
 class _Ring extends StatelessWidget {
   const _Ring({required this.state, required this.breakdown});
 
@@ -111,11 +143,29 @@ class _Ring extends StatelessWidget {
           FileSizeFormatter.format(storage.usedBytes),
           l10n.storageUsedOf(FileSizeFormatter.format(storage.totalBytes)),
         ),
+      // Only reachable where the platform will not say how big the volume is,
+      // which leaves the count as the only figure there is. It said "adding it
+      // up" here whether or not anything still was: `hasMeasured` is what tells
+      // a finished count from a running one, and the branch above catches every
+      // case where a total is known.
+      StorageInsightsState(hasMeasured: true) => (
+          FileSizeFormatter.format(breakdown.measuredBytes),
+          l10n.insightsCountedCaption,
+        ),
       _ => (
           FileSizeFormatter.format(breakdown.measuredBytes),
           l10n.insightsMeasuringLabel,
         ),
     };
+
+    if (!state.hasBreakdown) {
+      return StorageRing(
+        usedFraction: state.usedFraction,
+        title: title,
+        caption: caption,
+        isBusy: state.isMeasuring,
+      );
+    }
 
     return StorageBreakdownRing(
       segments: <RingSegment>[
@@ -187,6 +237,11 @@ class _EmptyState extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
       child: Column(
+        // Its own height, not the room it is given. The body centres this in
+        // whatever is left of the window, and a column that grew to fill the
+        // space instead would put its contents back at the top of it — which is
+        // exactly what the centring was for.
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
             width: _markSize,

@@ -19,7 +19,6 @@ class StorageCleanerCallbacks {
     required this.onGrantAccessPressed,
     required this.onAddFolderPressed,
     required this.onOpenSettingsPressed,
-    required this.onFailureDismissed,
     required this.onResultDismissed,
     required this.onQuarantinePressed,
   });
@@ -35,7 +34,11 @@ class StorageCleanerCallbacks {
 
   /// Offered in place of grant once the system has stopped showing the sheet.
   final VoidCallback onOpenSettingsPressed;
-  final VoidCallback onFailureDismissed;
+
+  /// Dismissing a *failure* is not here, though it was: the snack bar carrying
+  /// one is raised by the view's own `BlocListener` and dismissed by the same
+  /// hand, so nothing in `ui/widgets/` ever asked. The optimiser's bundle never
+  /// had the field, and the two now match.
   final VoidCallback onResultDismissed;
 
   /// The one entry that is a navigation rather than an event.

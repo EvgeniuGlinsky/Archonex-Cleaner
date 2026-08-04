@@ -4,11 +4,14 @@ import 'package:storage_cleaner/project_files/features/media_optimizer/data/enco
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/dart_image_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/ffmpeg_video_encoder.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/media_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/ffmpeg_supply_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/native_image_encoder.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/data/encoders/unsupported_encoder_supply_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/io_media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/io_media_scan_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/data/file_system/unsupported_media_scan_repo.dart';
+import 'package:storage_cleaner/project_files/features/media_optimizer/domain/encoder_supply_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_optimize_repo.dart';
 import 'package:storage_cleaner/project_files/features/media_optimizer/domain/media_scan_repo.dart';
 
@@ -29,6 +32,24 @@ MediaOptimizeRepo createMediaOptimizeRepo() {
     photoEncoder: _photoEncoder(),
     videoEncoder: _videoEncoder(),
   );
+}
+
+/// Only the desktops can be handed an encoder they did not have.
+///
+/// On Android the encoder is `MediaCodec` and there is nothing to download; a
+/// device without an HEVC encoder in its media stack cannot be given one. iOS,
+/// Fuchsia and web never reach a media file at all.
+EncoderSupplyRepo createEncoderSupplyRepo() {
+  return switch (defaultTargetPlatform) {
+    TargetPlatform.windows ||
+    TargetPlatform.linux ||
+    TargetPlatform.macOS =>
+      FfmpegSupplyRepo(),
+    TargetPlatform.android ||
+    TargetPlatform.iOS ||
+    TargetPlatform.fuchsia =>
+      const UnsupportedEncoderSupplyRepo(),
+  };
 }
 
 /// Whether this platform's file system holds the user's own photographs.

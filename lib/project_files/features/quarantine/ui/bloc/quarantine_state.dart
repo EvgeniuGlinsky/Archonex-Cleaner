@@ -20,12 +20,6 @@ final class QuarantineState extends Equatable {
 
   bool get isBusy => status == QuarantineStatus.working;
 
-  int get totalBytes =>
-      batches.fold(0, (sum, batch) => sum + batch.totalBytes);
-
-  int get totalFileCount =>
-      batches.fold(0, (sum, batch) => sum + batch.fileCount);
-
   /// Whether emptying the whole thing is worth offering.
   bool get canPurgeAll => !isEmpty && !isBusy;
 

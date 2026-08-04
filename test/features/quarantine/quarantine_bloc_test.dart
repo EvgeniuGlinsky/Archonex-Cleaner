@@ -42,7 +42,7 @@ void main() {
     // A screen opened after the cleanup has to see the batch without waiting
     // for a change that may never come.
     expect(bloc.state.batches, hasLength(1));
-    expect(bloc.state.totalFileCount, 2);
+    expect(bloc.state.batches.single.fileCount, 2);
     await bloc.close();
   });
 

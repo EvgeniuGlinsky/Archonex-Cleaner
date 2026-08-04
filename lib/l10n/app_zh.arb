@@ -8,10 +8,8 @@
   "languageButtonTooltip": "语言",
 
   "homeSubtitle": "选择要如何处理设备的存储空间。",
-  "toolCleanerTitle": "清理存储空间",
   "toolCleanerSubtitle": "找出设备留下的临时文件、缓存和残留文件并删除。",
-  "toolOptimizerTitle": "优化文件",
-  "toolOptimizerSubtitle": "重新编码大的照片和视频，让它们占用更少空间。画面不变，屏幕上一样大，磁盘上更小。",
+  "toolOptimizerSubtitle": "重新编码大的照片和视频，占用更少空间，画面依旧。",
   "toolComingSoonBadge": "即将推出",
 
   "storageUsedOf": "已用，共 {size}",
@@ -277,7 +275,19 @@
   "verdictUnsupportedFormat": "已经是高效格式",
 
   "encoderMissingTitle": "其中一部分无法在此重新编码",
-  "encoderMissingBody": "视频需要 FFmpeg，而本机的 PATH 中没有。安装后重新打开此页面即可；照片无论如何都能处理。",
+  "encoderMissingBody": "本设备没有可供本应用使用的视频编码器。照片无论如何都能处理。",
+  "encoderSetupTitle": "视频还缺一个组件",
+  "encoderSetupBody": "应用可以替你下载视频编码器——约 {size}，只需一次。照片无论如何都能处理。",
+  "@encoderSetupBody": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "encoderSetupLabel": "立即下载",
+  "encoderFetchingTitle": "正在下载视频编码器",
+  "encoderFetchingBody": "只需一次，仅此一处。",
 
   "optimizerIdleTitle": "还没有查找过",
   "optimizerIdleBody": "读取照片和视频的文件头，判断哪些体积超出所需。在你确认之前不会改动任何文件。",
@@ -361,7 +371,6 @@
   "qualityBalancedHint": "在手机屏幕上看不出差别，建议保持这一档。",
   "qualityMaximumHint": "仔细看能看出差别，但文件小得多。适合空间告急时使用。",
 
-  "toolInsightsTitle": "看看空间被谁占了",
   "toolInsightsSubtitle": "统计设备上的照片、视频和其他文件。",
 
   "insightsTitle": "空间去哪了",
@@ -369,6 +378,7 @@
   "insightsMeasureLabel": "开始统计",
   "insightsRemeasureLabel": "重新统计",
   "insightsMeasuringLabel": "正在统计\u2026",
+  "insightsCountedCaption": "已统计",
   "insightsIdleTitle": "尚未统计",
   "insightsIdleBody": "只读取每个文件的大小，不会打开任何文件。",
   "insightsEmptyTitle": "什么也没找到",
@@ -404,8 +414,11 @@
 
   "failureMediaScanCancelled": "已停止查找。",
   "failureOptimizeUnsupported": "在此平台上，应用访问不到任何照片或视频。",
-  "failureNoVideoEncoder": "本机没有视频编码器。请安装 FFmpeg 后重试。",
+  "failureNoVideoEncoder": "本机还没有视频编码器。",
   "failureNoPhotoEncoder": "本机没有图片编码器。",
   "failureMediaScan": "查找未能完成。没有任何改动。",
-  "failureOptimizeRun": "压缩中途停止。已经重写的文件无法恢复，请重新扫描以查看剩余内容。"
+  "failureOptimizeRun": "压缩中途停止。已经重写的文件无法恢复，请重新扫描以查看剩余内容。",
+  "failureEncoderFetch": "视频编码器下载失败，未安装任何内容。",
+  "failureEncoderContents": "下载到的文件与发布的校验值不一致，已丢弃，未安装任何内容。",
+  "failureEncoderFetchCancelled": "已停止下载。"
 }

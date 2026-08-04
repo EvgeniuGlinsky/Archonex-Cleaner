@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:storage_cleaner/core/constants/app_radius.dart';
 import 'package:storage_cleaner/core/constants/app_spacing.dart';
 
-/// A bar and a line of text, used by both the scan and the cleanup.
+/// A bar and a line of text, for anything that runs long enough to report.
 ///
-/// The scan passes `null`: a walk has no total until it is over, and a bar
-/// pretending to know how far along it is would be a lie the user can watch
-/// being told.
-class CleanProgressIndicator extends StatelessWidget {
-  const CleanProgressIndicator({
+/// In `core/widgets/` because all three flow screens put it in their bottom slot
+/// — a scan, a cleanup, a measurement and a re-encode. It lived in the cleaner's
+/// own folder while the other two imported it from there, which is a dependency
+/// between features that nothing else in the app has.
+///
+/// A `null` [progress] leaves the bar indeterminate, which is what a walk hands
+/// it: a walk has no total until it is over, and a bar pretending to know how
+/// far along it is would be a lie the user can watch being told.
+class AppProgressIndicator extends StatelessWidget {
+  const AppProgressIndicator({
     required this.label,
     this.progress,
     super.key,

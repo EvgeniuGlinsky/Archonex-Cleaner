@@ -60,7 +60,6 @@ void main() {
     await settle();
 
     // The moment a second read is in flight the ring must still be drawable.
-    expect(bloc.state.isLoadingFirstRead, isFalse);
     expect(bloc.state.hasStorage, isTrue);
 
     await bloc.close();

@@ -22,6 +22,9 @@ final class MediaOptimizerState extends Equatable {
     this.report,
     this.failure,
     this.storage,
+    this.canBeGivenEncoder = false,
+    this.encoderDownloadBytes = 0,
+    this.encoderFetchProgress,
   });
 
   final MediaOptimizerStatus status;
@@ -56,6 +59,23 @@ final class MediaOptimizerState extends Equatable {
 
   /// How full the disk is, or `null` where the platform will not say.
   final DeviceStorageSnapshot? storage;
+
+  /// Whether a missing video encoder is something this platform can be handed.
+  ///
+  /// A property of the platform, read once — the three desktops can download one,
+  /// the phones cannot. Held rather than asked at the call site so that no widget
+  /// has to know a `EncoderSupplyRepo` exists.
+  final bool canBeGivenEncoder;
+
+  /// What that download weighs, for the sentence offering it. Zero where there
+  /// is nothing to offer.
+  final int encoderDownloadBytes;
+
+  /// `0`–`1` while a download is running, `null` when none is.
+  ///
+  /// The presence of the fraction is what "a fetch is in flight" means, which is
+  /// one field rather than a bool beside a double that could disagree with it.
+  final double? encoderFetchProgress;
 
   bool get isScanning => status == MediaOptimizerStatus.scanning;
 
@@ -155,15 +175,70 @@ final class MediaOptimizerState extends Equatable {
         .every((group) => support.supports(group.kind));
   }
 
-  bool get canEditSelection => !isBusy;
-
-  /// Whether a kind was found but cannot be acted on for want of an encoder.
+  /// Whether unticking anything is currently allowed.
   ///
-  /// The case the notice exists for: a desktop with no `ffmpeg` that has just
-  /// found six gigabytes of re-encodable video.
-  bool get hasBlockedKind => groups.any(
-        (group) => group.hasWorthwhile && !support.supports(group.kind),
-      );
+  /// Everywhere except during a run, and each moment for its own reason —
+  /// `StorageCleanerState.canEditSelection` carries the argument in full and
+  /// this is the same one. **Before a scan** it is why the rows are drawn at
+  /// all, and the choice survives the walk, because `_onScanRequested` empties
+  /// `candidates` without touching `isSelected`. **During a scan** it is what
+  /// the exclusion model in `MediaGroup` was built for: a list still filling up
+  /// must be editable, or the machinery exists and cannot be reached. **During a
+  /// run** it must not be: the file list was taken at the start, so an unticked
+  /// row would be claiming to spare a file that is being rewritten as it is
+  /// unticked.
+  ///
+  /// It read `!isBusy` until the cleaner's version of this comment was read
+  /// beside it: that shut the whole list for the length of a walk over a camera
+  /// roll, which is the one stretch of time the user has something to look at
+  /// and a reason to change their mind.
+  bool get canEditSelection => isSupported && !isOptimizing;
+
+  /// Whether one group's box can be ticked, which [canEditSelection] alone does
+  /// not answer: a kind this machine cannot encode is a kind no amount of
+  /// ticking will act on, and `EncoderNotice` is where the reason is given.
+  bool canEditGroup(MediaKind kind) =>
+      canEditSelection && support.supports(kind);
+
+  /// Whether the walk has returned a verdict on a group, or has simply not
+  /// looked yet.
+  ///
+  /// The two look identical on a `MediaGroup` — no candidates either way — and
+  /// they mean opposite things to a checkbox: nothing worth re-encoding *found*
+  /// is a row that cannot be acted on, while nothing looked at yet is a row
+  /// whose whole purpose is being ticked in advance.
+  bool get isVerdictKnown => hasScanned && !isScanning;
+
+  /// Whether a kind is present but cannot be acted on for want of an encoder.
+  ///
+  /// The case the notice exists for: a desktop with no video encoder yet and
+  /// video among the kinds it can reach. Asked of the kinds rather than of the
+  /// findings, so the sentence explaining an untickable row is on screen beside
+  /// it from the start instead of arriving with the first scan.
+  bool get hasBlockedKind =>
+      groups.any((group) => !support.supports(group.kind));
+
+  /// Whether a download is running.
+  bool get isFetchingEncoder => encoderFetchProgress != null;
+
+  /// Whether the screen may offer to fetch the encoder.
+  ///
+  /// Three conditions and each rules out a different wrong screen: a platform
+  /// that cannot be handed one must not show a button, a machine that already has
+  /// an encoder must not be offered another, and a download in flight must not be
+  /// startable twice. Without the second, a user with `ffmpeg` on their path
+  /// would be invited to download a second copy of it.
+  bool get canFetchEncoder =>
+      canBeGivenEncoder && !support.videos && !isFetchingEncoder;
+
+  /// Whether the notice above the list has anything to say.
+  ///
+  /// Either something cannot be re-encoded, or something can be fixed by
+  /// downloading — the second is true before a scan has found anything, because
+  /// the fix is worth offering while the user is reading rather than after they
+  /// have pressed a button that does nothing.
+  bool get hasEncoderNotice =>
+      hasBlockedKind || canFetchEncoder || isFetchingEncoder;
 
   double? get runProgress => progress?.fraction;
 
@@ -189,11 +264,15 @@ final class MediaOptimizerState extends Equatable {
     OptimizeReport? report,
     OptimizeFailure? failure,
     DeviceStorageSnapshot? storage,
+    bool? canBeGivenEncoder,
+    int? encoderDownloadBytes,
+    double? encoderFetchProgress,
     bool clearScanningLocation = false,
     bool clearProgress = false,
     bool clearReport = false,
     bool clearFailure = false,
     bool clearStorage = false,
+    bool clearEncoderFetchProgress = false,
   }) {
     return MediaOptimizerState(
       status: status ?? this.status,
@@ -209,6 +288,11 @@ final class MediaOptimizerState extends Equatable {
       report: clearReport ? null : report ?? this.report,
       failure: clearFailure ? null : failure ?? this.failure,
       storage: clearStorage ? null : storage ?? this.storage,
+      canBeGivenEncoder: canBeGivenEncoder ?? this.canBeGivenEncoder,
+      encoderDownloadBytes: encoderDownloadBytes ?? this.encoderDownloadBytes,
+      encoderFetchProgress: clearEncoderFetchProgress
+          ? null
+          : encoderFetchProgress ?? this.encoderFetchProgress,
     );
   }
 
@@ -225,5 +309,8 @@ final class MediaOptimizerState extends Equatable {
         report,
         failure,
         storage,
+        canBeGivenEncoder,
+        encoderDownloadBytes,
+        encoderFetchProgress,
       ];
 }

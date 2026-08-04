@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:storage_cleaner/core/constants/app_byte_units.dart';
 import 'package:storage_cleaner/core/theme/app_theme.dart';
+import 'package:storage_cleaner/core/widgets/app_primary_button.dart';
 import 'package:storage_cleaner/l10n/app_localizations.dart';
 import 'package:storage_cleaner/project_files/features/device_storage/data/use_cases/get_device_storage_use_case.dart';
+import 'package:storage_cleaner/project_files/features/device_storage/ui/widgets/storage_ring.dart';
 import 'package:storage_cleaner/project_files/features/language_selection/data/language_repo_impl.dart';
 import 'package:storage_cleaner/project_files/features/language_selection/domain/language_repo.dart';
 import 'package:storage_cleaner/project_files/features/storage_access/data/use_cases/add_access_folder_use_case.dart';
@@ -101,6 +103,69 @@ void main() {
 
     expect(find.text('Measure'), findsOneWidget);
     expect(find.text('Nothing measured yet'), findsOneWidget);
+  });
+
+  testWidgets('the ring is the plain one until there are arcs to cut it into',
+      (tester) async {
+    // A breakdown ring with no segments is a grey circle, and it was drawn
+    // around "85.7 GB / used of 105.6 GB" — the same figure the home, cleaner
+    // and optimiser screens draw with the used arc filled in. Four screens, one
+    // number, three of them blue.
+    findsFiles();
+
+    await pump(tester);
+
+    expect(find.byType(StorageRing), findsOneWidget);
+    expect(find.byType(StorageBreakdownRing), findsNothing);
+    expect(find.text('used of 256 GB'), findsOneWidget);
+
+    await tester.tap(find.text('Measure'));
+    await tester.pumpAndSettle();
+
+    // And once something has been counted the breakdown takes over, because
+    // then there is something to break down.
+    expect(find.byType(StorageBreakdownRing), findsOneWidget);
+    expect(find.byType(StorageRing), findsNothing);
+  });
+
+  testWidgets('the sentence before a measurement sits in the space it has',
+      (tester) async {
+    // It used to be tucked under the ring with two thirds of the window blank
+    // below it. `AppScreenLayout.fillsViewport` gives the column a real height
+    // and the body centres in what is left.
+    await pump(tester);
+
+    final double ringBottom = tester.getRect(find.byType(StorageRing)).bottom;
+    final Rect sentence = tester.getRect(find.text('Nothing measured yet'));
+    final double buttonTop =
+        tester.getRect(find.byType(AppPrimaryButton)).top;
+
+    final double above = sentence.top - ringBottom;
+    final double below = buttonTop - sentence.bottom;
+
+    expect(above, greaterThan(0));
+    expect(
+      (above - below).abs(),
+      lessThan(120),
+      reason: 'centred in the room it has, not pinned to the ring: '
+          'above $above, below $below',
+    );
+  });
+
+  testWidgets('a finished count does not still say it is counting',
+      (tester) async {
+    // Reachable only where the platform will not say how big the volume is,
+    // which leaves the count as the only figure there is. The caption under it
+    // read "Adding it up…" whether or not anything still was.
+    storageRepo.snapshot = null;
+    findsFiles();
+
+    await pump(tester);
+    await tester.tap(find.text('Measure'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('counted'), findsOneWidget);
+    expect(find.text('Adding it up…'), findsNothing);
   });
 
   testWidgets('a measurement draws a ring and a row for every kind',

@@ -50,19 +50,31 @@ class AppTheme {
       textTheme: AppTypography.textTheme(colorScheme),
       scaffoldBackgroundColor: colorScheme.surface,
       extensions: <ThemeExtension<Object?>>[appColors],
-      // Flat at rest and raised once something is behind it. The bar is
-      // `surface` on a `surface` background, so with no shadow the only thing
-      // marking where the scroll view begins is the line the content is cut
-      // at — and a title sliced through at a line nothing draws reads as the
-      // list passing under the *title* rather than behind the bar. The tint
-      // Material would apply instead of a shadow is a colour change, which
-      // says the same thing by repainting the bar, and the screens here have
-      // no `AppBar` title for that colour to belong to.
+      // Flat and invisible at rest, a panel the moment anything is behind it.
+      // The screens here keep their title in the scroll view, so the bar is
+      // `surface` on a `surface` background and the only thing marking where
+      // the scroll view begins is the line the content is cut at — and a
+      // 28 dp title sliced through at a line nothing draws reads as the list
+      // passing under the *title* rather than behind the bar. A shadow alone
+      // said it too quietly to see: `_shadowAlpha` at two steps of elevation
+      // is a few percent of black over a pale surface, which a phone screen
+      // does not resolve. So the bar changes colour as well, which is the one
+      // signal that survives being photographed.
+      //
+      // Through `WidgetStateColor` rather than a second `AppBar` per screen:
+      // `AppBar` resolves this theme's `backgroundColor` against its own
+      // states and already puts `scrolledUnder` among them.
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        scrolledUnderElevation: 2,
-        backgroundColor: colorScheme.surface,
+        scrolledUnderElevation: 3,
+        backgroundColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.scrolledUnder)
+              ? colorScheme.surfaceContainer
+              : colorScheme.surface,
+        ),
+        // The tonal overlay Material would apply on top of that is a *second*
+        // answer to the same question, and the two together overshot.
         surfaceTintColor: Colors.transparent,
         shadowColor: colorScheme.shadow.withValues(alpha: _shadowAlpha),
       ),

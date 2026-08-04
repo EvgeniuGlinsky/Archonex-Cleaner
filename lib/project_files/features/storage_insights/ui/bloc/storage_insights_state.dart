@@ -60,6 +60,22 @@ final class StorageInsightsState extends Equatable {
         isTruncated: isTruncated,
       );
 
+  /// Whether there are arcs to cut the ring into, as opposed to a figure with
+  /// nothing behind it yet.
+  ///
+  /// The two are drawn by different widgets, which is why the screen asks. Until
+  /// something has been counted `StorageBreakdown.slices` is empty on purpose —
+  /// see its own doc comment — and a breakdown ring handed no segments is a
+  /// grey circle, on a screen already showing "85.7 GB used of 105.6 GB" in the
+  /// middle of it. Every other screen draws that same figure with the used arc
+  /// filled in.
+  bool get hasBreakdown => breakdown.slices.isNotEmpty;
+
+  /// How much of the whole volume is in use. `0` with no snapshot, which draws
+  /// an empty track — honest, where a full one would be a guess. The cleaner's
+  /// state says the same thing for the same reason.
+  double get usedFraction => storage?.usedFraction ?? 0;
+
   /// Nothing on the volume the app may look at, and it has finished looking.
   bool get foundNothing => hasMeasured && !hasFindings;
 
