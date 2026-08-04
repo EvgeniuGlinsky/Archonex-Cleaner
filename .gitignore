@@ -55,3 +55,8 @@ app.*.map.json
 # Hand-built APKs for testing on a device. Release artifacts belong on a GitHub
 # release, built by the pipeline from a tag, not committed from a laptop.
 /apk-out/
+
+# Where a local build lands when the release artefacts are wanted in hand before
+# the tag run produces them. The same name the workflow uses on the runner, so
+# the files are named identically wherever they were built.
+/dist/
