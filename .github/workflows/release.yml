@@ -178,6 +178,47 @@ jobs:
           path: dist/
           retention-days: 7
 
+  macos:
+    name: macOS
+    needs: verify
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # No certificate and none needed: the project sets CODE_SIGN_IDENTITY to
+      # "-", which is ad-hoc signing, and a runner with an empty keychain
+      # produces the same bundle a developer without a Developer ID would.
+      - run: flutter build macos --release
+
+      # ditto rather than zip. A .app is a tree with symlinks in
+      # Contents/Frameworks pointing at the current version of each framework,
+      # and zip follows them: the archive comes out with several copies of every
+      # framework and a bundle that no longer launches. ditto is the only tool
+      # on the platform that packs one correctly.
+      - name: Package
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          mkdir -p dist
+          ditto -c -k --keepParent \
+            "build/macos/Build/Products/Release/Storage Cleaner.app" \
+            "dist/storage-cleaner-$VERSION-macos-universal.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: dist/
+          retention-days: 7
+
   linux:
     name: Linux
     needs: verify
@@ -219,7 +260,7 @@ jobs:
 
   publish:
     name: Publish
-    needs: [verify, android, windows, linux]
+    needs: [verify, android, windows, macos, linux]
     runs-on: ubuntu-latest
 
     # The one job that writes anything, and the only one granted the right to.
@@ -270,13 +311,27 @@ jobs:
             echo "| Android, emulators and x86 tablets | \`android-x86_64.apk\` |"
             echo "| Android, if unsure | \`android-universal.apk\` |"
             echo "| Windows 10 and 11, 64-bit | \`windows-x64.zip\` |"
+            echo "| macOS 10.15 and later, Apple silicon and Intel | \`macos-universal.zip\` |"
             echo "| Linux, 64-bit | \`linux-x64.tar.gz\` |"
             echo
             echo "Verify a download with \`sha256sum -c SHA256SUMS.txt\`."
             echo
             echo "The Android builds are signed with the project's release key."
-            echo "Windows and Linux are unsigned — code signing certificates cost"
-            echo "money this project does not take, so expect a SmartScreen prompt."
+            echo "The desktop builds are not signed at all — code signing"
+            echo "certificates cost money this project does not take."
+            echo
+            echo "Windows will show a SmartScreen prompt; open it through **More"
+            echo "info → Run anyway**."
+            echo
+            echo "macOS will refuse the app outright, and will say it is damaged"
+            echo "rather than that it is unsigned. It is not damaged — that is"
+            echo "what Gatekeeper says about anything downloaded without a"
+            echo "Developer ID. Clear the quarantine flag once, after moving the"
+            echo "app to Applications:"
+            echo
+            echo '```'
+            echo 'xattr -dr com.apple.quarantine "/Applications/Storage Cleaner.app"'
+            echo '```'
           } > "$notes"
 
           gh release create "$GITHUB_REF_NAME" \

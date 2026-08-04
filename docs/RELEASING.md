@@ -83,18 +83,18 @@ be published and the fallback would produce one nobody can install over.
 4. Tag and push:
 
    ```bash
-   git tag v1.0.0
+   git tag v1.1.0
    git push origin main --tags
    ```
 
-The tag must match `pubspec.yaml` — `v1.0.0` against `version: 1.0.0+1`. The
+The tag must match `pubspec.yaml` — `v1.1.0` against `version: 1.1.0+2`. The
 workflow checks this first and stops before building anything if they disagree,
 which is almost always a tag pushed before the bump was committed.
 
 To undo a tag pushed too early, delete it locally and remotely, then re-tag:
 
 ```bash
-git tag -d v1.0.0 && git push origin :refs/tags/v1.0.0
+git tag -d v1.1.0 && git push origin :refs/tags/v1.1.0
 ```
 
 Deleting the tag does not delete a release that was already created. Delete that
@@ -102,14 +102,25 @@ from the Releases page too, or the next run will fail on a name that exists.
 
 ## Building by hand
 
-Rarely needed, since the workflow covers all three platforms. When it is:
+Rarely needed, since the workflow covers all four platforms. When it is:
 
 ```bash
 flutter build apk --release --split-per-abi   # four APKs
 flutter build appbundle --release             # Play
 flutter build windows --release               # build/windows/x64/runner/Release
 flutter build linux --release                 # needs ninja-build, libgtk-3-dev
+flutter build macos --release                 # build/macos/Build/Products/Release
 ```
+
+Only the first three can be built from one machine, and which three depends on
+which machine. Nothing on Windows produces a Linux or a macOS build; that is
+what the runners are for.
+
+Pack a `.app` with `ditto -c -k --keepParent`, never `zip -r`. A bundle keeps
+symlinks in `Contents/Frameworks` pointing at the current version of each
+framework, and `zip` follows them — the archive comes out with several copies of
+every framework and an app that will not launch. The release job uses `ditto`
+for that reason, and the size is how you can tell: 47 MB of bundle packs to 20.
 
 **After a rename, delete `build/` first.** CMake caches the project and binary
 name from the previous configure, and a stale cache fails with a wall of

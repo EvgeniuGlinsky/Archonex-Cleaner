@@ -2,6 +2,8 @@ First release.
 
 - Junk cleaner with a 7-day quarantine you can restore from
 - Photo and video optimiser that shrinks files without changing their resolution
+- A breakdown of what is filling the device, by kind of file
+- Optimising carries on with the screen off, at a strength you pick
 - Protected paths and an age floor, so nothing in use is ever offered
 - English, Russian and Chinese
 - No ads, no accounts, no tracking, and no network permission at all

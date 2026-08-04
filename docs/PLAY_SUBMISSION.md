@@ -132,12 +132,22 @@ the same copy as `title.txt` and `short_description.txt` next to it. The line
 shrinks to fit rather than the copy being shortened to suit the layout: Russian
 runs half again as long as English and would otherwise reach into the artwork.
 
-**Still missing: screenshots.** Play wants at least two phone screenshots, and
-they have to come off a real device or an emulator — there is nothing in this
-repository that can produce them, and a mock-up of a screen the app does not
-draw would be a misrepresentation of the app. Take them on a phone with the
-release build, in both languages if the listing is being launched in both, and
-put them in `fastlane/metadata/android/<locale>/images/phoneScreenshots/`.
+**Screenshots** live in `fastlane/metadata/android/en-US/images/phoneScreenshots/`
+and are numbered in the order Play shows them: home, the insights screen, the
+cleaner. They came off a real phone at 1080×2340, which is the only way they can
+come — a mock-up of a screen the app does not draw would misrepresent the app.
+
+Only `en-US` has them. Play falls back to the default locale for any language
+with none, and English screenshots under Russian captions would be worse than
+the fallback. Re-shoot on a device with the app set to that language before
+adding a locale's own.
+
+Three is the minimum worth having and Play's floor is two, but the set is thin
+in a specific way: every one of them is a screen *before* it has done anything.
+Nothing shows a scan's results with paths and sizes, and nothing shows a
+restore — which is the screenshot that separates this app from the category
+Google refuses, and the reason the demo video above spends its last seconds
+there. Worth taking two more the next time the release build is on a phone.
 
 ## Content rating and target audience
 
