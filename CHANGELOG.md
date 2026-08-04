@@ -126,5 +126,5 @@ First release.
   the device even in principle. No analytics, no crash reporting, no accounts,
   no advertising. See [PRIVACY.md](PRIVACY.md).
 
-[Unreleased]: https://github.com/EvgeniuGlinsky/storage-cleaner/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/EvgeniuGlinsky/storage-cleaner/releases/tag/v1.1.0
+[Unreleased]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/EvgeniuGlinsky/Storage-Cleaner/releases/tag/v1.1.0
